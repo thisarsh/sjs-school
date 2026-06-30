@@ -139,7 +139,7 @@ export default function StudentDirectory({
 
           {isLoadingStudents ? (
             <SchoolLoadingScreen title="Loading Student Directory..." subtitle="Retrieving class rosters and records" />
-          ) : filteredStudents.length === 0 ? (
+          ) : !myStudents || myStudents.length === 0 ? (
             <div className="empty-state" style={{ padding: '40px 0', textAlign: 'center', color: '#6b7280' }}>
               <i className="fa-solid fa-users" style={{ fontSize: '32px', marginBottom: '12px', color: '#d1d5db' }}></i>
               <p>No students enrolled in your class.</p>

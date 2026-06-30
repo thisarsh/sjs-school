@@ -58,7 +58,7 @@ export class LeaveController {
            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *`,
           [studentId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
-        PushService.sendToPrincipals(
+        await PushService.sendToPrincipals(
           'New Leave Request',
           `A student has applied for a leave.`
         );
@@ -73,7 +73,7 @@ export class LeaveController {
            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *`,
           [teacherId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
-        PushService.sendToPrincipals(
+        await PushService.sendToPrincipals(
           'New Leave Request',
           `A teacher has applied for a leave.`
         );

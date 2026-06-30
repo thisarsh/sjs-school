@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
+import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 
 export default function StudentDirectory({
   myStudents,
@@ -137,8 +138,8 @@ export default function StudentDirectory({
           </div>
 
           {isLoadingStudents ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>Loading students...</div>
-          ) : !myStudents || myStudents.length === 0 ? (
+            <SchoolLoadingScreen title="Loading Student Directory..." subtitle="Retrieving class rosters and records" />
+          ) : filteredStudents.length === 0 ? (
             <div className="empty-state" style={{ padding: '40px 0', textAlign: 'center', color: '#6b7280' }}>
               <i className="fa-solid fa-users" style={{ fontSize: '32px', marginBottom: '12px', color: '#d1d5db' }}></i>
               <p>No students enrolled in your class.</p>

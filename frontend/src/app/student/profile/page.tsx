@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
+import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 import './student-profile.css';
 
 function StudentProfileContent() {
@@ -44,7 +45,7 @@ function StudentProfileContent() {
   });
 
   if (isLoading) {
-    return <div style={{ padding: '40px', textAlign: 'center' }}>Loading profile...</div>;
+    return <SchoolLoadingScreen title="Loading Student Profile..." subtitle="Retrieving academic records" />;
   }
 
   if (!student) {
@@ -404,7 +405,7 @@ function StudentProfileContent() {
 
 export default function StudentProfile() {
   return (
-    <Suspense fallback={<div>Loading profile...</div>}>
+    <Suspense fallback={<SchoolLoadingScreen title="Loading Profile Details..." />}>
       <StudentProfileContent />
     </Suspense>
   );

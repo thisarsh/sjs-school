@@ -9,6 +9,7 @@ import LeaveForm from '@/components/student/LeaveForm';
 import ComplaintForm from '@/components/shared/ComplaintForm';
 import ComingSoonModal from '@/components/shared/ComingSoonModal';
 import UniversalRefreshButton from '@/components/shared/UniversalRefreshButton';
+import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -139,7 +140,7 @@ function StudentDashboardContent() {
   const getInitial = (name: string) => name ? name.charAt(0).toUpperCase() : '?';
 
   if (!user || isLoadingProfile) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading dashboard...</div>;
+    return <SchoolLoadingScreen title="Loading Student Dashboard..." subtitle="Preparing your academic portal" />;
   }
 
   return (
@@ -480,7 +481,7 @@ function StudentDashboardContent() {
 
 export default function StudentDashboard() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SchoolLoadingScreen title="Loading Student Portal..." />}>
       <StudentDashboardContent />
     </Suspense>
   );

@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
-import "./login.css"; // Ensure this is imported
+import "./login.css";
+import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 
 type Role = "parent" | "student" | "staff";
 
@@ -111,6 +112,10 @@ export default function LoginPage() {
     if (activeRole === 'student') return "e.g. scholarno@sjs";
     return "e.g. staff@sjs";
   };
+
+  if (isLoading) {
+    return <SchoolLoadingScreen title="Authenticating S.J.S. Portal..." subtitle={loadingMessages[loadingMessageIndex] || "Securing your session"} />;
+  }
 
   return (
     <>

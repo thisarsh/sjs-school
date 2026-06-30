@@ -6,6 +6,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import "./teacher.css";
+import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 import TeacherHome from "@/components/teacher/TeacherHome";
 import StudentDirectory from "@/components/teacher/StudentDirectory";
 import AttendanceRegister from "@/components/teacher/AttendanceRegister";
@@ -118,6 +119,10 @@ function TeacherDashboardContent() {
       else setGreeting("Good Evening,");
     }, 0);
   }, []);
+
+  if (isLoading) {
+    return <SchoolLoadingScreen title="Loading Faculty Portal..." subtitle="Preparing your educator workspace" />;
+  }
 
   return (
     <div className="app-wrap">
@@ -314,7 +319,7 @@ function TeacherDashboardContent() {
 
 export default function TeacherDashboard() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SchoolLoadingScreen title="Loading Teacher Portal..." />}>
       <TeacherDashboardContent />
     </Suspense>
   );

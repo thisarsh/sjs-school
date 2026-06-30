@@ -7,6 +7,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import AttendanceRegister from "@/components/teacher/AttendanceRegister";
 import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
+import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -576,6 +577,10 @@ function PrincipalDashboardContent() {
   const totalActionReqIssues = recentUnseenComplaints.length + pendingLeavesCount + lowAttendanceStudents.length;
   const newIssuesCount = Math.max(0, totalActionReqIssues - lastSeenIssuesCount);
   const displayNewIssuesCount = newIssuesCount > 9 ? '9+' : newIssuesCount;
+
+  if (isLoading) {
+    return <SchoolLoadingScreen title="Loading Principal Portal..." subtitle="Preparing school management metrics" />;
+  }
 
   return (
     <div className="app-wrap">
@@ -2435,7 +2440,7 @@ function PrincipalDashboardContent() {
 
 export default function PrincipalDashboard() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SchoolLoadingScreen title="Loading Principal Portal..." />}>
       <PrincipalDashboardContent />
     </Suspense>
   );

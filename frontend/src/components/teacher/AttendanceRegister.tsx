@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 
 export default function AttendanceRegister({ myStudents, initialView = 'weekly' }: { myStudents: any[], initialView?: 'weekly' | 'monthly' | 'yearly' }) {
   const router = useRouter();
@@ -149,9 +150,9 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
         </button>
       </div>
 
-      <div style={{ flex: 1, overflowX: 'auto', overflowY: 'auto', padding: '0 20px', paddingBottom: '100px' }}>
+      <div style={{ flex: 1, overflowX: 'auto', overflowY: 'auto', WebkitOverflowScrolling: 'touch', padding: '0 20px', paddingBottom: '100px' }}>
         {isLoadingRegister ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>Loading register...</div>
+          <SchoolLoadingScreen title="Loading Attendance Register..." subtitle="Calculating attendance statistics" />
         ) : !myStudents || myStudents.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>No students in your class.</div>
         ) : (

@@ -4,8 +4,8 @@ import { Suspense } from 'react';
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import "./superadmin.css"; // Ensure this matches if we extracted any extra CSS, but global.css usually handles it.
+import "./superadmin.css";
+import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 
 function SuperAdminDashboardContent() {
   const router = useRouter();
@@ -77,6 +77,10 @@ function SuperAdminDashboardContent() {
     document.body.removeChild(link);
     setActionMessage({ text: "Database backup SQL dump downloaded!", type: 'success' });
   };
+
+  if (statsLoading && !statsData) {
+    return <SchoolLoadingScreen title="Loading Enterprise Control Panel..." subtitle="Initializing system administration metrics" />;
+  }
 
   return (
     <div className="page-wrap">
@@ -319,7 +323,7 @@ function SuperAdminDashboardContent() {
 
 export default function SuperAdminDashboard() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SchoolLoadingScreen title="Loading Super Admin Portal..." />}>
       <SuperAdminDashboardContent />
     </Suspense>
   );

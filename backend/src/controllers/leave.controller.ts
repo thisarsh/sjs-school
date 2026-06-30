@@ -15,6 +15,32 @@ const ApplyLeaveSchema = z.object({
 
 export class LeaveController {
 
+  async debugPushEnv(req: Request, res: Response) {
+    try {
+      const { getApps } = require('firebase-admin/app');
+      const hasApps = getApps().length > 0;
+      const base64Len = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 ? process.env.FIREBASE_SERVICE_ACCOUNT_BASE64.length : 0;
+      
+      let initError = null;
+      try {
+        if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+           JSON.parse(Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf-8'));
+        }
+      } catch (err: any) {
+        initError = err.message;
+      }
+
+      return res.json({ 
+        hasApps, 
+        base64Len, 
+        initError,
+        dbUrlLen: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0
+      });
+    } catch (error: any) {
+      return res.json({ error: error.message });
+    }
+  }
+
   async applyLeave(req: Request, res: Response) {
     try {
       const user = (req as any).user;

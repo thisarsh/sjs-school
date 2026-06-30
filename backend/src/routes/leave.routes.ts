@@ -5,6 +5,9 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 const router = Router();
 const leaveController = new LeaveController();
 
+// Debug Push Env
+router.get('/debug-push-env', leaveController.debugPushEnv.bind(leaveController));
+
 // Create a new leave request (Students/Teachers)
 router.post('/', authMiddleware, leaveController.applyLeave.bind(leaveController));
 

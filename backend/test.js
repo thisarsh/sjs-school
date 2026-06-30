@@ -27,7 +27,7 @@ async function testPush() {
     const tokens = res.rows.map(r => r.fcmToken);
 
     const message = {
-      notification: { title: 'Test Notification', body: 'Hello! This is a manual test from your AI assistant.' },
+      notification: { title: 'New Leave Request', body: 'Teacher Rajesh has applied for a leave on today.' },
       tokens: tokens,
       data: {}
     };

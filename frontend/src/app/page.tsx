@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLongLoading, setIsLongLoading] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth <= 1024);
@@ -45,13 +46,20 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setIsLongLoading(false);
     setError("");
+
+    const longLoadTimer = setTimeout(() => {
+      setIsLongLoading(true);
+    }, 3000);
 
     try {
       const response = await api.post("/auth/login", {
         email: username,
         password: password,
       });
+
+      clearTimeout(longLoadTimer);
 
       if (response.data.token) {
         localStorage.setItem("sjs_token", response.data.token);
@@ -71,9 +79,11 @@ export default function LoginPage() {
         }
       }
     } catch (err: any) {
+      clearTimeout(longLoadTimer);
       setError("Invalid credentials contact administration for help");
     } finally {
       setIsLoading(false);
+      setIsLongLoading(false);
     }
   };
 
@@ -230,6 +240,19 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {isLongLoading && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(5px)',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+          zIndex: 9999, color: 'white', fontFamily: 'inherit', textAlign: 'center', padding: '2rem'
+        }}>
+          <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: '#3b82f6' }}></i>
+          <h2 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>Waking up the secure server...</h2>
+          <p style={{ opacity: 0.9, fontSize: '1.1rem', maxWidth: '400px' }}>Our encrypted database sleeps when not in use. This first login might take up to 30 seconds.</p>
+        </div>
+      )}
     </>
   );
 }

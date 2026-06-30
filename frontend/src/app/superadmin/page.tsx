@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import "./superadmin.css";
 import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 

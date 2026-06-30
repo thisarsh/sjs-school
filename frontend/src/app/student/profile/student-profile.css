@@ -1,9 +1,11 @@
 .student-profile-wrap {
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background-color: #f8fafc;
   font-family: 'Inter', sans-serif;
   color: #0f172a;
-  padding-bottom: 40px;
+  padding-bottom: 60px;
 }
 
 .profile-header {

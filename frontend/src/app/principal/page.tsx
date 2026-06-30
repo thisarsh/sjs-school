@@ -113,8 +113,14 @@ function PrincipalDashboardContent() {
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`, { scroll: false });
   };
-  const [previousTab, setPreviousTab] = useState("home");
-  const [teachersSubTab, setTeachersSubTab] = useState("directory");
+  const [previousTab, setPreviousTab] = useState(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('sjs_p_previousTab') || 'home';
+    return 'home';
+  });
+  const [teachersSubTab, setTeachersSubTab] = useState(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('sjs_p_teachersSubTab') || 'directory';
+    return 'directory';
+  });
   const [selectedApp, setSelectedApp] = useState<any>(null);
   const [popupAppModal, setPopupAppModal] = useState<any>(null);
   const [popupNotice, setPopupNotice] = useState<{ title: string, message: string } | null>(null);
@@ -130,10 +136,19 @@ function PrincipalDashboardContent() {
   const [teachersSearchTerm, setTeachersSearchTerm] = useState("");
 
   // New state variables for Manage tab additions
-  const [leaveRequestsSubTab, setLeaveRequestsSubTab] = useState<'teachers' | 'students'>('students');
-  const [complaintsSubTab, setComplaintsSubTab] = useState<'all' | 'teachers' | 'students'>('all');
+  const [leaveRequestsSubTab, setLeaveRequestsSubTab] = useState<'teachers' | 'students'>(() => {
+    if (typeof window !== 'undefined') return (sessionStorage.getItem('sjs_p_leaveRequestsSubTab') as any) || 'students';
+    return 'students';
+  });
+  const [complaintsSubTab, setComplaintsSubTab] = useState<'all' | 'teachers' | 'students'>(() => {
+    if (typeof window !== 'undefined') return (sessionStorage.getItem('sjs_p_complaintsSubTab') as any) || 'all';
+    return 'all';
+  });
   const [complaintsSearchTerm, setComplaintsSearchTerm] = useState("");
-  const [accountManageSubTab, setAccountManageSubTab] = useState<'teachers' | 'students'>('students');
+  const [accountManageSubTab, setAccountManageSubTab] = useState<'teachers' | 'students'>(() => {
+    if (typeof window !== 'undefined') return (sessionStorage.getItem('sjs_p_accountManageSubTab') as any) || 'students';
+    return 'students';
+  });
   const [accountSearchTerm, setAccountSearchTerm] = useState("");
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
@@ -142,7 +157,10 @@ function PrincipalDashboardContent() {
   const [expandedClassSection, setExpandedClassSection] = useState<string | null>(null);
   
   // Action Required states
-  const [actionReqType, setActionReqType] = useState<'complaints' | 'attendance' | 'leaves'>('complaints');
+  const [actionReqType, setActionReqType] = useState<'complaints' | 'attendance' | 'leaves'>(() => {
+    if (typeof window !== 'undefined') return (sessionStorage.getItem('sjs_p_actionReqType') as any) || 'complaints';
+    return 'complaints';
+  });
   const [popupComplaintModal, setPopupComplaintModal] = useState<any>(null);
   const [popupAttendanceModal, setPopupAttendanceModal] = useState<any>(null);
   const [popupLeaveModal, setPopupLeaveModal] = useState<any>(null);
@@ -152,6 +170,17 @@ function PrincipalDashboardContent() {
     const saved = localStorage.getItem('sjs_last_seen_action_req_count');
     if (saved) setLastSeenIssuesCount(parseInt(saved, 10));
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('sjs_p_previousTab', previousTab);
+      sessionStorage.setItem('sjs_p_teachersSubTab', teachersSubTab);
+      sessionStorage.setItem('sjs_p_leaveRequestsSubTab', leaveRequestsSubTab);
+      sessionStorage.setItem('sjs_p_complaintsSubTab', complaintsSubTab);
+      sessionStorage.setItem('sjs_p_accountManageSubTab', accountManageSubTab);
+      sessionStorage.setItem('sjs_p_actionReqType', actionReqType);
+    }
+  }, [previousTab, teachersSubTab, leaveRequestsSubTab, complaintsSubTab, accountManageSubTab, actionReqType]);
 
   // State for Attendance Overview tab
   const attendanceClassParam = searchParams.get("class");

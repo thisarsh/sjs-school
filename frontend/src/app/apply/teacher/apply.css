@@ -1,8 +1,10 @@
 .apply-wrap {
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: #f0ebf8; /* Google Form purple tint background */
   font-family: 'Inter', sans-serif;
-  padding: 40px 20px;
+  padding: 40px 20px 80px 20px;
   display: flex;
   justify-content: center;
   align-items: flex-start;

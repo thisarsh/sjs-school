@@ -41,6 +41,41 @@ export class LeaveController {
     }
   }
 
+  async testPush(req: Request, res: Response) {
+    try {
+      const { getApps } = require('firebase-admin/app');
+      if (!getApps().length) return res.json({ success: false, error: 'Firebase not initialized' });
+
+      // Copy paste the EXACT implementation to catch any internal errors
+      const result = await pool.query(
+        'SELECT id FROM "User" WHERE role = \'PRINCIPAL\' AND "isDeleted" = false'
+      );
+      const principalIds = result.rows.map((row: any) => row.id);
+      
+      const result2 = await pool.query(
+        'SELECT "fcmToken" FROM "User" WHERE id = ANY($1) AND "fcmToken" IS NOT NULL',
+        [principalIds]
+      );
+      const tokens = result2.rows.map((row: any) => row.fcmToken).filter((token: string) => !!token);
+
+      if (tokens.length === 0) {
+        return res.json({ success: false, error: 'No tokens found' });
+      }
+
+      const { getMessaging } = require('firebase-admin/messaging');
+      const message = {
+        notification: { title: 'Test', body: 'Test' },
+        tokens: tokens,
+        data: {}
+      };
+
+      const response = await getMessaging().sendEachForMulticast(message);
+      return res.json({ success: true, response });
+    } catch (e: any) {
+      return res.json({ success: false, error: e.message, stack: e.stack });
+    }
+  }
+
   async applyLeave(req: Request, res: Response) {
     try {
       const user = (req as any).user;

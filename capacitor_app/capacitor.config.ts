@@ -6,6 +6,11 @@ const config: CapacitorConfig = {
   webDir: 'web',
   server: {
     url: 'https://sjs-school.vercel.app'
+  },
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
   }
 };
 

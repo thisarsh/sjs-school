@@ -213,31 +213,32 @@ function StudentDashboardContent() {
                 <div className="student-metric-icon">
                   <svg className="progress-ring" viewBox="0 0 50 50">
                     <circle className="track" cx="25" cy="25" r={radius}></circle>
-                    <circle
-                      className="indicator"
-                      cx="25"
-                      cy="25"
-                      r={radius}
-                      strokeDasharray={circumference}
+                    <circle 
+                      className="indicator" 
+                      cx="25" 
+                      cy="25" 
+                      r={radius} 
+                      strokeDasharray={circumference} 
                       strokeDashoffset={strokeDashoffset}
                     ></circle>
                   </svg>
-                  <span className="student-metric-percent">{Math.round(attendancePercentage)}%</span>
+                  <div className="progress-text">{attendancePercentage}%</div>
                 </div>
-                <div className="student-metric-info">
-                  <div className="student-metric-title">Attendance</div>
-                  <div className="student-metric-subtitle">Updated today</div>
+                <div className="metric-info">
+                  <div className="metric-title">Attendance</div>
+                  <div className="metric-sub success">{attendancePercentage}% Session</div>
                 </div>
               </div>
-
-              <div className="student-metric-card" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
-                <div className="student-metric-icon bg-green-light">
-                  <i className="fa-solid fa-wallet text-green"></i>
+              
+              <div className="student-metric-card" onClick={() => router.push(`?tab=attendance`)}>
+                <div className="fee-alert-icon" style={{ backgroundColor: todayStatusText === 'PRESENT' ? '#dcfce7' : todayStatusText === 'ABSENT' ? '#fee2e2' : todayStatusText === 'HOLIDAY' ? '#ffedd5' : '#f1f5f9', color: todayStatusText === 'PRESENT' ? '#22c55e' : todayStatusText === 'ABSENT' ? '#ef4444' : todayStatusText === 'HOLIDAY' ? '#f97316' : '#9ca3af' }}>
+                  {todayIconSvg}
                 </div>
-                <div className="student-metric-info">
-                  <div className="student-metric-title">Fees Paid</div>
-                  <div className="student-metric-subtitle">Quarter 1</div>
+                <div className="metric-info">
+                  <div className="metric-title">Today's Attendance</div>
+                  <div className={`metric-sub ${todayStatusClass}`} style={{ fontWeight: 700 }}>{todayStatusText}</div>
                 </div>
+                <i className="fa-solid fa-chevron-right" style={{ color: '#9ca3af', fontSize: '14px' }}></i>
               </div>
             </div>
 

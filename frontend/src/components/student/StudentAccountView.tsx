@@ -13,9 +13,16 @@ export default function StudentAccountView({
   userEmail,
   onLogout,
 }: StudentAccountViewProps) {
-  const [activeModal, setActiveModal] = useState<
-    "personal" | "contact" | "documents" | "logout" | null
-  >(null);
+  // By default, open 'personal' so information is visible immediately upon tapping Account
+  const [expandedSection, setExpandedSection] = useState<
+    "personal" | "contact" | "documents" | null
+  >("personal");
+  
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const toggleSection = (section: "personal" | "contact" | "documents") => {
+    setExpandedSection((prev) => (prev === section ? null : section));
+  };
 
   const getInitial = (name?: string) =>
     name ? name.charAt(0).toUpperCase() : "?";
@@ -41,23 +48,38 @@ export default function StudentAccountView({
   return (
     <div
       style={{
-        padding: "20px",
-        paddingBottom: "130px",
+        padding: "16px",
+        paddingBottom: "140px",
         display: "flex",
         flexDirection: "column",
-        gap: "20px",
+        gap: "16px",
+        animation: "fadeIn 0.25s ease-out",
       }}
     >
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes expandDown {
+          from { opacity: 0; max-height: 0px; transform: scaleY(0.95); }
+          to { opacity: 1; max-height: 1200px; transform: scaleY(1); }
+        }
+        .account-card-btn:active {
+          transform: scale(0.985);
+        }
+      `}</style>
+
       {/* Top Header Card */}
       <div
         style={{
           background: "linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)",
-          borderRadius: "20px",
-          padding: "24px",
+          borderRadius: "22px",
+          padding: "22px",
           display: "flex",
           alignItems: "center",
-          gap: "20px",
-          boxShadow: "0 8px 24px rgba(13, 27, 42, 0.15)",
+          gap: "18px",
+          boxShadow: "0 10px 30px rgba(13, 27, 42, 0.18)",
           color: "white",
           position: "relative",
           overflow: "hidden",
@@ -68,28 +90,30 @@ export default function StudentAccountView({
             position: "absolute",
             top: "-30px",
             right: "-30px",
-            width: "120px",
-            height: "120px",
-            background: "radial-gradient(circle, rgba(201,168,76,0.25) 0%, rgba(255,255,255,0) 70%)",
+            width: "140px",
+            height: "140px",
+            background: "radial-gradient(circle, rgba(201,168,76,0.22) 0%, rgba(255,255,255,0) 70%)",
             borderRadius: "50%",
+            pointerEvents: "none",
           }}
         />
 
         <div
           style={{
-            width: "72px",
-            height: "72px",
+            width: "70px",
+            height: "70px",
             borderRadius: "50%",
             background: "#c9a84c",
-            border: "3px solid rgba(255, 255, 255, 0.2)",
+            border: "3px solid rgba(255, 255, 255, 0.25)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "28px",
+            fontSize: "26px",
             fontWeight: "bold",
             color: "#0d1b2a",
             overflow: "hidden",
             flexShrink: 0,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
           }}
         >
           {student?.profilePic ? (
@@ -107,17 +131,18 @@ export default function StudentAccountView({
           <h2
             style={{
               margin: 0,
-              fontSize: "22px",
+              fontSize: "20px",
               fontWeight: 800,
               color: "#ffffff",
-              letterSpacing: "0.3px",
+              letterSpacing: "0.2px",
+              lineHeight: "1.2",
             }}
           >
             {fullName}
           </h2>
           <div
             style={{
-              fontSize: "14px",
+              fontSize: "13px",
               color: "#c9a84c",
               fontWeight: 600,
               marginTop: "4px",
@@ -130,7 +155,7 @@ export default function StudentAccountView({
               display: "inline-block",
               marginTop: "8px",
               padding: "4px 12px",
-              background: "rgba(255, 255, 255, 0.12)",
+              background: "rgba(255, 255, 255, 0.14)",
               borderRadius: "20px",
               fontSize: "12px",
               fontWeight: 600,
@@ -141,14 +166,14 @@ export default function StudentAccountView({
         </div>
       </div>
 
-      {/* Action Buttons Grid */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+      {/* Accordion Sections Grid */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <h3
           style={{
-            margin: "4px 0",
-            fontSize: "16px",
+            margin: "4px 4px",
+            fontSize: "14px",
             fontWeight: 700,
-            color: "#475569",
+            color: "#64748b",
             textTransform: "uppercase",
             letterSpacing: "0.8px",
           }}
@@ -156,199 +181,331 @@ export default function StudentAccountView({
           Account Information
         </h3>
 
-        {/* 1. Personal Details Button */}
-        <button
-          onClick={() => setActiveModal("personal")}
-          style={{
-            background: "white",
-            border: "1px solid #e2e8f0",
-            borderRadius: "16px",
-            padding: "18px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.2s ease",
-            textAlign: "left",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "14px",
-                background: "#eff6ff",
-                color: "#3b82f6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "20px",
-              }}
-            >
-              <i className="fa-solid fa-id-card"></i>
-            </div>
-            <div>
+        {/* 1. Personal Details Accordion Section */}
+        <div style={{ background: "white", borderRadius: "18px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.03)" }}>
+          <button
+            className="account-card-btn"
+            onClick={() => toggleSection("personal")}
+            style={{
+              width: "100%",
+              background: expandedSection === "personal" ? "#f8fafc" : "white",
+              padding: "16px 18px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              textAlign: "left",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
               <div
                 style={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  color: "#0f172a",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
+                  background: "#eff6ff",
+                  color: "#3b82f6",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "18px",
                 }}
               >
-                Personal Details
+                <i className="fa-solid fa-id-card"></i>
               </div>
-              <div
+              <div>
+                <div style={{ fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>
+                  Personal Details
+                </div>
+                <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+                  Name, Scholar No, DOB & Parents
+                </div>
+              </div>
+            </div>
+            <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: expandedSection === "personal" ? "#e2e8f0" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.25s ease" }}>
+              <i
+                className="fa-solid fa-chevron-down"
                 style={{
-                  fontSize: "13px",
                   color: "#64748b",
-                  marginTop: "2px",
+                  fontSize: "13px",
+                  transform: expandedSection === "personal" ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.25s ease",
                 }}
-              >
-                Name, Class, Scholar No, DOB & Parents
-              </div>
+              />
             </div>
-          </div>
-          <i
-            className="fa-solid fa-chevron-right"
-            style={{ color: "#94a3b8", fontSize: "16px" }}
-          ></i>
-        </button>
+          </button>
 
-        {/* 2. Contact Details Button */}
-        <button
-          onClick={() => setActiveModal("contact")}
-          style={{
-            background: "white",
-            border: "1px solid #e2e8f0",
-            borderRadius: "16px",
-            padding: "18px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.2s ease",
-            textAlign: "left",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {expandedSection === "personal" && (
             <div
               style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "14px",
-                background: "#f0fdf4",
-                color: "#10b981",
+                padding: "16px 18px",
+                borderTop: "1px solid #f1f5f9",
+                background: "#ffffff",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "20px",
+                flexDirection: "column",
+                gap: "10px",
+                animation: "fadeIn 0.2s ease-out",
               }}
             >
-              <i className="fa-solid fa-phone-volume"></i>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  color: "#0f172a",
-                }}
-              >
-                Contact Details
+              {/* Profile Snapshot Banner */}
+              <div style={{ display: "flex", alignItems: "center", gap: "14px", padding: "10px 12px", background: "#f8fafc", borderRadius: "14px", marginBottom: "4px" }}>
+                <div style={{ width: "50px", height: "50px", borderRadius: "50%", background: "#e2e8f0", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "20px", color: "#475569", flexShrink: 0 }}>
+                  {student?.profilePic ? (
+                    <img src={student.profilePic} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    getInitial(student?.firstName)
+                  )}
+                </div>
+                <div>
+                  <div style={{ fontSize: "15px", fontWeight: 800, color: "#0f172a" }}>{fullName}</div>
+                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 600 }}>Class {className} {sectionName ? `(${sectionName})` : ""}</div>
+                </div>
               </div>
-              <div
-                style={{
-                  fontSize: "13px",
-                  color: "#64748b",
-                  marginTop: "2px",
-                }}
-              >
-                Mobile numbers & Registered email
-              </div>
-            </div>
-          </div>
-          <i
-            className="fa-solid fa-chevron-right"
-            style={{ color: "#94a3b8", fontSize: "16px" }}
-          ></i>
-        </button>
 
-        {/* 3. Documents Button */}
-        <button
-          onClick={() => setActiveModal("documents")}
-          style={{
-            background: "white",
-            border: "1px solid #e2e8f0",
-            borderRadius: "16px",
-            padding: "18px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.03)",
-            transition: "all 0.2s ease",
-            textAlign: "left",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Scholar Number</span>
+                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "13px" }}>{student?.scholarNumber || "N/A"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Roll Number</span>
+                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "13px" }}>{student?.rollNumber || "N/A"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Date of Birth</span>
+                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "13px" }}>{formatDate(student?.dob)}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Gender</span>
+                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "13px", textTransform: "capitalize" }}>{student?.gender || "N/A"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Blood Group</span>
+                <span style={{ fontWeight: 700, color: "#ef4444", fontSize: "13px" }}>{student?.bloodGroup || "N/A"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Father's Name</span>
+                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "13px" }}>{student?.fatherName || "N/A"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "13px" }}>Mother's Name</span>
+                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "13px" }}>{student?.motherName || "N/A"}</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", padding: "12px 14px", background: "#f8fafc", borderRadius: "10px" }}>
+                <span style={{ color: "#64748b", fontSize: "12px", fontWeight: 600 }}>Residential Address</span>
+                <span style={{ fontWeight: 600, color: "#0f172a", fontSize: "13px", lineHeight: "1.4" }}>{student?.address || "No address on file"}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 2. Contact Details Accordion Section */}
+        <div style={{ background: "white", borderRadius: "18px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.03)" }}>
+          <button
+            className="account-card-btn"
+            onClick={() => toggleSection("contact")}
+            style={{
+              width: "100%",
+              background: expandedSection === "contact" ? "#f8fafc" : "white",
+              padding: "16px 18px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              textAlign: "left",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
+                  background: "#f0fdf4",
+                  color: "#10b981",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "18px",
+                }}
+              >
+                <i className="fa-solid fa-phone-volume"></i>
+              </div>
+              <div>
+                <div style={{ fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>
+                  Contact Details
+                </div>
+                <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+                  Mobile numbers & Registered email
+                </div>
+              </div>
+            </div>
+            <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: expandedSection === "contact" ? "#e2e8f0" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.25s ease" }}>
+              <i
+                className="fa-solid fa-chevron-down"
+                style={{
+                  color: "#64748b",
+                  fontSize: "13px",
+                  transform: expandedSection === "contact" ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.25s ease",
+                }}
+              />
+            </div>
+          </button>
+
+          {expandedSection === "contact" && (
             <div
               style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "14px",
-                background: "#fef3c7",
-                color: "#d97706",
+                padding: "16px 18px",
+                borderTop: "1px solid #f1f5f9",
+                background: "#ffffff",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "20px",
+                flexDirection: "column",
+                gap: "12px",
+                animation: "fadeIn 0.2s ease-out",
               }}
             >
-              <i className="fa-solid fa-folder-open"></i>
+              <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#dcfce7", color: "#15803d", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>
+                  <i className="fa-solid fa-phone"></i>
+                </div>
+                <div>
+                  <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 600 }}>Primary Mobile Number</div>
+                  <div style={{ fontSize: "15px", fontWeight: 800, color: "#0f172a", marginTop: "2px" }}>{student?.parentMobile || "N/A"}</div>
+                </div>
+              </div>
+
+              <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#e0e7ff", color: "#4338ca", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>
+                  <i className="fa-solid fa-mobile-screen"></i>
+                </div>
+                <div>
+                  <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 600 }}>Secondary Mobile Number</div>
+                  <div style={{ fontSize: "15px", fontWeight: 800, color: "#0f172a", marginTop: "2px" }}>{student?.parentSecondaryMobile || "N/A"}</div>
+                </div>
+              </div>
+
+              <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#fef3c7", color: "#b45309", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>
+                  <i className="fa-solid fa-envelope"></i>
+                </div>
+                <div style={{ overflow: "hidden" }}>
+                  <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 600 }}>Registered Email</div>
+                  <div style={{ fontSize: "14px", fontWeight: 700, color: "#0f172a", marginTop: "2px", wordBreak: "break-all" }}>{student?.parentEmail || userEmail || "N/A"}</div>
+                </div>
+              </div>
             </div>
-            <div>
+          )}
+        </div>
+
+        {/* 3. Documents Accordion Section */}
+        <div style={{ background: "white", borderRadius: "18px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.03)" }}>
+          <button
+            className="account-card-btn"
+            onClick={() => toggleSection("documents")}
+            style={{
+              width: "100%",
+              background: expandedSection === "documents" ? "#f8fafc" : "white",
+              padding: "16px 18px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              textAlign: "left",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
               <div
                 style={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  color: "#0f172a",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
+                  background: "#fef3c7",
+                  color: "#d97706",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "18px",
                 }}
               >
-                Documents
+                <i className="fa-solid fa-folder-open"></i>
               </div>
-              <div
+              <div>
+                <div style={{ fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>
+                  Documents
+                </div>
+                <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+                  Aadhaar card & Identity records
+                </div>
+              </div>
+            </div>
+            <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: expandedSection === "documents" ? "#e2e8f0" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.25s ease" }}>
+              <i
+                className="fa-solid fa-chevron-down"
                 style={{
-                  fontSize: "13px",
                   color: "#64748b",
-                  marginTop: "2px",
+                  fontSize: "13px",
+                  transform: expandedSection === "documents" ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.25s ease",
                 }}
-              >
-                Aadhaar card & Identity records
+              />
+            </div>
+          </button>
+
+          {expandedSection === "documents" && (
+            <div
+              style={{
+                padding: "16px 18px",
+                borderTop: "1px solid #f1f5f9",
+                background: "#ffffff",
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                animation: "fadeIn 0.2s ease-out",
+              }}
+            >
+              <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                  <i className="fa-solid fa-id-card-clip" style={{ color: "#d97706", fontSize: "16px" }}></i>
+                  <span style={{ fontSize: "12px", fontWeight: 700, color: "#64748b" }}>Aadhaar Card Number</span>
+                </div>
+                <div style={{ fontSize: "17px", fontWeight: 800, color: "#0f172a", letterSpacing: "1px" }}>
+                  {student?.aadhaarNumber || "Not Provided"}
+                </div>
+              </div>
+
+              <div style={{ background: "#f0fdf4", padding: "14px", borderRadius: "12px", border: "1px solid #bbf7d0", display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#15803d", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", flexShrink: 0 }}>
+                  <i className="fa-solid fa-check"></i>
+                </div>
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: 800, color: "#166534" }}>Active Student Record</div>
+                  <div style={{ fontSize: "11px", color: "#15803d" }}>Verified by SJS Public School Administration</div>
+                </div>
               </div>
             </div>
-          </div>
-          <i
-            className="fa-solid fa-chevron-right"
-            style={{ color: "#94a3b8", fontSize: "16px" }}
-          ></i>
-        </button>
+          )}
+        </div>
       </div>
 
       {/* Red Logout Button at Bottom */}
-      <div style={{ marginTop: "16px" }}>
+      <div style={{ marginTop: "12px" }}>
         <button
-          onClick={() => setActiveModal("logout")}
+          className="account-card-btn"
+          onClick={() => setShowLogoutConfirm(true)}
           style={{
             width: "100%",
-            padding: "18px",
+            padding: "16px",
             borderRadius: "16px",
             background: "#fef2f2",
             border: "1.5px solid #fecaca",
             color: "#dc2626",
-            fontSize: "16px",
+            fontSize: "15px",
             fontWeight: 700,
             display: "flex",
             alignItems: "center",
@@ -356,6 +513,7 @@ export default function StudentAccountView({
             gap: "10px",
             cursor: "pointer",
             boxShadow: "0 2px 8px rgba(220, 38, 38, 0.08)",
+            transition: "all 0.2s ease",
           }}
         >
           <i className="fa-solid fa-arrow-right-from-bracket"></i>
@@ -363,410 +521,12 @@ export default function StudentAccountView({
         </button>
       </div>
 
-      {/* --- MODALS --- */}
-
-      {/* Personal Details Modal */}
-      {activeModal === "personal" && (
+      {/* --- LOGOUT CONFIRMATION MODAL --- */}
+      {showLogoutConfirm && (
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(15, 23, 42, 0.6)",
-            backdropFilter: "blur(4px)",
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowLogoutConfirm(false);
           }}
-        >
-          <div
-            style={{
-              background: "white",
-              borderRadius: "24px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "480px",
-              maxHeight: "85vh",
-              overflowY: "auto",
-              WebkitOverflowScrolling: "touch",
-              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderBottom: "1px solid #f1f5f9",
-                paddingBottom: "14px",
-              }}
-            >
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "20px",
-                  fontWeight: 800,
-                  color: "#0f172a",
-                }}
-              >
-                Personal Details
-              </h3>
-              <button
-                onClick={() => setActiveModal(null)}
-                style={{
-                  background: "#f1f5f9",
-                  border: "none",
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  color: "#64748b",
-                  fontSize: "16px",
-                }}
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-
-            {/* Profile Avatar */}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", padding: "10px 0" }}>
-              <div
-                style={{
-                  width: "64px",
-                  height: "64px",
-                  borderRadius: "50%",
-                  background: "#e2e8f0",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  color: "#475569",
-                }}
-              >
-                {student?.profilePic ? (
-                  <img
-                    src={student.profilePic}
-                    alt={fullName}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                ) : (
-                  getInitial(student?.firstName)
-                )}
-              </div>
-              <div>
-                <div style={{ fontSize: "18px", fontWeight: 800, color: "#0f172a" }}>
-                  {fullName}
-                </div>
-                <div style={{ fontSize: "14px", color: "#64748b" }}>
-                  Class {className} {sectionName ? `(${sectionName})` : ""}
-                </div>
-              </div>
-            </div>
-
-            {/* Detail Rows */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "14px" }}>Scholar Number</span>
-                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px" }}>{student?.scholarNumber || "N/A"}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "14px" }}>Roll Number</span>
-                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px" }}>{student?.rollNumber || "N/A"}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "14px" }}>Date of Birth</span>
-                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px" }}>{formatDate(student?.dob)}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "14px" }}>Gender</span>
-                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px", textTransform: "capitalize" }}>{student?.gender || "N/A"}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "14px" }}>Father's Name</span>
-                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px" }}>{student?.fatherName || "N/A"}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "14px" }}>Mother's Name</span>
-                <span style={{ fontWeight: 700, color: "#0f172a", fontSize: "14px" }}>{student?.motherName || "N/A"}</span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px", padding: "12px", background: "#f8fafc", borderRadius: "10px" }}>
-                <span style={{ color: "#64748b", fontSize: "13px" }}>Residential Address</span>
-                <span style={{ fontWeight: 600, color: "#0f172a", fontSize: "14px", lineHeight: "1.5" }}>{student?.address || "No address on file"}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setActiveModal(null)}
-              style={{
-                width: "100%",
-                padding: "14px",
-                borderRadius: "14px",
-                background: "#0d1b2a",
-                color: "white",
-                border: "none",
-                fontWeight: 700,
-                fontSize: "15px",
-                cursor: "pointer",
-                marginTop: "6px",
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Contact Details Modal */}
-      {activeModal === "contact" && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(15, 23, 42, 0.6)",
-            backdropFilter: "blur(4px)",
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              borderRadius: "24px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "440px",
-              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderBottom: "1px solid #f1f5f9",
-                paddingBottom: "14px",
-              }}
-            >
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "20px",
-                  fontWeight: 800,
-                  color: "#0f172a",
-                }}
-              >
-                Contact Details
-              </h3>
-              <button
-                onClick={() => setActiveModal(null)}
-                style={{
-                  background: "#f1f5f9",
-                  border: "none",
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  color: "#64748b",
-                  fontSize: "16px",
-                }}
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-              <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "14px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
-                <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "#dcfce7", color: "#15803d", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
-                  <i className="fa-solid fa-phone"></i>
-                </div>
-                <div>
-                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 600 }}>Primary Mobile Number</div>
-                  <div style={{ fontSize: "16px", fontWeight: 800, color: "#0f172a", marginTop: "2px" }}>{student?.parentMobile || "N/A"}</div>
-                </div>
-              </div>
-
-              <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "14px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
-                <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "#e0e7ff", color: "#4338ca", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
-                  <i className="fa-solid fa-mobile-screen"></i>
-                </div>
-                <div>
-                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 600 }}>Secondary Mobile Number</div>
-                  <div style={{ fontSize: "16px", fontWeight: 800, color: "#0f172a", marginTop: "2px" }}>{student?.parentSecondaryMobile || "N/A"}</div>
-                </div>
-              </div>
-
-              <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "14px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
-                <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "#fef3c7", color: "#b45309", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
-                  <i className="fa-solid fa-envelope"></i>
-                </div>
-                <div style={{ overflow: "hidden" }}>
-                  <div style={{ fontSize: "12px", color: "#64748b", fontWeight: 600 }}>Registered Email</div>
-                  <div style={{ fontSize: "15px", fontWeight: 700, color: "#0f172a", marginTop: "2px", wordBreak: "break-all" }}>{student?.parentEmail || userEmail || "N/A"}</div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setActiveModal(null)}
-              style={{
-                width: "100%",
-                padding: "14px",
-                borderRadius: "14px",
-                background: "#0d1b2a",
-                color: "white",
-                border: "none",
-                fontWeight: 700,
-                fontSize: "15px",
-                cursor: "pointer",
-                marginTop: "6px",
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Documents Modal */}
-      {activeModal === "documents" && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(15, 23, 42, 0.6)",
-            backdropFilter: "blur(4px)",
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              borderRadius: "24px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "440px",
-              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderBottom: "1px solid #f1f5f9",
-                paddingBottom: "14px",
-              }}
-            >
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: "20px",
-                  fontWeight: 800,
-                  color: "#0f172a",
-                }}
-              >
-                Official Documents
-              </h3>
-              <button
-                onClick={() => setActiveModal(null)}
-                style={{
-                  background: "#f1f5f9",
-                  border: "none",
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  color: "#64748b",
-                  fontSize: "16px",
-                }}
-              >
-                <i className="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-              <div style={{ background: "#f8fafc", padding: "18px", borderRadius: "14px", border: "1px solid #e2e8f0" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                  <i className="fa-solid fa-id-card-clip" style={{ color: "#d97706", fontSize: "18px" }}></i>
-                  <span style={{ fontSize: "13px", fontWeight: 700, color: "#64748b" }}>Aadhaar Number</span>
-                </div>
-                <div style={{ fontSize: "18px", fontWeight: 800, color: "#0f172a", letterSpacing: "1px" }}>
-                  {student?.aadhaarNumber || "Not Provided"}
-                </div>
-              </div>
-
-              <div style={{ background: "#f0fdf4", padding: "16px", borderRadius: "14px", border: "1px solid #bbf7d0", display: "flex", alignItems: "center", gap: "14px" }}>
-                <div style={{ width: "38px", height: "38px", borderRadius: "50%", background: "#15803d", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>
-                  <i className="fa-solid fa-check"></i>
-                </div>
-                <div>
-                  <div style={{ fontSize: "14px", fontWeight: 800, color: "#166534" }}>Active Student Record</div>
-                  <div style={{ fontSize: "12px", color: "#15803d" }}>Verified by SJS Public School Administration</div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setActiveModal(null)}
-              style={{
-                width: "100%",
-                padding: "14px",
-                borderRadius: "14px",
-                background: "#0d1b2a",
-                color: "white",
-                border: "none",
-                fontWeight: 700,
-                fontSize: "15px",
-                cursor: "pointer",
-                marginTop: "6px",
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Logout Confirmation Modal */}
-      {activeModal === "logout" && (
-        <div
           style={{
             position: "fixed",
             top: 0,
@@ -780,33 +540,34 @@ export default function StudentAccountView({
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
+            animation: "fadeIn 0.2s ease-out",
           }}
         >
           <div
             style={{
               background: "white",
               borderRadius: "24px",
-              padding: "28px",
+              padding: "26px",
               width: "100%",
-              maxWidth: "400px",
+              maxWidth: "380px",
               boxShadow: "0 25px 50px rgba(0, 0, 0, 0.25)",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
-              gap: "18px",
+              gap: "16px",
             }}
           >
             <div
               style={{
-                width: "64px",
-                height: "64px",
+                width: "60px",
+                height: "60px",
                 borderRadius: "50%",
                 background: "#fef2f2",
                 color: "#dc2626",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "28px",
+                fontSize: "26px",
                 margin: "0 auto",
               }}
             >
@@ -817,7 +578,7 @@ export default function StudentAccountView({
               <h3
                 style={{
                   margin: 0,
-                  fontSize: "22px",
+                  fontSize: "20px",
                   fontWeight: 800,
                   color: "#0f172a",
                 }}
@@ -827,33 +588,33 @@ export default function StudentAccountView({
               <p
                 style={{
                   margin: "8px 0 0 0",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   color: "#64748b",
                   lineHeight: "1.5",
                 }}
               >
-                Are you sure you want to log out of your student portal? You will need to sign in again to access your timetable and attendance.
+                Are you sure you want to log out of your student account? You will need to sign in again to view your timetable and attendance.
               </p>
             </div>
 
             <div
               style={{
                 display: "flex",
-                gap: "12px",
-                marginTop: "8px",
+                gap: "10px",
+                marginTop: "6px",
               }}
             >
               <button
-                onClick={() => setActiveModal(null)}
+                onClick={() => setShowLogoutConfirm(false)}
                 style={{
                   flex: 1,
-                  padding: "14px",
+                  padding: "13px",
                   borderRadius: "14px",
                   background: "#f1f5f9",
                   color: "#475569",
                   border: "none",
                   fontWeight: 700,
-                  fontSize: "15px",
+                  fontSize: "14px",
                   cursor: "pointer",
                 }}
               >
@@ -863,13 +624,13 @@ export default function StudentAccountView({
                 onClick={onLogout}
                 style={{
                   flex: 1,
-                  padding: "14px",
+                  padding: "13px",
                   borderRadius: "14px",
                   background: "#dc2626",
                   color: "white",
                   border: "none",
                   fontWeight: 700,
-                  fontSize: "15px",
+                  fontSize: "14px",
                   cursor: "pointer",
                   boxShadow: "0 4px 12px rgba(220, 38, 38, 0.25)",
                 }}

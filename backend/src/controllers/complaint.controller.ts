@@ -1,6 +1,5 @@
 import pool from '../config/prisma';
 import { parsePaginationParams, formatPaginatedResponse } from '../utils/pagination';
-import { PushService } from '../services/push.service';
 
 export const createComplaint = async (req: any, res: any) => {
   try {
@@ -36,12 +35,6 @@ export const createComplaint = async (req: any, res: any) => {
       `INSERT INTO "Complaint" ("id", "subject", "description", "isAnonymous", "role", "applicantId", "status", "createdAt", "updatedAt")
        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, 'UNSEEN', NOW(), NOW()) RETURNING *`,
       [subject, description, finalAnonymous, role, applicantId]
-    );
-
-    // Alert the principal about the new complaint
-    PushService.sendToPrincipals(
-      'New Complaint Received',
-      `${role} filed a complaint: ${subject}`
     );
 
     res.status(201).json(insertRes.rows[0]);
@@ -113,7 +106,7 @@ export const getAllComplaints = async (req: any, res: any) => {
     // Populate applicant details manually and mask anonymous ones
     const populated = await Promise.all(complaints.map(async (c: any) => {
       let applicantDetails = null;
-      
+
       if (!c.isAnonymous) {
         if (c.role === 'STUDENT') {
           const studentRes = await pool.query('SELECT "firstName", "lastName", "scholarNumber" FROM "Student" WHERE "id" = $1', [c.applicantId]);

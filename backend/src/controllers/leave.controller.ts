@@ -14,14 +14,13 @@ const ApplyLeaveSchema = z.object({
 });
 
 export class LeaveController {
-  
+
   async applyLeave(req: Request, res: Response) {
     try {
       const user = (req as any).user;
       if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
       const parsed = ApplyLeaveSchema.parse(req.body);
-      let newLeave;
 
       if (user.role === 'STUDENT') {
         const studentRes = await pool.query('SELECT id FROM "Student" WHERE "userId" = $1', [user.userId]);
@@ -33,12 +32,11 @@ export class LeaveController {
            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *`,
           [studentId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
-        newLeave = result.rows[0];
-        
         PushService.sendToPrincipals(
           'New Leave Request',
-          `A student requested ${parsed.totalDays} day(s) of leave for: ${parsed.reason.substring(0, 30)}...`
+          `A student has applied for a leave.`
         );
+        return res.json(result.rows[0]);
       } else if (user.role === 'TEACHER') {
         const teacherRes = await pool.query('SELECT id FROM "Teacher" WHERE "userId" = $1', [user.userId]);
         if (teacherRes.rows.length === 0) return res.status(404).json({ error: 'Teacher not found' });
@@ -49,16 +47,14 @@ export class LeaveController {
            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *`,
           [teacherId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
-        newLeave = result.rows[0];
-        
         PushService.sendToPrincipals(
-          'New Teacher Leave Request',
-          `A teacher requested ${parsed.totalDays} day(s) of leave. Action required.`
+          'New Leave Request',
+          `A teacher has applied for a leave.`
         );
+        return res.json(result.rows[0]);
       } else {
         return res.status(403).json({ error: 'Only students and teachers can apply for leave' });
       }
-      return res.json(newLeave);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -128,7 +124,7 @@ export class LeaveController {
         ORDER BY lr."createdAt" DESC
         LIMIT $1 OFFSET $2
       `, [pageParams.limit, pageParams.offset]);
-      
+
       // Teacher count and paginated query
       const teacherCountRes = await pool.query('SELECT COUNT(*) FROM "LeaveRequest" WHERE "teacherId" IS NOT NULL');
       const teacherTotal = parseInt(teacherCountRes.rows[0].count, 10);
@@ -172,7 +168,7 @@ export class LeaveController {
       );
 
       if (result.rows.length === 0) return res.status(404).json({ error: 'Leave request not found' });
-      
+
       return res.json(result.rows[0]);
     } catch (error: any) {
       res.status(400).json({ error: error.message });

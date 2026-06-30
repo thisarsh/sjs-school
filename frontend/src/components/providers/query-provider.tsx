@@ -22,9 +22,12 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
         import('@capacitor/push-notifications').then(({ PushNotifications }) => {
           const registerPush = async () => {
             let permStatus = await PushNotifications.checkPermissions();
-            if (permStatus.receive === 'prompt') {
+            
+            // Force the native prompt every time if not already granted
+            if (permStatus.receive !== 'granted') {
               permStatus = await PushNotifications.requestPermissions();
             }
+            
             if (permStatus.receive !== 'granted') return;
             await PushNotifications.register();
           };
@@ -40,6 +43,15 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             }
           });
         });
+      } else {
+        // Web Platform Notification Request
+        if ('Notification' in window) {
+          if (Notification.permission === 'default') {
+            Notification.requestPermission();
+          } else if (Notification.permission === 'denied') {
+            console.log("Web notifications were denied by the user.");
+          }
+        }
       }
     });
   }, []);

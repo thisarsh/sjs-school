@@ -144,6 +144,7 @@ function TeacherDashboardContent() {
             myStudents={myStudents}
             attendanceData={attendanceData}
             setActiveTab={setActiveTab}
+            unreadNoticesCount={unreadNoticesCount}
           />
         )}
 

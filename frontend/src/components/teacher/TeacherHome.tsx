@@ -9,7 +9,8 @@ export default function TeacherHome({
   isLoading,
   myStudents,
   attendanceData,
-  setActiveTab
+  setActiveTab,
+  unreadNoticesCount
 }: any) {
   const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
 
@@ -28,9 +29,9 @@ export default function TeacherHome({
             <UniversalRefreshButton />
             <div onClick={() => setActiveTab('notices')} style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
               <i className="fa-regular fa-bell top-icon"></i>
-              {myRequests && myRequests.length > 0 && (
+              {unreadNoticesCount > 0 && (
                 <div style={{ position: 'absolute', top: '-2px', right: '-2px', background: '#ef4444', color: 'white', fontSize: '10px', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', border: '2px solid white' }}>
-                  {myRequests.length}
+                  {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
                 </div>
               )}
             </div>

@@ -170,7 +170,14 @@ function StudentDashboardContent() {
               <i className="fa-solid fa-bars"></i>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <UniversalRefreshButton />
-                <i className="fa-regular fa-bell" onClick={() => router.push('?tab=notices')}></i>
+                <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <i className="fa-regular fa-bell"></i>
+                  {unreadNoticesCount > 0 && (
+                    <div style={{ position: 'absolute', top: '-6px', right: '-8px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>
+                      {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -84,7 +84,14 @@ export class LeaveController {
       const parsed = ApplyLeaveSchema.parse(req.body);
 
       if (user.role === 'STUDENT') {
-        const studentRes = await pool.query('SELECT id, "firstName", "lastName", "classSection" FROM "Student" WHERE "userId" = $1', [user.userId]);
+        const studentRes = await pool.query(
+          `SELECT s.id, s."firstName", s."lastName", COALESCE(c.name || ' - ' || sec.name, 'Student') as "classSection"
+           FROM "Student" s
+           LEFT JOIN "Section" sec ON s."sectionId" = sec.id
+           LEFT JOIN "Class" c ON sec."classId" = c.id
+           WHERE s."userId" = $1`,
+          [user.userId]
+        );
         if (studentRes.rows.length === 0) return res.status(404).json({ error: 'Student not found' });
         const s = studentRes.rows[0];
         const studentId = s.id;

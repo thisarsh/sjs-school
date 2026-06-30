@@ -22,16 +22,21 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
         import('@capacitor/push-notifications').then(({ PushNotifications }) => {
           const registerPush = async () => {
             let permStatus = await PushNotifications.checkPermissions();
-            
-            // Force the native prompt every time if not already granted
-            if (permStatus.receive !== 'granted') {
+            if (permStatus.receive === 'prompt') {
               permStatus = await PushNotifications.requestPermissions();
             }
-            
             if (permStatus.receive !== 'granted') return;
+            
+            await PushNotifications.createChannel({
+              id: 'default',
+              name: 'General Notifications',
+              importance: 5,
+              visibility: 1
+            });
+
             await PushNotifications.register();
           };
-          
+
           registerPush();
 
           PushNotifications.addListener('registration', async (token) => {
@@ -39,19 +44,10 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             if (sjsToken) {
               const api = (await import('@/lib/api')).default;
               api.post('/auth/push-token', { fcmToken: token.value })
-                 .catch(err => console.error('Push token save error', err));
+                .catch(err => console.error('Push token save error', err));
             }
           });
         });
-      } else {
-        // Web Platform Notification Request
-        if ('Notification' in window) {
-          if (Notification.permission === 'default') {
-            Notification.requestPermission();
-          } else if (Notification.permission === 'denied') {
-            console.log("Web notifications were denied by the user.");
-          }
-        }
       }
     });
   }, []);

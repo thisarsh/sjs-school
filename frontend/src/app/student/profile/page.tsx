@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import React, { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import './student-profile.css';
 
-export default function StudentProfile() {
+function StudentProfileContent() {
   const router = useRouter();
-  const params = useParams();
-  const scholarNumber = params?.scholarNumber as string;
+  const searchParams = useSearchParams();
+  const scholarNumber = searchParams.get('id') as string;
 
   const { data: studentsList, isLoading } = useQuery({
     queryKey: ['studentsDirectory'],
@@ -399,5 +399,13 @@ export default function StudentProfile() {
 
       </div>
     </div>
+  );
+}
+
+export default function StudentProfile() {
+  return (
+    <Suspense fallback={<div>Loading profile...</div>}>
+      <StudentProfileContent />
+    </Suspense>
   );
 }

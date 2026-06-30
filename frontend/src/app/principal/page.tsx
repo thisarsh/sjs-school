@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from 'react';
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -94,7 +95,7 @@ const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classS
   );
 };
 
-export default function PrincipalDashboard() {
+function PrincipalDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -456,7 +457,7 @@ export default function PrincipalDashboard() {
       const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
       const token = localStorage.getItem("sjs_token");
       const res = await api.post('/attendance/register', {
-        studentIds: studentsList.map((s: any) => s.id),
+        studentIds: studentsList?.map((s: any) => s.id) || [],
         startDate: startOfMonth,
         endDate: endOfMonth
       }, {
@@ -572,7 +573,7 @@ export default function PrincipalDashboard() {
                   }).slice(0, 5).map((s: any, index: number, arr: any[]) => (
                     <div key={`student-header-${index}`}>
                       {index === 0 && <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '8px', paddingLeft: '8px' }}>Students</div>}
-                      <div onClick={() => router.push(`/student/${s.scholarNumber}`)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderRadius: '12px', cursor: 'pointer' }} className="global-search-item">
+                      <div onClick={() => router.push(`/student/profile?id=${s.scholarNumber}`)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderRadius: '12px', cursor: 'pointer' }} className="global-search-item">
                         <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px', color: '#64748b' }}>
                           {s.firstName?.[0] || 'S'}
                         </div>
@@ -1113,12 +1114,12 @@ export default function PrincipalDashboard() {
 
                           if (accountSearchTerm && filteredSectionStudents.length === 0) return null;
 
-                          const isExpanded = accountExpandedClassSection === sectionKey || (accountSearchTerm && filteredSectionStudents.length > 0);
+                          const isExpanded = expandedClassSection === sectionKey || (accountSearchTerm && filteredSectionStudents.length > 0);
 
                           return (
                             <div key={sectionKey} style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '12px' }}>
                               <div
-                                onClick={() => setAccountExpandedClassSection(isExpanded ? null : sectionKey)}
+                                onClick={() => setExpandedClassSection(isExpanded ? null : sectionKey)}
                                 style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', background: isExpanded ? '#f8fafc' : 'white', borderBottom: isExpanded ? '1px solid #e2e8f0' : 'none' }}
                               >
                                 <div style={{ fontWeight: 600, color: 'var(--navy)' }}>{cName} - Section {sName}</div>
@@ -1135,7 +1136,7 @@ export default function PrincipalDashboard() {
                                   {filteredSectionStudents.map((student: any) => (
                                     <div key={student.id} style={{ padding: '12px', borderRadius: '8px', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                       <div
-                                        onClick={() => router.push(`/student/${student.scholarNumber}`)}
+                                        onClick={() => router.push(`/student/profile?id=${student.scholarNumber}`)}
                                         style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
                                         onMouseEnter={(e) => { const el = e.currentTarget.querySelector('.student-name') as HTMLElement; if (el) el.style.color = '#4f46e5'; }}
                                         onMouseLeave={(e) => { const el = e.currentTarget.querySelector('.student-name') as HTMLElement; if (el) el.style.color = 'var(--navy)'; }}
@@ -1153,7 +1154,7 @@ export default function PrincipalDashboard() {
                                         </div>
                                       </div>
                                       <div style={{ display: 'flex', gap: '8px' }}>
-                                        <button onClick={() => router.push(`/student/${student.scholarNumber}`)} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                                        <button onClick={() => router.push(`/student/profile?id=${student.scholarNumber}`)} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
                                           Profile
                                         </button>
                                         <button onClick={() => handleResetPassword(student.id, 'STUDENT')} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
@@ -1452,7 +1453,7 @@ export default function PrincipalDashboard() {
                               {sectionStudents.map((student: any) => (
                                 <div key={student.id} style={{ padding: '12px', borderRadius: '8px', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                   <div
-                                    onClick={() => router.push(`/student/${student.scholarNumber}`)}
+                                    onClick={() => router.push(`/student/profile?id=${student.scholarNumber}`)}
                                     style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flex: 1 }}
                                     onMouseEnter={(e) => { const el = e.currentTarget.querySelector('.student-name-dir') as HTMLElement; if (el) el.style.color = '#4f46e5'; }}
                                     onMouseLeave={(e) => { const el = e.currentTarget.querySelector('.student-name-dir') as HTMLElement; if (el) el.style.color = 'var(--navy)'; }}
@@ -2220,7 +2221,7 @@ export default function PrincipalDashboard() {
               <button 
                 onClick={() => {
                   setPopupAttendanceModal(null);
-                  router.push(`/student/${popupAttendanceModal.scholarNumber}`);
+                  router.push(`/student/profile?id=${popupAttendanceModal.scholarNumber}`);
                 }}
                 style={{ flex: 1, padding: '12px', background: 'var(--navy)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}
               >
@@ -2277,5 +2278,13 @@ export default function PrincipalDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PrincipalDashboard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PrincipalDashboardContent />
+    </Suspense>
   );
 }

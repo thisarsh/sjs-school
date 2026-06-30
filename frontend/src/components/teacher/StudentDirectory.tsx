@@ -157,7 +157,7 @@ export default function StudentDirectory({
               <div key={s.id} style={{ background: 'white', borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <div 
-                    onClick={() => router.push(`/student/${s.scholarNumber}`)}
+                    onClick={() => router.push(`/student/profile?id=${s.scholarNumber}`)}
                     style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f3f4f6', color: '#6b7280', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700, overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s', border: '2px solid transparent' }}
                     onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.border = '2px solid var(--navy)'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.border = '2px solid transparent'; }}
@@ -169,7 +169,7 @@ export default function StudentDirectory({
                     )}
                   </div>
                   <div 
-                    onClick={() => router.push(`/student/${s.scholarNumber}`)}
+                    onClick={() => router.push(`/student/profile?id=${s.scholarNumber}`)}
                     style={{ cursor: 'pointer', transition: 'color 0.2s' }}
                     onMouseEnter={(e) => { (e.currentTarget.firstChild as HTMLElement).style.color = '#4f46e5'; }}
                     onMouseLeave={(e) => { (e.currentTarget.firstChild as HTMLElement).style.color = '#111827'; }}

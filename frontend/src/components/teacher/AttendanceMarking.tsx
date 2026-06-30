@@ -89,7 +89,7 @@ export default function AttendanceMarking({
                   <div key={s.id} style={{ background: 'white', borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <div
-                        onClick={() => router.push(`/student/${s.scholarNumber}`)}
+                        onClick={() => router.push(`/student/profile?id=${s.scholarNumber}`)}
                         style={{ width: '45px', height: '45px', borderRadius: '50%', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, fontWeight: 700, color: '#6b7280', cursor: 'pointer', transition: 'transform 0.2s', border: '2px solid transparent' }}
                         onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.border = '2px solid var(--navy)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.border = '2px solid transparent'; }}
@@ -101,7 +101,7 @@ export default function AttendanceMarking({
                         )}
                       </div>
                       <div
-                        onClick={() => router.push(`/student/${s.scholarNumber}`)}
+                        onClick={() => router.push(`/student/profile?id=${s.scholarNumber}`)}
                         style={{ cursor: 'pointer', transition: 'color 0.2s' }}
                         onMouseEnter={(e) => { (e.currentTarget.firstChild as HTMLElement).style.color = '#4f46e5'; }}
                         onMouseLeave={(e) => { (e.currentTarget.firstChild as HTMLElement).style.color = '#111827'; }}

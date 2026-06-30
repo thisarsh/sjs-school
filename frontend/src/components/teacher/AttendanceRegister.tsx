@@ -82,7 +82,7 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
       return;
     }
 
-    const dates = [];
+    const dates: Date[] = [];
     let current = new Date(start);
     while (current <= end) {
       dates.push(new Date(current));
@@ -192,7 +192,7 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
                     return (
                       <tr key={student.id}>
                         <td
-                          onClick={() => router.push(`/student/${student.scholarNumber}`)}
+                          onClick={() => router.push(`/student/profile?id=${student.scholarNumber}`)}
                           style={{ position: 'sticky', left: 0, background: '#ffffff', zIndex: 5, padding: '10px 8px', borderBottom: '1px solid #f3f4f6', fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', cursor: 'pointer' }}
                           onMouseEnter={(e) => { e.currentTarget.style.color = '#4f46e5'; }}
                           onMouseLeave={(e) => { e.currentTarget.style.color = '#111827'; }}
@@ -234,7 +234,7 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
                   return (
                     <tr key={student.id}>
                       <td
-                        onClick={() => router.push(`/student/${student.scholarNumber}`)}
+                        onClick={() => router.push(`/student/profile?id=${student.scholarNumber}`)}
                         style={{ position: 'sticky', left: 0, background: '#ffffff', zIndex: 5, padding: '10px 8px', borderBottom: '1px solid #f3f4f6', fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', cursor: 'pointer' }}
                         onMouseEnter={(e) => { e.currentTarget.style.color = '#4f46e5'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.color = '#111827'; }}

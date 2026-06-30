@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
@@ -10,7 +10,7 @@ import ComplaintForm from '@/components/shared/ComplaintForm';
 import ComingSoonModal from '@/components/shared/ComingSoonModal';
 import './student-dashboard.css';
 
-export default function StudentDashboard() {
+function StudentDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'home';
@@ -396,7 +396,7 @@ export default function StudentDashboard() {
         </div>
         
         <div className="student-nav-fab-container">
-          <div className="student-nav-fab" onClick={() => router.push(`/student/${student?.scholarNumber}`)}>
+          <div className="student-nav-fab" onClick={() => router.push(`/student/profile?id=${student?.scholarNumber}`)}>
             <i className="fa-solid fa-qrcode"></i>
           </div>
           <span className="student-nav-fab-label">ID Card</span>
@@ -406,12 +406,20 @@ export default function StudentDashboard() {
           <i className="fa-solid fa-envelope-open-text student-nav-icon"></i>
           <span className="student-nav-label">Leave</span>
         </div>
-        <div className="student-nav-item" onClick={() => router.push(`/student/${student?.scholarNumber}`)}>
+        <div className="student-nav-item" onClick={() => router.push(`/student/profile?id=${student?.scholarNumber}`)}>
           <i className="fa-regular fa-user student-nav-icon"></i>
           <span className="student-nav-label">Profile</span>
         </div>
       </div>
 
     </div>
+  );
+}
+
+export default function StudentDashboard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StudentDashboardContent />
+    </Suspense>
   );
 }

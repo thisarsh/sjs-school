@@ -118,7 +118,7 @@ export default function TeacherApplicationForm() {
               <button 
                 className="submit-btn-gform" 
                 onClick={() => {
-                  setFormData({ firstName: '', lastName: '', email: '', phone: '', address: '', qualification: '', experience: '', subject: '' });
+                  setFormData({ firstName: '', lastName: '', email: '', phone: '', address: '', qualification: '', experience: '', subject: '', profilePic: '' });
                   setStatus('IDLE');
                 }}
               >

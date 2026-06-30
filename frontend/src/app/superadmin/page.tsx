@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from 'react';
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import api from "@/lib/api";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import "./superadmin.css"; // Ensure this matches if we extracted any extra CSS, but global.css usually handles it.
 
-export default function SuperAdminDashboard() {
+function SuperAdminDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -118,6 +119,7 @@ export default function SuperAdminDashboard() {
           <div className="header-actions">
             <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text)" }}>Admin User</span>
             <div className="header-avatar">A</div>
+          </div>
         </div>
 
         {actionMessage && (
@@ -312,5 +314,13 @@ export default function SuperAdminDashboard() {
 
       </main>
     </div>
+  );
+}
+
+export default function SuperAdminDashboard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuperAdminDashboardContent />
+    </Suspense>
   );
 }

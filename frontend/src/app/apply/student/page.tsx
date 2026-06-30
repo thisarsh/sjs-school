@@ -333,7 +333,7 @@ export default function StudentApplicationForm() {
             </button>
             <button type="button" onClick={() => setFormData({
               firstName: '', lastName: '', scholarNumber: '', classApplying: '', section: '', rollNumber: '',
-              dob: '', gender: '', fatherName: '', motherName: '', parentMobile: '', parentSecondaryMobile: '', parentEmail: '', address: '', aadhaarNumber: '', bloodGroup: ''
+              dob: '', gender: '', fatherName: '', motherName: '', parentMobile: '', parentSecondaryMobile: '', parentEmail: '', address: '', aadhaarNumber: '', bloodGroup: '', profilePic: ''
             })} style={{ background: 'transparent', border: 'none', color: '#673ab7', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
               Clear form
             </button>

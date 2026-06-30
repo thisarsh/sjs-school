@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from 'react';
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -13,7 +14,7 @@ import TeacherProfileView from "@/components/teacher/TeacherProfileView";
 import LeaveForm from "@/components/student/LeaveForm";
 import ComplaintForm from "@/components/shared/ComplaintForm";
 
-export default function TeacherDashboard() {
+function TeacherDashboardContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -253,5 +254,13 @@ export default function TeacherDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function TeacherDashboard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TeacherDashboardContent />
+    </Suspense>
   );
 }

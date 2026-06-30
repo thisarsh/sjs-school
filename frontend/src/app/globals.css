@@ -41,7 +41,7 @@ html, body {
 
 .mobile-app-container {
   width: 100%;
-  max-width: 450px;
+  max-width: min(450px, calc(100vh * (9 / 19.5)));
   min-height: 100vh;
   background: var(--off);
   position: relative;

@@ -1,5 +1,6 @@
 import pool from '../config/prisma';
 import { parsePaginationParams, formatPaginatedResponse } from '../utils/pagination';
+import { PushService } from '../services/push.service';
 
 export const createComplaint = async (req: any, res: any) => {
   try {

@@ -1,4 +1,5 @@
-import * as admin from 'firebase-admin';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { getMessaging, MulticastMessage } from 'firebase-admin/messaging';
 import pool from '../config/prisma';
 
 // Initialize Firebase Admin
@@ -6,9 +7,11 @@ try {
   const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
   if (serviceAccountBase64) {
     const serviceAccount = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf-8'));
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
+    if (!getApps().length) {
+      initializeApp({
+        credential: cert(serviceAccount)
+      });
+    }
     console.log('Firebase Admin initialized successfully');
   } else {
     console.warn('FIREBASE_SERVICE_ACCOUNT_BASE64 is not set. Push notifications will be disabled.');
@@ -22,7 +25,7 @@ export class PushService {
    * Sends a push notification to specific users by querying their FCM tokens
    */
   static async sendToUsers(userIds: string[], title: string, body: string, data?: any) {
-    if (!admin.apps.length) {
+    if (!getApps().length) {
       console.warn('Firebase Admin not initialized, skipping push notification');
       return;
     }
@@ -30,7 +33,6 @@ export class PushService {
     if (!userIds || userIds.length === 0) return;
 
     try {
-      // Fetch FCM tokens for the given users
       const result = await pool.query(
         'SELECT "fcmToken" FROM "User" WHERE id = ANY($1) AND "fcmToken" IS NOT NULL',
         [userIds]
@@ -43,13 +45,13 @@ export class PushService {
         return;
       }
 
-      const message: admin.messaging.MulticastMessage = {
+      const message: MulticastMessage = {
         notification: { title, body },
         tokens: tokens,
         data: data || {}
       };
 
-      const response = await admin.messaging().sendEachForMulticast(message);
+      const response = await getMessaging().sendEachForMulticast(message);
       console.log(`Successfully sent ${response.successCount} messages; Failed: ${response.failureCount}`);
     } catch (error) {
       console.error('Error sending push notification:', error);
@@ -60,7 +62,7 @@ export class PushService {
    * Sends a push notification to all Principals
    */
   static async sendToPrincipals(title: string, body: string, data?: any) {
-    if (!admin.apps.length) return;
+    if (!getApps().length) return;
 
     try {
       const result = await pool.query(

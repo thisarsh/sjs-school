@@ -24,6 +24,24 @@ export default function LoginPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("sjs_token");
+    const userStr = localStorage.getItem("sjs_user");
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        const role = String(user.role).toUpperCase();
+        if (role === "SUPER_ADMIN") router.push("/superadmin");
+        else if (role === "PRINCIPAL") router.push("/principal");
+        else if (role === "TEACHER") router.push("/teacher");
+        else if (role === "STUDENT") router.push("/student");
+        else router.push("/dashboard");
+      } catch (e) {
+        // Invalid JSON, ignore
+      }
+    }
+  }, [router]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);

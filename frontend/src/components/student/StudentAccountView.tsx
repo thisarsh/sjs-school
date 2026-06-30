@@ -14,10 +14,9 @@ export default function StudentAccountView({
   userEmail,
   onLogout,
 }: StudentAccountViewProps) {
-  // By default, open 'personal' so information is visible immediately upon tapping Account
   const [expandedSection, setExpandedSection] = useState<
     "personal" | "contact" | "documents" | null
-  >("personal");
+  >(null);
   
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 

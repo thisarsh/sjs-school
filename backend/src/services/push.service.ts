@@ -53,8 +53,10 @@ export class PushService {
 
       const response = await getMessaging().sendEachForMulticast(message);
       console.log(`Successfully sent ${response.successCount} messages; Failed: ${response.failureCount}`);
-    } catch (error) {
+      return response;
+    } catch (error: any) {
       console.error('Error sending push notification:', error);
+      throw error;
     }
   }
 
@@ -70,9 +72,10 @@ export class PushService {
       );
       const principalIds = result.rows.map(row => row.id);
       
-      await this.sendToUsers(principalIds, title, body, data);
-    } catch (error) {
+      return await this.sendToUsers(principalIds, title, body, data);
+    } catch (error: any) {
       console.error('Error sending push to principals:', error);
+      throw error;
     }
   }
 }

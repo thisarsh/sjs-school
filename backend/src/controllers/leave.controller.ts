@@ -108,11 +108,15 @@ export class LeaveController {
            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *`,
           [teacherId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
-        await PushService.sendToPrincipals(
-          'New Leave Request',
-          `A teacher has applied for a leave.`
-        );
-        return res.json(result.rows[0]);
+        try {
+          const pushResult = await PushService.sendToPrincipals(
+            'New Leave Request',
+            `A teacher has applied for a leave.`
+          );
+          return res.json({ ...result.rows[0], pushSuccess: true, pushResult });
+        } catch (pushErr: any) {
+          return res.json({ ...result.rows[0], pushSuccess: false, pushError: pushErr.message });
+        }
       } else {
         return res.status(403).json({ error: 'Only students and teachers can apply for leave' });
       }

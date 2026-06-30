@@ -470,8 +470,8 @@ function StudentDashboardContent() {
           <span className="student-nav-label">Leave</span>
         </div>
         <div className="student-nav-item" onClick={() => router.push(`/student/profile?id=${student?.scholarNumber}`)}>
-          <i className="fa-regular fa-user student-nav-icon"></i>
-          <span className="student-nav-label">Profile</span>
+          <i className="fa-solid fa-circle-user student-nav-icon"></i>
+          <span className="student-nav-label">Account</span>
         </div>
       </div>
 

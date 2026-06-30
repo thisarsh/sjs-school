@@ -84,24 +84,31 @@ export class LeaveController {
       const parsed = ApplyLeaveSchema.parse(req.body);
 
       if (user.role === 'STUDENT') {
-        const studentRes = await pool.query('SELECT id FROM "Student" WHERE "userId" = $1', [user.userId]);
+        const studentRes = await pool.query('SELECT id, "firstName", "lastName", "classSection" FROM "Student" WHERE "userId" = $1', [user.userId]);
         if (studentRes.rows.length === 0) return res.status(404).json({ error: 'Student not found' });
-        const studentId = studentRes.rows[0].id;
+        const s = studentRes.rows[0];
+        const studentId = s.id;
 
         const result = await pool.query(
           `INSERT INTO "LeaveRequest" ("id", "studentId", "type", "fromDate", "toDate", "totalDays", "reason", "attachmentUrl", "updatedAt") 
            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *`,
           [studentId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
-        await PushService.sendToPrincipals(
-          'New Leave Request',
-          `A student has applied for a leave.`
-        );
-        return res.json(result.rows[0]);
+        try {
+          const fullName = `${s.firstName || ''} ${s.lastName || ''}`.trim() || 'Student';
+          const pushResult = await PushService.sendToPrincipals(
+            `Student Leave: ${fullName} (${s.classSection || 'N/A'})`,
+            `${parsed.totalDays} Day(s) ${parsed.type}: "${parsed.reason}"`
+          );
+          return res.json({ ...result.rows[0], pushSuccess: true, pushResult });
+        } catch (pushErr: any) {
+          return res.json({ ...result.rows[0], pushSuccess: false, pushError: pushErr.message });
+        }
       } else if (user.role === 'TEACHER') {
-        const teacherRes = await pool.query('SELECT id FROM "Teacher" WHERE "userId" = $1', [user.userId]);
+        const teacherRes = await pool.query('SELECT id, "firstName", "lastName", "subject" FROM "Teacher" WHERE "userId" = $1', [user.userId]);
         if (teacherRes.rows.length === 0) return res.status(404).json({ error: 'Teacher not found' });
-        const teacherId = teacherRes.rows[0].id;
+        const t = teacherRes.rows[0];
+        const teacherId = t.id;
 
         const result = await pool.query(
           `INSERT INTO "LeaveRequest" ("id", "teacherId", "type", "fromDate", "toDate", "totalDays", "reason", "attachmentUrl", "updatedAt") 
@@ -109,9 +116,10 @@ export class LeaveController {
           [teacherId, parsed.type, parsed.fromDate, parsed.toDate, parsed.totalDays, parsed.reason, parsed.attachmentUrl || null]
         );
         try {
+          const fullName = `${t.firstName || ''} ${t.lastName || ''}`.trim() || 'Teacher';
           const pushResult = await PushService.sendToPrincipals(
-            'New Leave Request',
-            `A teacher has applied for a leave.`
+            `Teacher Leave: ${fullName} (${t.subject || 'Staff'})`,
+            `${parsed.totalDays} Day(s) ${parsed.type}: "${parsed.reason}"`
           );
           return res.json({ ...result.rows[0], pushSuccess: true, pushResult });
         } catch (pushErr: any) {

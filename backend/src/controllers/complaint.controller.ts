@@ -17,14 +17,19 @@ export const createComplaint = async (req: any, res: any) => {
     const role = user.role;
     let applicantId = '';
 
+    let applicantName = 'User';
     if (role === 'STUDENT') {
-      const studentRes = await pool.query('SELECT id FROM "Student" WHERE "userId" = $1', [user.userId]);
+      const studentRes = await pool.query('SELECT id, "firstName", "lastName", "classSection" FROM "Student" WHERE "userId" = $1', [user.userId]);
       if (studentRes.rows.length === 0) return res.status(404).json({ error: 'Student not found' });
-      applicantId = studentRes.rows[0].id;
+      const s = studentRes.rows[0];
+      applicantId = s.id;
+      applicantName = `${s.firstName || ''} ${s.lastName || ''}`.trim() + ` (${s.classSection || 'Student'})`;
     } else if (role === 'TEACHER') {
-      const teacherRes = await pool.query('SELECT id FROM "Teacher" WHERE "userId" = $1', [user.userId]);
+      const teacherRes = await pool.query('SELECT id, "firstName", "lastName", "subject" FROM "Teacher" WHERE "userId" = $1', [user.userId]);
       if (teacherRes.rows.length === 0) return res.status(404).json({ error: 'Teacher not found' });
-      applicantId = teacherRes.rows[0].id;
+      const t = teacherRes.rows[0];
+      applicantId = t.id;
+      applicantName = `${t.firstName || ''} ${t.lastName || ''}`.trim() + ` (${t.subject || 'Teacher'})`;
     } else {
       return res.status(403).json({ error: 'Role not authorized to submit complaints' });
     }
@@ -37,10 +42,11 @@ export const createComplaint = async (req: any, res: any) => {
        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, 'UNSEEN', NOW(), NOW()) RETURNING *`,
       [subject, description, finalAnonymous, role, applicantId]
     );
-    await PushService.sendToPrincipals(
-      'New Complaint Received',
-      `${role} filed a complaint: ${subject}`
-    );
+
+    const title = finalAnonymous ? `Anonymous Complaint (${role})` : `Complaint: ${applicantName}`;
+    const bodyText = `Subject: "${subject}" - ${description.length > 80 ? description.substring(0, 80) + '...' : description}`;
+
+    await PushService.sendToPrincipals(title, bodyText);
 
     res.status(201).json(insertRes.rows[0]);
   } catch (error) {

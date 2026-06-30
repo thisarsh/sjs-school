@@ -78,4 +78,23 @@ export class PushService {
       throw error;
     }
   }
+
+  /**
+   * Sends a push notification to specific roles (e.g. TEACHER, STUDENT, PARENT)
+   */
+  static async sendToRoles(roles: string[], title: string, body: string, data?: any) {
+    if (!getApps().length) return;
+
+    try {
+      const result = await pool.query(
+        'SELECT id FROM "User" WHERE role = ANY($1::"Role"[]) AND "isDeleted" = false',
+        [roles]
+      );
+      const userIds = result.rows.map(row => row.id);
+      
+      return await this.sendToUsers(userIds, title, body, data);
+    } catch (error: any) {
+      console.error('Error sending push to roles:', error);
+    }
+  }
 }

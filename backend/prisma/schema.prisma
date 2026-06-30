@@ -20,6 +20,8 @@ model User {
   schoolAdmin  SchoolAdmin?
   student      Student?
   teacher      Teacher?
+  noticesCreated Notice[]
+  noticeReads    NoticeRead[]
 }
 
 model School {
@@ -337,5 +339,26 @@ model Complaint {
   status      String   @default("UNSEEN")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Notice {
+  id             String       @id @default(uuid())
+  title          String
+  message        String
+  targetAudience String       @default("ALL") // 'ALL', 'TEACHERS', 'STUDENTS', 'PARENTS'
+  createdById    String
+  createdAt      DateTime     @default(now())
+  createdBy      User         @relation(fields: [createdById], references: [id])
+  reads          NoticeRead[]
+}
+
+model NoticeRead {
+  noticeId String
+  userId   String
+  readAt   DateTime @default(now())
+  Notice   Notice   @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  User     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([noticeId, userId])
 }
 

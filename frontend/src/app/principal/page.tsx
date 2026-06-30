@@ -166,6 +166,12 @@ function PrincipalDashboardContent() {
   const [popupLeaveModal, setPopupLeaveModal] = useState<any>(null);
   const [lastSeenIssuesCount, setLastSeenIssuesCount] = useState(0);
 
+  // Announcement state
+  const [noticeTitle, setNoticeTitle] = useState('');
+  const [noticeMsg, setNoticeMsg] = useState('');
+  const [noticeAudience, setNoticeAudience] = useState('ALL');
+  const [isPublishingNotice, setIsPublishingNotice] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem('sjs_last_seen_action_req_count');
     if (saved) setLastSeenIssuesCount(parseInt(saved, 10));
@@ -323,6 +329,40 @@ function PrincipalDashboardContent() {
     },
     refetchInterval: 60000
   });
+
+  const { data: noticesData, refetch: refetchNotices } = useQuery({
+    queryKey: ['notices'],
+    queryFn: async () => {
+      const res = await api.get('/notices');
+      return res.data;
+    },
+    refetchInterval: 30000
+  });
+
+  const handlePublishNotice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!noticeTitle.trim() || !noticeMsg.trim()) {
+      alert("Please enter both title and message");
+      return;
+    }
+    setIsPublishingNotice(true);
+    try {
+      await api.post('/notices', {
+        title: noticeTitle,
+        message: noticeMsg,
+        targetAudience: noticeAudience
+      });
+      setNoticeTitle('');
+      setNoticeMsg('');
+      setNoticeAudience('ALL');
+      refetchNotices();
+      alert("Notice published and broadcasted successfully via push notification!");
+    } catch (err: any) {
+      alert("Failed to publish notice: " + (err?.response?.data?.error || err.message));
+    } finally {
+      setIsPublishingNotice(false);
+    }
+  };
 
   const updateLeaveStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string, status: string }) => {
@@ -1211,37 +1251,116 @@ function PrincipalDashboardContent() {
 
         {/* NOTIFICATIONS TAB */}
         {activeTab === 'notices' && (
-          <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div className="page-title" style={{ fontSize: "22px", marginBottom: "16px" }}>Announcements</div>
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+            <div className="page-title" style={{ fontSize: "22px", marginBottom: "16px" }}>Broadcast Announcements</div>
 
-            {(!appsList || appsList.filter((a: any) => a.status === 'PENDING').length === 0) ? (
+            {/* CREATE ANNOUNCEMENT CARD */}
+            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', marginBottom: '24px', border: '1px solid #e2e8f0' }}>
+              <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <i className="fa-solid fa-bullhorn" style={{ color: '#4f46e5' }}></i>
+                Create New Announcement
+              </div>
+
+              <form onSubmit={handlePublishNotice}>
+                <div style={{ marginBottom: '14px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>Title</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Tomorrow is declared a holiday"
+                    value={noticeTitle}
+                    onChange={(e) => setNoticeTitle(e.target.value)}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '14px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>Send To Audience</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {[
+                      { id: 'ALL', label: 'All School Staff & Students' },
+                      { id: 'TEACHERS', label: 'Teachers Only' },
+                      { id: 'STUDENTS', label: 'Students Only' },
+                      { id: 'PARENTS', label: 'Parents Only' }
+                    ].map((opt) => (
+                      <button
+                        type="button"
+                        key={opt.id}
+                        onClick={() => setNoticeAudience(opt.id)}
+                        style={{
+                          padding: '8px 14px',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          border: noticeAudience === opt.id ? '2px solid #4f46e5' : '1px solid #e2e8f0',
+                          background: noticeAudience === opt.id ? '#eef2ff' : '#f8fafc',
+                          color: noticeAudience === opt.id ? '#4f46e5' : '#64748b',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>Message Body</label>
+                  <textarea
+                    required
+                    rows={4}
+                    placeholder="Enter full details of the notice..."
+                    value={noticeMsg}
+                    onChange={(e) => setNoticeMsg(e.target.value)}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', resize: 'vertical' }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isPublishingNotice}
+                  style={{
+                    background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 20px',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
+                  }}
+                >
+                  <i className={`fa-solid ${isPublishingNotice ? 'fa-spinner fa-spin' : 'fa-paper-plane'}`}></i>
+                  <span>{isPublishingNotice ? 'Publishing & Sending Push...' : 'Publish & Broadcast'}</span>
+                </button>
+              </form>
+            </div>
+
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '14px' }}>Published History</div>
+            {(!noticesData?.notices || noticesData.notices.length === 0) ? (
               <div className="empty-state">
                 <div className="empty-state-icon"><i className="fa-regular fa-bell-slash"></i></div>
-                <div className="empty-state-text">No new notifications</div>
+                <div className="empty-state-text">No announcements broadcasted yet</div>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {appsList.filter((a: any) => a.status === 'PENDING').map((app: any) => (
-                  <div key={app.id} style={{ background: 'white', borderRadius: '12px', padding: '16px', display: 'flex', gap: '16px', alignItems: 'center', boxShadow: 'var(--shadow)', borderLeft: '4px solid #1a73e8' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#e8f0fe', color: '#1a73e8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0, overflow: 'hidden' }}>
-                      {app.profilePic ? (
-                        <img src={app.profilePic} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{app.firstName?.[0]}{app.lastName?.[0]}</div>
-                      )}
+                {noticesData.notices.map((n: any) => (
+                  <div key={n.id} style={{ background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid #4f46e5' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '15px', fontWeight: 700, color: '#1e293b' }}>{n.title}</span>
+                      <span style={{ fontSize: '11px', fontWeight: 600, background: '#eef2ff', color: '#4f46e5', padding: '4px 10px', borderRadius: '12px' }}>
+                        Target: {n.targetAudience}
+                      </span>
                     </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--navy)', marginBottom: '4px' }}>New Teacher Application</div>
-                      <div style={{ fontSize: '13px', color: 'var(--text2)' }}>
-                        <strong>{app.firstName} {app.lastName}</strong> has applied for the <strong>{app.subject}</strong> position.
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '6px' }}>
-                        {new Date(app.createdAt).toLocaleString()}
-                      </div>
+                    <div style={{ fontSize: '13px', color: '#475569', whiteSpace: 'pre-line', marginBottom: '8px' }}>{n.message}</div>
+                    <div style={{ fontSize: '11px', color: '#94a3b8' }}>
+                      Published on {new Date(n.createdAt).toLocaleString('en-IN')}
                     </div>
-                    <button onClick={() => { setActiveTab("teachers_section"); setTeachersSubTab("requests"); setPopupAppModal(app); }} style={{ background: 'var(--navy)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
-                      Review
-                    </button>
                   </div>
                 ))}
               </div>

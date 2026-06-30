@@ -46,6 +46,25 @@ function StudentDashboardContent() {
     enabled: !!user
   });
 
+  const { data: noticesData, refetch: refetchNotices } = useQuery({
+    queryKey: ['notices'],
+    queryFn: async () => {
+      const res = await api.get('/notices');
+      return res.data;
+    },
+    refetchInterval: 30000
+  });
+
+  const unreadNoticesCount = noticesData?.unreadCount || 0;
+
+  useEffect(() => {
+    if (activeTab === 'notices' && unreadNoticesCount > 0) {
+      api.post('/notices/mark-read').then(() => {
+        refetchNotices();
+      }).catch(err => console.error('Mark notices read error', err));
+    }
+  }, [activeTab, unreadNoticesCount, refetchNotices]);
+
   // Fetch attendance data for the current academic year
   const { data: attendanceData } = useQuery({
     queryKey: ['studentAttendance', student?.id],
@@ -252,9 +271,14 @@ function StudentDashboardContent() {
             <div className="student-grid-label">Leave Application</div>
           </div>
           
-          <div className="student-grid-item" onClick={() => setComingSoonFeature('Notices & Announcements')} style={{ cursor: 'pointer' }}>
+          <div className="student-grid-item" onClick={() => router.push('?tab=notices')} style={{ cursor: 'pointer', position: 'relative' }}>
             <div className="student-grid-icon bg-yellow-light">
               <i className="fa-solid fa-bullhorn"></i>
+              {unreadNoticesCount > 0 && (
+                <div style={{ position: 'absolute', top: '8px', right: '12px', background: '#ef4444', color: 'white', fontSize: '11px', fontWeight: 700, borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}>
+                  {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+                </div>
+              )}
             </div>
             <div className="student-grid-label">Notices &<br/>Announcements</div>
           </div>
@@ -377,6 +401,36 @@ function StudentDashboardContent() {
                  <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
                </button>
             </div>
+          </div>
+        )}
+
+        {/* NOTICES TAB */}
+        {activeTab === 'notices' && (
+          <div style={{ padding: '20px', paddingBottom: '120px' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <i className="fa-solid fa-bullhorn" style={{ color: '#4f46e5' }}></i>
+              School Announcements
+            </h2>
+            {(!noticesData?.notices || noticesData.notices.length === 0) ? (
+              <div style={{ background: 'white', borderRadius: '16px', padding: '40px 20px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                <i className="fa-regular fa-bell-slash" style={{ fontSize: '32px', color: '#94a3b8', marginBottom: '12px' }}></i>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: '#64748b' }}>No announcements right now</div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {noticesData.notices.map((n: any) => (
+                  <div key={n.id} style={{ background: 'white', borderRadius: '16px', padding: '18px', boxShadow: '0 4px 14px rgba(0,0,0,0.06)', borderLeft: '4px solid #4f46e5' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b' }}>{n.title}</span>
+                      <span style={{ fontSize: '11px', fontWeight: 600, background: '#f1f5f9', color: '#64748b', padding: '4px 10px', borderRadius: '12px' }}>
+                        {new Date(n.createdAt).toLocaleDateString('en-IN')}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.6', margin: 0, whiteSpace: 'pre-line' }}>{n.message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

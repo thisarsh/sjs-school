@@ -109,6 +109,9 @@ model Student {
   user             User               @relation(fields: [userId], references: [id])
   profilePic       String?
   leaveRequests    LeaveRequest[]
+
+  @@index([sectionId])
+  @@index([schoolId])
 }
 
 model Class {
@@ -148,6 +151,7 @@ model Attendance {
   student   Student  @relation(fields: [studentId], references: [id])
 
   @@unique([studentId, date])
+  @@index([date])
 }
 
 model Fee {

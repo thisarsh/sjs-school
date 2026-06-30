@@ -2,11 +2,10 @@ import pool from '../config/prisma';
 
 export class AttendanceService {
   async getTodayAttendance() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const nextDay = new Date(today);
-    nextDay.setDate(today.getDate() + 1);
+    // Standardize to IST midnight
+    const istDateStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const today = new Date(`${istDateStr}T00:00:00.000Z`);
+    const nextDay = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
     const result = await pool.query(
       `SELECT * FROM "Attendance" WHERE date >= $1 AND date < $2`,
@@ -19,8 +18,9 @@ export class AttendanceService {
   async markAttendance(attendanceData: { studentId: string, status: string }[]) {
     if (!attendanceData || attendanceData.length === 0) return [];
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Standardize to IST midnight
+    const istDateStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const today = new Date(`${istDateStr}T00:00:00.000Z`);
 
     const studentIds = attendanceData.map(r => r.studentId);
     const statuses = attendanceData.map(r => r.status);

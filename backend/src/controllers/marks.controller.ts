@@ -20,6 +20,14 @@ export class MarksController {
         query += ` AND m."examType" = $${count++}`;
         values.push(examType);
       }
+      if (sectionId) {
+        query += ` AND s."sectionId" = $${count++}`;
+        values.push(sectionId);
+      }
+      if (classId) {
+        query += ` AND s."sectionId" IN (SELECT id FROM "Section" WHERE "classId" = $${count++})`;
+        values.push(classId);
+      }
 
       const result = await pool.query(query, values);
       return res.status(200).json(result.rows);

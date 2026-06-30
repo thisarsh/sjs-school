@@ -48,6 +48,23 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             }
           });
         });
+
+        import('@capacitor/app').then(({ App }) => {
+          App.addListener('backButton', ({ canGoBack }) => {
+            const modalOverlay = document.querySelector('.modal-overlay') as HTMLElement;
+            if (modalOverlay) {
+              const closeBtn = modalOverlay.querySelector('.modal-close-btn') as HTMLElement;
+              if (closeBtn) closeBtn.click();
+              else modalOverlay.click();
+              return;
+            }
+            if (canGoBack) {
+              window.history.back();
+            } else {
+              App.exitApp();
+            }
+          });
+        }).catch(() => {});
       }
     });
   }, []);

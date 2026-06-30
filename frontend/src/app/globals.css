@@ -26,7 +26,18 @@
   --font-display: 'Playfair Display', serif;
 }
 
-html, body { height: 100%; font-family: var(--font); color: var(--text); background: var(--off); }
+html, body { 
+  min-height: 100%; 
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font); 
+  color: var(--text); 
+  background: var(--off); 
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* ── Layout ── */
 .page-wrap { display: flex; min-height: 100vh; }
@@ -154,9 +165,11 @@ tbody tr:last-child td { border-bottom: none; }
 .app-wrap {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
   background: var(--off);
-  overflow: hidden;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .app-header {
@@ -192,9 +205,10 @@ tbody tr:last-child td { border-bottom: none; }
 
 .app-content {
   flex: 1;
-  overflow-y: auto;
+  width: 100%;
   padding: 16px;
-  padding-bottom: 90px; /* Space for bottom nav */
+  padding-bottom: 110px; /* Space for bottom nav */
+  overflow-y: visible;
 }
 
 /* Bottom Navigation */
@@ -309,3 +323,19 @@ tbody tr:last-child td { border-bottom: none; }
 .view-panel { display: none; }
 .view-panel.active { display: block; animation: slideIn 0.3s ease forwards; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+@media (max-width: 768px) {
+  .page-wrap {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+    padding: 16px 0 !important;
+  }
+  .main-content {
+    padding: 16px !important;
+    overflow-y: visible !important;
+  }
+}

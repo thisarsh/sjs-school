@@ -3,10 +3,12 @@ body, html { background: #fdfbf7; margin: 0; padding: 0; font-family: 'Inter', s
 
 .app-wrap {
   max-width: 480px;
+  width: 100%;
   margin: 0 auto;
   background: #fdfbf7;
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
 }
 
 .mobile-hero {

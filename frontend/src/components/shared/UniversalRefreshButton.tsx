@@ -15,32 +15,41 @@ export default function UniversalRefreshButton() {
   };
 
   return (
-    <button
-      onClick={handleRefresh}
+    <div
       style={{
-        position: 'fixed',
-        top: '12px',
-        right: '12px',
-        zIndex: 99999,
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(8px)',
-        border: '1px solid rgba(79, 70, 229, 0.2)',
-        boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
-        padding: '6px 12px',
-        borderRadius: '20px',
+        position: 'static',
+        width: '100%',
+        background: '#ffffff',
+        borderBottom: '1px solid #e2e8f0',
+        padding: '8px 16px',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        fontSize: '12px',
-        fontWeight: 600,
-        color: '#1e293b',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
+        justifyContent: 'flex-end',
+        flexShrink: 0,
       }}
-      title="Refresh Page if Stuck"
     >
-      <i className={`fa-solid fa-rotate-right ${isSpinning ? 'fa-spin' : ''}`} style={{ color: '#4f46e5' }}></i>
-      <span>Refresh</span>
-    </button>
+      <button
+        onClick={handleRefresh}
+        style={{
+          background: '#f8fafc',
+          border: '1px solid #cbd5e1',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+          padding: '5px 14px',
+          borderRadius: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          fontSize: '12px',
+          fontWeight: 600,
+          color: '#334155',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+        }}
+        title="Refresh Page if Stuck"
+      >
+        <i className={`fa-solid fa-rotate-right ${isSpinning ? 'fa-spin' : ''}`} style={{ color: '#4f46e5' }}></i>
+        <span>Refresh Page</span>
+      </button>
+    </div>
   );
 }

@@ -37,4 +37,21 @@ export class AuthController {
       handleError(res, error);
     }
   };
+
+  updatePushToken = async (req: any, res: Response) => {
+    try {
+      const { fcmToken } = req.body;
+      const userId = req.user?.userId;
+      if (!userId || !fcmToken) {
+        return res.status(400).json({ error: 'Missing token or user' });
+      }
+      
+      const pool = require('../config/prisma').default;
+      await pool.query('UPDATE "User" SET "fcmToken" = $1 WHERE id = $2', [fcmToken, userId]);
+      
+      res.status(200).json({ message: 'Push token updated successfully' });
+    } catch (error: any) {
+      handleError(res, error);
+    }
+  };
 }

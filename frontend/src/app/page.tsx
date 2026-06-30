@@ -17,6 +17,25 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLongLoading, setIsLongLoading] = useState(false);
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+
+  const loadingMessages = [
+    "Welcome to SJS Public School",
+    "You are getting logged in",
+    "This might take a few seconds"
+  ];
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLongLoading) {
+      interval = setInterval(() => {
+        setLoadingMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+      }, 2500);
+    } else {
+      setLoadingMessageIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [isLongLoading]);
 
   useEffect(() => {
     setIsMobile(window.innerWidth <= 1024);
@@ -51,7 +70,7 @@ export default function LoginPage() {
 
     const longLoadTimer = setTimeout(() => {
       setIsLongLoading(true);
-    }, 3000);
+    }, 500);
 
     try {
       const response = await api.post("/auth/login", {
@@ -244,13 +263,27 @@ export default function LoginPage() {
       {isLongLoading && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(5px)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
-          zIndex: 9999, color: 'white', fontFamily: 'inherit', textAlign: 'center', padding: '2rem'
+          backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(4px)',
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+          zIndex: 9999, fontFamily: 'inherit'
         }}>
-          <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: '#3b82f6' }}></i>
-          <h2 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>Waking up the secure server...</h2>
-          <p style={{ opacity: 0.9, fontSize: '1.1rem', maxWidth: '400px' }}>Our encrypted database sleeps when not in use. This first login might take up to 30 seconds.</p>
+          <div style={{
+            backgroundColor: '#fefce8', // Cream color
+            padding: '2.5rem 2rem',
+            borderRadius: '16px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            textAlign: 'center', maxWidth: '400px', width: '90%'
+          }}>
+            <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '3rem', marginBottom: '1.5rem', color: '#eab308' }}></i>
+            <h2 style={{ 
+              fontSize: '1.5rem', margin: '0', fontWeight: 'bold', color: '#422006',
+              minHeight: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              animation: 'fadeIn 0.5s ease-in-out'
+            }}>
+              {loadingMessages[loadingMessageIndex]}
+            </h2>
+          </div>
         </div>
       )}
     </>

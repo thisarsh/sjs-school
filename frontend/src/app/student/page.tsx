@@ -82,16 +82,16 @@ function StudentDashboardContent() {
     queryFn: async () => {
       if (!student) return [];
 
-      // Only fetch current month data for the dashboard to drastically improve load speed
+      // Fetch attendance data for the current academic year/session
       const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+      const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
+      const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59).toISOString();
 
       const token = localStorage.getItem("sjs_token");
       const res = await api.post('/attendance/register', {
         studentIds: [student.id],
-        startDate: startOfMonth,
-        endDate: endOfMonth
+        startDate: startOfYear,
+        endDate: endOfYear
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -100,19 +100,15 @@ function StudentDashboardContent() {
     enabled: !!student
   });
 
-  // Calculate Current Month Attendance Metrics for Dashboard
+  // Calculate Overall Session Attendance Metrics for Dashboard
   const now = new Date();
-  const currentMonthData = attendanceData ? attendanceData.filter((r: any) => {
-    const d = new Date(r.date);
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }) : [];
-
-  const presentDays = currentMonthData.filter((r: any) => r.status === 'PRESENT').length;
-  const totalDays = currentMonthData.length;
+  const sessionRecords = Array.isArray(attendanceData) ? attendanceData : [];
+  const presentDays = sessionRecords.filter((r: any) => r.status === 'PRESENT' || r.status === 'HALF_DAY').length;
+  const totalDays = sessionRecords.length;
   const attendancePercentage = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
 
   // Calculate Today's Status
-  const todayRecord = attendanceData?.find((r: any) => {
+  const todayRecord = sessionRecords.find((r: any) => {
     const d = new Date(r.date);
     return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });

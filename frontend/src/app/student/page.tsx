@@ -10,6 +10,7 @@ import ComplaintForm from '@/components/shared/ComplaintForm';
 import ComingSoonModal from '@/components/shared/ComingSoonModal';
 import UniversalRefreshButton from '@/components/shared/UniversalRefreshButton';
 import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
+import StudentAccountView from '@/components/student/StudentAccountView';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -364,56 +365,8 @@ function StudentDashboardContent() {
           <ComplaintForm applicant={student} role="STUDENT" />
         )}
 
-        {activeTab === 'profile' && (
-          <div className="student-profile-wrapper p-5 bg-white rounded-2xl shadow-sm mt-4 mb-20">
-            <div className="flex items-center gap-4 border-b border-gray-100 pb-5 mb-5">
-               <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold shadow-inner">
-                 {student?.firstName?.charAt(0) || user?.email?.charAt(0) || '?'}
-               </div>
-               <div>
-                 <h2 className="text-xl font-bold text-slate-800 font-outfit">{student?.firstName} {student?.lastName}</h2>
-                 <p className="text-sm text-slate-500 font-medium">Scholar No: {student?.scholarNumber}</p>
-                 <span className="inline-block mt-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded">Active Student</span>
-               </div>
-            </div>
-            
-            <div className="space-y-4">
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-cake-candles w-4"></i> Date of Birth</span>
-                 <span className="text-slate-800 text-sm font-semibold">{student?.dob ? (isNaN(new Date(student.dob).getTime()) ? student.dob : new Date(student.dob).toLocaleDateString()) : 'N/A'}</span>
-               </div>
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-venus-mars w-4"></i> Gender</span>
-                 <span className="text-slate-800 text-sm font-semibold">{student?.gender || 'N/A'}</span>
-               </div>
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-droplet text-red-400 w-4"></i> Blood Group</span>
-                 <span className="text-slate-800 text-sm font-semibold">{student?.bloodGroup || 'N/A'}</span>
-               </div>
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-user-tie w-4"></i> Father Name</span>
-                 <span className="text-slate-800 text-sm font-semibold">{student?.fatherName || 'N/A'}</span>
-               </div>
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-user-large w-4"></i> Mother Name</span>
-                 <span className="text-slate-800 text-sm font-semibold">{student?.motherName || 'N/A'}</span>
-               </div>
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-phone w-4"></i> Contact (Parent)</span>
-                 <span className="text-slate-800 text-sm font-semibold">{student?.parentMobile || 'N/A'}</span>
-               </div>
-               <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-                 <span className="text-slate-500 text-sm flex items-center gap-2"><i className="fa-solid fa-location-dot w-4"></i> Address</span>
-                 <span className="text-slate-800 text-sm font-semibold text-right max-w-[50%]">{student?.address || 'N/A'}</span>
-               </div>
-            </div>
-            
-            <div className="mt-8 flex justify-center">
-               <button onClick={handleLogout} className="text-red-600 bg-red-50 hover:bg-red-100 transition-colors px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-sm w-full justify-center">
-                 <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
-               </button>
-            </div>
-          </div>
+        {(activeTab === 'account' || activeTab === 'profile') && (
+          <StudentAccountView student={student} userEmail={user?.email} onLogout={handleLogout} />
         )}
 
         {/* NOTICES TAB */}
@@ -469,8 +422,8 @@ function StudentDashboardContent() {
           <i className="fa-solid fa-envelope-open-text student-nav-icon"></i>
           <span className="student-nav-label">Leave</span>
         </div>
-        <div className="student-nav-item" onClick={() => router.push(`/student/profile?id=${student?.scholarNumber}`)}>
-          <i className="fa-solid fa-circle-user student-nav-icon"></i>
+        <div className={`student-nav-item ${activeTab === 'account' || activeTab === 'profile' ? 'active' : ''}`} onClick={() => router.push('?tab=account')}>
+          <i className="fa-solid fa-user-gear student-nav-icon"></i>
           <span className="student-nav-label">Account</span>
         </div>
       </div>

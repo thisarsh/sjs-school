@@ -52,19 +52,16 @@ function StudentDashboardContent() {
     queryFn: async () => {
       if (!student) return [];
       
-      // Assume academic year starts in April
+      // Only fetch current month data for the dashboard to drastically improve load speed
       const now = new Date();
-      let startYear = now.getFullYear();
-      if (now.getMonth() < 3) startYear -= 1;
-      
-      const startOfYear = new Date(startYear, 3, 1).toISOString();
-      const endOfYear = new Date(startYear + 1, 2, 31).toISOString();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
       
       const token = localStorage.getItem("sjs_token");
       const res = await api.post('/attendance/register', {
         studentIds: [student.id],
-        startDate: startOfYear,
-        endDate: endOfYear
+        startDate: startOfMonth,
+        endDate: endOfMonth
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });

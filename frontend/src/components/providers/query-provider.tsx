@@ -58,7 +58,12 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
               else modalOverlay.click();
               return;
             }
-            if (canGoBack) {
+            const pathname = window.location.pathname;
+            const search = window.location.search;
+            const isRootDashboard = (pathname === '/principal' || pathname === '/teacher' || pathname === '/student' || pathname === '/');
+            const isHomeTab = !search || search.includes('tab=home');
+
+            if (!isRootDashboard || !isHomeTab || canGoBack || window.history.length > 2) {
               window.history.back();
             } else {
               App.exitApp();

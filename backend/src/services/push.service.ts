@@ -1,0 +1,78 @@
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { getMessaging, MulticastMessage } from 'firebase-admin/messaging';
+import pool from '../config/prisma';
+
+// Initialize Firebase Admin
+try {
+  const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
+  if (serviceAccountBase64) {
+    const serviceAccount = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf-8'));
+    if (!getApps().length) {
+      initializeApp({
+        credential: cert(serviceAccount)
+      });
+    }
+    console.log('Firebase Admin initialized successfully');
+  } else {
+    console.warn('FIREBASE_SERVICE_ACCOUNT_BASE64 is not set. Push notifications will be disabled.');
+  }
+} catch (error) {
+  console.error('Failed to initialize Firebase Admin:', error);
+}
+
+export class PushService {
+  /**
+   * Sends a push notification to specific users by querying their FCM tokens
+   */
+  static async sendToUsers(userIds: string[], title: string, body: string, data?: any) {
+    if (!getApps().length) {
+      console.warn('Firebase Admin not initialized, skipping push notification');
+      return;
+    }
+
+    if (!userIds || userIds.length === 0) return;
+
+    try {
+      const result = await pool.query(
+        'SELECT "fcmToken" FROM "User" WHERE id = ANY($1) AND "fcmToken" IS NOT NULL',
+        [userIds]
+      );
+
+      const tokens = result.rows.map(row => row.fcmToken).filter(token => !!token);
+
+      if (tokens.length === 0) {
+        console.log('No FCM tokens found for the specified users');
+        return;
+      }
+
+      const message: MulticastMessage = {
+        notification: { title, body },
+        tokens: tokens,
+        data: data || {}
+      };
+
+      const response = await getMessaging().sendEachForMulticast(message);
+      console.log(`Successfully sent ${response.successCount} messages; Failed: ${response.failureCount}`);
+    } catch (error) {
+      console.error('Error sending push notification:', error);
+    }
+  }
+
+  /**
+   * Sends a push notification to all Principals
+   */
+  static async sendToPrincipals(title: string, body: string, data?: any) {
+    if (!getApps().length) return;
+
+    try {
+      const result = await pool.query(
+        'SELECT id FROM "User" WHERE role = \'PRINCIPAL\' AND "isDeleted" = false'
+      );
+      const principalIds = result.rows.map(row => row.id);
+      
+      await this.sendToUsers(principalIds, title, body, data);
+    } catch (error) {
+      console.error('Error sending push to principals:', error);
+    }
+  }
+}

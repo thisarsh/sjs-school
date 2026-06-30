@@ -37,6 +37,12 @@ export const createComplaint = async (req: any, res: any) => {
       [subject, description, finalAnonymous, role, applicantId]
     );
 
+    // Alert the principal about the new complaint
+    PushService.sendToPrincipals(
+      'New Complaint Received',
+      `${role} filed a complaint: ${subject}`
+    );
+
     res.status(201).json(insertRes.rows[0]);
   } catch (error) {
     console.error('Error creating complaint:', error);

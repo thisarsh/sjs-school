@@ -1,0 +1,8 @@
+node_modules/
+trash/
+.env
+.env.local
+.DS_Store
+dist/
+build/
+.next/

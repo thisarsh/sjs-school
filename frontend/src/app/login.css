@@ -1,0 +1,473 @@
+
+  :root {
+    --gold: #d4af37;
+    --gold-light: #fdf5e6;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --brand-blue: #3b82f6;
+    --brand-green: #10b981;
+    --brand-brown: #8b5a2b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* NO SCROLLING */
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+  }
+
+  .bg-image {
+    position: absolute;
+    inset: 0;
+    background: url('/assets/school.jpg') center/cover no-repeat;
+    filter: blur(4px);
+    transform: scale(1.02); /* Prevents the blur from showing white edges */
+    z-index: 1;
+  }
+
+  /* Subtle leaf pattern strictly on the right side */
+  .bg-leaves {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bg-leaves::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    bottom: -50px; right: -50px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4af37" d="M10,90 Q50,90 90,50 Q90,90 10,90 Z"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+  }
+
+  .layout-container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 2vh 4vw;
+  }
+
+  /* Left Side */
+  .brand-section {
+    flex: 1.1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 2vw;
+    padding-top: 24vh;
+    position: relative;
+  }
+
+  /* Beige creme blur behind logo and text */
+  .brand-section::before {
+    content: '';
+    position: absolute;
+    top: 40%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(circle, rgba(253, 245, 230, 0.85) 0%, rgba(253, 245, 230, 0.6) 40%, rgba(253, 245, 230, 0) 70%);
+    filter: blur(30px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .logo-container {
+    width: clamp(90px, 14vh, 130px);
+    height: clamp(90px, 14vh, 130px);
+    margin-bottom: 2vh;
+    border-radius: 50%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    background: white;
+    padding: 0;
+    overflow: hidden;
+  }
+  .logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .school-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vh, 4.5rem);
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5vh;
+  }
+
+  .school-location {
+    font-size: clamp(0.9rem, 2vh, 1.2rem);
+    color: #475569;
+    margin-bottom: 8vh;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .welcome-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vh, 5.5rem);
+    color: #1e293b;
+    margin-bottom: 0.5vh;
+    line-height: 1.1;
+    position: relative;
+  }
+  .welcome-title span { color: var(--gold); }
+  
+  .welcome-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 2vh;
+  }
+  .welcome-decoration .line {
+    height: 2px;
+    width: 60px;
+    background: var(--gold);
+  }
+  .welcome-decoration .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .welcome-subtitle {
+    font-size: clamp(1rem, 2.2vh, 1.35rem);
+    color: #475569;
+    margin-bottom: 4vh;
+  }
+
+  /* Desktop Badges */
+  .badges-desktop {
+    display: flex;
+    background: #ffffff;
+    padding: 1.5vh 1.5vw;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    width: fit-content;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1.5vw;
+    border-right: 1px solid #e2e8f0;
+  }
+  .badge:first-child { padding-left: 0; }
+  .badge:last-child { border-right: none; padding-right: 0; }
+  
+  .badge-icon { font-size: clamp(1.2rem, 3vh, 1.8rem); color: var(--gold); }
+  .badge-text strong { display: block; font-size: clamp(0.75rem, 1.5vh, 0.95rem); color: #1e293b; }
+  .badge-text span { font-size: clamp(0.65rem, 1.2vh, 0.85rem); color: #64748b; }
+
+  /* Right Side: Login Card */
+  .login-section {
+    flex: 0.9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-card {
+    background: var(--bg-card);
+    border-radius: 1.5rem;
+    padding: clamp(1.5rem, 4vh, 2.5rem);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.8);
+    width: 100%;
+    max-width: 520px;
+    z-index: 10; /* Ensure it stays above the angled background */
+  }
+
+  .login-card h3 {
+    font-size: clamp(1rem, 2vh, 1.25rem);
+    margin-bottom: 1.5vh;
+    color: #1e293b;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 2vh;
+  }
+
+  .role-btn {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5vh 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75vh;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    text-align: center;
+  }
+
+  .role-btn:hover { background: #f8fafc; }
+  .role-btn.active { border: 2px solid var(--gold); background: var(--gold-light); }
+  .role-btn.active::after {
+    content: '\f058';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--gold);
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    font-size: 1.25rem;
+    background: white;
+    border-radius: 50%;
+  }
+
+  .role-icon {
+    width: clamp(36px, 6vh, 48px);
+    height: clamp(36px, 6vh, 48px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1rem, 2.5vh, 1.25rem);
+  }
+  .role-parent .role-icon { background: #eff6ff; color: var(--brand-blue); }
+  .role-student .role-icon { background: #ecfdf5; color: var(--brand-green); }
+  .role-staff .role-icon { background: #fdf8f6; color: var(--brand-brown); }
+
+  .role-name { font-size: clamp(0.75rem, 1.5vh, 0.9rem); font-weight: 600; color: #1e293b; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--gold);
+    margin-bottom: 2vh;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .divider:not(:empty)::before { margin-right: 1rem; }
+  .divider:not(:empty)::after { margin-left: 1rem; }
+
+  .form-group { margin-bottom: 1.5vh; }
+  .form-label { display: block; font-size: clamp(0.75rem, 1.5vh, 0.85rem); font-weight: 600; color: #1e293b; margin-bottom: 0.5vh; }
+  
+  .input-wrapper { position: relative; }
+  .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+  .form-input {
+    width: 100%;
+    padding: clamp(0.7rem, 1.8vh, 1rem) 1rem clamp(0.7rem, 1.8vh, 1rem) 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: clamp(0.85rem, 1.8vh, 1rem);
+    font-family: inherit;
+  }
+  .form-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+  .eye-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
+
+  .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2vh; font-size: clamp(0.75rem, 1.5vh, 0.85rem); }
+  .checkbox-group { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+  .checkbox-group input { accent-color: var(--brand-blue); width: 14px; height: 14px; }
+  .forgot-link { color: var(--brand-blue); text-decoration: none; font-weight: 500; }
+
+  .submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #d8b14a 0%, #ba8a1c 100%);
+    color: white;
+    border: none;
+    padding: clamp(0.8rem, 2vh, 1rem);
+    border-radius: 0.5rem;
+    font-size: clamp(0.95rem, 2vh, 1.1rem);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .info-banner {
+    background: #fffdf5;
+    border: 1px solid #f6e8cc;
+    border-radius: 0.75rem;
+    padding: 1.5vh 1rem;
+    margin-top: 2vh;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  .info-icon { color: var(--gold); font-size: 1.25rem; }
+  .info-text { font-size: clamp(0.7rem, 1.3vh, 0.8rem); color: #475569; line-height: 1.4; }
+  .info-text strong { color: #1e293b; }
+
+  .badges-mobile { display: none; } 
+
+  .global-footer {
+    position: absolute;
+    bottom: 2vh;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+    z-index: 10;
+    font-size: clamp(0.75rem, 1.5vh, 0.85rem);
+    color: #475569;
+  }
+  .footer-icon { width: 36px; height: 36px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--gold); border: 1px solid var(--gold); }
+
+  /* MOBILE RESPONSIVE (1024px and below) */
+  @media (max-width: 1024px) {
+    body {
+      background: #fdfbf7; /* Solid creme background for mobile */
+    }
+
+    /* Keep leaves on mobile but adjust position */
+    .bg-leaves {
+      display: block; 
+      z-index: 0;
+    }
+    .bg-leaves::before {
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+    }
+
+    .bg-image {
+      /* Only take up top portion of screen */
+      bottom: auto;
+      height: 45vh; /* Limit height so it doesn't span full page */
+      background-position: top center;
+      background-size: cover; /* Since element is shorter, it will show more of the image horizontally */
+    }
+    
+    /* Top to bottom gradient fade for mobile background */
+    .bg-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      /* Stronger fade at the bottom of the 45vh element */
+      background: linear-gradient(to bottom, rgba(253, 251, 247, 0) 0%, rgba(253, 251, 247, 0) 30%, rgba(253, 251, 247, 0.95) 75%, rgba(253, 251, 247, 1) 100%);
+    }
+    
+    /* Remove the centered beige blur on mobile since background is already creme */
+    .brand-section::before {
+      display: none;
+    }
+    
+    .layout-container {
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly; /* Balances the space above and below */
+      padding: 1rem;
+      padding-bottom: 6vh; /* Leave room for footer */
+      height: 100vh;
+    }
+    
+    .brand-section {
+      flex: none;
+      padding-right: 0;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      padding-top: 14vh;
+      z-index: 10; /* Ensure text is above the gradient */
+    }
+    
+    .welcome-decoration {
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-container { width: 80px; height: 80px; margin-bottom: 0.5rem; }
+    .school-title { font-size: 2rem; margin-bottom: 0; }
+    .school-location { font-size: 0.8rem; margin-bottom: 1.5rem; }
+    .welcome-title { font-size: 2rem; margin-bottom: 0; color: #1e293b; }
+    .welcome-title span { color: #1e293b; } /* Make 'Back!' dark on mobile to match mockup */
+    .welcome-subtitle { font-size: 0.85rem; margin-bottom: 0.5rem; }
+    
+    .badges-desktop { display: none; }
+    
+    .login-section {
+      flex: none;
+      width: 100%;
+      max-width: 440px;
+      z-index: 10;
+    }
+    
+    .login-card {
+      padding: 1.25rem;
+      border-radius: 1rem;
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border */
+    }
+
+    .role-grid { gap: 0.5rem; margin-bottom: 0.75rem; }
+    .role-btn { padding: 0.75rem 0.25rem; gap: 0.4rem; }
+    .role-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+    .role-name { font-size: 0.75rem; }
+    
+    .divider { margin-bottom: 0.75rem; }
+    .form-group { margin-bottom: 0.75rem; }
+    .form-label { margin-bottom: 0.25rem; }
+    .form-input { padding: 0.6rem 0.75rem 0.6rem 2.25rem; font-size: 0.85rem; }
+    .form-options { margin-bottom: 1rem; }
+    
+    /* Lighter gold gradient for mobile submit button */
+    .submit-btn {
+      background: linear-gradient(135deg, #f6e2b1 0%, #e2b95b 100%);
+      color: #714a0f; /* Dark text for contrast against lighter gold */
+    }
+
+    /* Removed old info-banner display: none */
+
+    .badges-mobile {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.75rem 0.25rem;
+    }
+    .badges-mobile .badge { flex-direction: column; text-align: center; gap: 0.4rem; padding: 0; border: none; }
+    .badges-mobile .badge-text span { display: block; font-size: 0.65rem; }
+    .badges-mobile .badge-text strong { font-size: 0.75rem; color: #1e293b; }
+    .badges-mobile .badge-icon { font-size: 1.15rem; color: #cba245; }
+    
+    .global-footer { bottom: 0.5rem; color: #64748b; }
+    /* Let the footer icon keep its white background on mobile */
+  }
+
+  /* Extreme compression for very small screens to avoid scroll */
+  @media (max-height: 700px) and (max-width: 1024px) {
+    .logo-container { width: 60px; height: 60px; }
+    .welcome-title { font-size: 1.75rem; }
+    .login-card { padding: 1rem; }
+    .badges-mobile { padding: 0.5rem; margin-top: 0.5rem; }
+  }

@@ -1,0 +1,141 @@
+.apply-wrap {
+  min-height: 100vh;
+  background: #f0ebf8; /* Google Form purple tint background */
+  font-family: 'Inter', sans-serif;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.apply-container {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-header-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-top: 10px solid #673ab7; /* Google purple top bar */
+  padding: 24px 30px;
+}
+
+.form-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #202124;
+  margin-bottom: 8px;
+}
+
+.form-desc {
+  font-size: 14px;
+  color: #5f6368;
+  line-height: 1.5;
+}
+
+.form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px 30px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: box-shadow 0.2s;
+}
+
+.form-card:focus-within {
+  box-shadow: 0 4px 12px rgba(103, 58, 183, 0.15);
+  border-left: 6px solid #673ab7;
+  padding-left: 24px;
+}
+
+.field-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #202124;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.req-star {
+  color: #d93025;
+}
+
+.field-input, .field-textarea, .field-select {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #dadce0;
+  padding: 10px 0;
+  font-size: 15px;
+  color: #202124;
+  outline: none;
+  transition: border-color 0.2s;
+  background: transparent;
+}
+
+.field-input:focus, .field-textarea:focus, .field-select:focus {
+  border-bottom: 2px solid #673ab7;
+}
+
+.field-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.row-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .row-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.submit-btn-gform {
+  background: #673ab7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(103, 58, 183, 0.3);
+}
+
+.submit-btn-gform:hover:not(:disabled) {
+  background: #5e35b1;
+  transform: translateY(-1px);
+}
+
+.submit-btn-gform:disabled {
+  background: #b39ddb;
+  cursor: not-allowed;
+}
+
+.success-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px 30px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-top: 10px solid #673ab7;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 56px;
+  color: #188038;
+  margin-bottom: 16px;
+}

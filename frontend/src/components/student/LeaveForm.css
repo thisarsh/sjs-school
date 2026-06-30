@@ -1,0 +1,295 @@
+.leave-module {
+  padding: 20px;
+  padding-bottom: 96px;
+  font-family: 'Inter', sans-serif;
+}
+.leave-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.leave-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+.leave-btn-primary {
+  background: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.leave-empty-state {
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.leave-empty-icon {
+  width: 64px;
+  height: 64px;
+  background: #eff6ff;
+  color: #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 24px;
+}
+.leave-empty-title {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+.leave-empty-sub {
+  font-size: 14px;
+  color: #64748b;
+}
+.leave-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.leave-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+}
+.leave-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.leave-card-type {
+  font-weight: 600;
+  color: #1e293b;
+}
+.leave-card-dates {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+.leave-status {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+.leave-status.APPROVED { background: #d1fae5; color: #15803d; }
+.leave-status.REJECTED { background: #fee2e2; color: #b91c1c; }
+.leave-status.PENDING { background: #ffedd5; color: #c2410c; }
+
+.leave-reason-box {
+  font-size: 14px;
+  color: #475569;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+}
+.leave-card-footer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Create Form */
+.leave-back-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  border: none;
+  cursor: pointer;
+}
+.leave-form-container {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #3b82f6;
+}
+.leave-applicant-box {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+.leave-applicant-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.leave-applicant-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+.leave-applicant-sub {
+  font-size: 14px;
+  color: #64748b;
+}
+.leave-field-group {
+  margin-bottom: 20px;
+}
+.leave-field-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+.leave-input {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #334155;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.leave-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+.leave-duration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+.leave-today-btn {
+  font-size: 12px;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+.leave-date-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.leave-date-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.leave-total-days {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #eff6ff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-block;
+}
+.leave-reason-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+.leave-char-count {
+  font-size: 12px;
+  color: #94a3b8;
+}
+.leave-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.leave-attachment-box {
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+.leave-attachment-box:hover {
+  background: #f8fafc;
+}
+.leave-attachment-icon {
+  color: #94a3b8;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.leave-attachment-title {
+  font-size: 14px;
+  color: #475569;
+  font-weight: 600;
+}
+.leave-attachment-sub {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+.leave-consent-box {
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.leave-consent-text {
+  font-size: 14px;
+  color: #854d0e;
+  font-weight: 500;
+}
+.leave-actions {
+  display: flex;
+  gap: 12px;
+}
+.leave-btn-cancel {
+  flex: 1;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.leave-btn-submit {
+  flex: 1;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.leave-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

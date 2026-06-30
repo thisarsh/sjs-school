@@ -1,0 +1,336 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String
+  role         Role
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  isDeleted    Boolean        @default(false)
+  Notification Notification[]
+  parent       Parent?
+  schoolAdmin  SchoolAdmin?
+  student      Student?
+  teacher      Teacher?
+}
+
+model School {
+  id        String        @id @default(uuid())
+  name      String
+  address   String?
+  logoUrl   String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  isDeleted Boolean       @default(false)
+  classes   Class[]
+  admins    SchoolAdmin[]
+  students  Student[]
+  teachers  Teacher[]
+}
+
+model SchoolAdmin {
+  id       String @id @default(uuid())
+  userId   String @unique
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Teacher {
+  id               String      @id @default(uuid())
+  userId           String      @unique
+  schoolId         String
+  firstName        String
+  lastName         String
+  phone            String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  address          String?
+  qualification    String?
+  experience       String?
+  subject          String?
+  classes          String?
+  assignedSections Section[]
+  school           School      @relation(fields: [schoolId], references: [id])
+  user             User        @relation(fields: [userId], references: [id])
+  Timetable        Timetable[]
+  profilePic       String?
+  leaveRequests    LeaveRequest[]
+}
+
+model Parent {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  firstName String
+  lastName  String
+  phone     String?
+  secondaryPhone String?
+  email     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+  children  Student[]
+}
+
+model Student {
+  id               String             @id @default(uuid())
+  userId           String             @unique
+  schoolId         String
+  parentId         String?
+  sectionId        String?
+  firstName        String
+  lastName         String
+  scholarNumber    String             @unique
+  dob              DateTime?
+  gender           String?
+  rollNumber       String?
+  address          String?
+  aadhaarNumber    String?
+  bloodGroup       String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  isDeleted        Boolean            @default(false)
+  attendance       Attendance[]
+  Fee              Fee[]
+  Mark             Mark[]
+  Notification     Notification[]
+  NotificationRead NotificationRead[]
+  parent           Parent?            @relation(fields: [parentId], references: [id])
+  school           School             @relation(fields: [schoolId], references: [id])
+  section          Section?           @relation(fields: [sectionId], references: [id])
+  user             User               @relation(fields: [userId], references: [id])
+  profilePic       String?
+  leaveRequests    LeaveRequest[]
+}
+
+model Class {
+  id           String         @id @default(uuid())
+  schoolId     String
+  name         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  school       School         @relation(fields: [schoolId], references: [id])
+  Notification Notification[]
+  sections     Section[]
+  Subject      Subject[]
+}
+
+model Section {
+  id              String         @id @default(uuid())
+  classId         String
+  name            String
+  classTeacherId  String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  subjectTeachers String?
+  Notification    Notification[]
+  class           Class          @relation(fields: [classId], references: [id])
+  classTeacher    Teacher?       @relation(fields: [classTeacherId], references: [id])
+  students        Student[]
+  Timetable       Timetable[]
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  studentId String
+  date      DateTime
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  student   Student  @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, date])
+}
+
+model Fee {
+  id            String    @id
+  studentId     String
+  feeType       String
+  feeTypeLabel  String
+  amount        Float
+  month         String
+  academicYear  String    @default("2025-26")
+  status        String    @default("paid")
+  receiptNumber String?   @unique
+  paidOn        DateTime?
+  collectedById String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime
+  Student       Student   @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, feeType, month, academicYear])
+}
+
+model FeeStructure {
+  id           String   @id
+  className    String
+  feeType      String
+  feeTypeLabel String
+  amount       Float    @default(0)
+  academicYear String   @default("2025-26")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+
+  @@unique([className, feeType, academicYear])
+}
+
+model Mark {
+  id           String   @id
+  studentId    String
+  subjectId    String
+  examType     String
+  score        Float
+  maxScore     Float    @default(100)
+  academicYear String   @default("2025-26")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  Student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  Subject      Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId, examType, academicYear])
+}
+
+model Notification {
+  id               String             @id
+  title            String
+  body             String
+  type             String             @default("general")
+  targetClassId    String?
+  targetSectionId  String?
+  targetStudentId  String?
+  academicYear     String             @default("2025-26")
+  createdById      String
+  createdAt        DateTime           @default(now())
+  User             User               @relation(fields: [createdById], references: [id])
+  Class            Class?             @relation(fields: [targetClassId], references: [id])
+  Section          Section?           @relation(fields: [targetSectionId], references: [id])
+  Student          Student?           @relation(fields: [targetStudentId], references: [id])
+  NotificationRead NotificationRead[]
+}
+
+model NotificationRead {
+  notificationId String
+  studentId      String
+  readAt         DateTime     @default(now())
+  Notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  Student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@id([notificationId, studentId])
+}
+
+model Subject {
+  id        String      @id
+  name      String
+  classId   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  Mark      Mark[]
+  Class     Class       @relation(fields: [classId], references: [id], onDelete: Cascade)
+  Timetable Timetable[]
+
+  @@unique([name, classId])
+}
+
+model StudentApplication {
+  id            String   @id @default(uuid())
+  firstName     String
+  lastName      String
+  scholarNumber String   @unique
+  classApplying String
+  section       String?
+  rollNumber    String?
+  dob           String
+  gender        String
+  fatherName    String
+  motherName    String
+  parentMobile  String
+  parentSecondaryMobile String?
+  parentEmail   String?
+  address       String
+  aadhaarNumber String?
+  bloodGroup    String?
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
+  profilePic    String?
+}
+
+model TeacherApplication {
+  id            String   @id
+  firstName     String
+  lastName      String
+  email         String   @unique
+  phone         String
+  qualification String?
+  experience    String?
+  subject       String
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
+  address       String?
+  classes       String?
+  profilePic    String?
+}
+
+model Timetable {
+  id           String   @id
+  sectionId    String
+  day          String
+  period       Int
+  teacherId    String?
+  subjectId    String?
+  academicYear String   @default("2025-26")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  Section      Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  Subject      Subject? @relation(fields: [subjectId], references: [id])
+  Teacher      Teacher? @relation(fields: [teacherId], references: [id])
+
+  @@unique([sectionId, day, period, academicYear])
+}
+
+enum Role {
+  SUPER_ADMIN
+  SCHOOL_ADMIN
+  PRINCIPAL
+  TEACHER
+  STUDENT
+  PARENT
+  ACCOUNTANT
+}
+
+model LeaveRequest {
+  id             String    @id @default(uuid())
+  studentId      String?
+  teacherId      String?
+  type           String
+  fromDate       DateTime
+  toDate         DateTime
+  totalDays      Int
+  reason         String
+  attachmentUrl  String?
+  status         String    @default("PENDING")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  student        Student?  @relation(fields: [studentId], references: [id])
+  teacher        Teacher?  @relation(fields: [teacherId], references: [id])
+}
+
+model Complaint {
+  id          String   @id @default(uuid())
+  subject     String
+  description String
+  isAnonymous Boolean  @default(false)
+  role        Role
+  applicantId String
+  status      String   @default("UNSEEN")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import AttendanceRegister from "@/components/teacher/AttendanceRegister";
+import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -586,9 +587,12 @@ function PrincipalDashboardContent() {
             <div className="mobile-hero">
               <div className="top-actions">
                 <i className="fa-solid fa-bars top-icon"></i>
-                <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer' }}>
-                  <i className="fa-regular fa-bell"></i>
-                  {newIssuesCount > 0 && <div className="badge-circle">{displayNewIssuesCount}</div>}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <UniversalRefreshButton />
+                  <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer' }}>
+                    <i className="fa-regular fa-bell"></i>
+                    {newIssuesCount > 0 && <div className="badge-circle">{displayNewIssuesCount}</div>}
+                  </div>
                 </div>
               </div>
               <img src="/assets/logo.png" alt="SJS Logo" className="hero-logo" />

@@ -1,55 +1,39 @@
 "use client";
 import React, { useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 export default function UniversalRefreshButton() {
-  const pathname = usePathname();
   const [isSpinning, setIsSpinning] = useState(false);
 
-  // Show on all dashboard and profile/apply pages
-  if (pathname === '/') return null;
-
-  const handleRefresh = () => {
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsSpinning(true);
     window.location.reload();
   };
 
   return (
-    <div
+    <button
+      onClick={handleRefresh}
       style={{
-        position: 'static',
-        width: '100%',
-        background: '#ffffff',
-        borderBottom: '1px solid #e2e8f0',
-        padding: '8px 16px',
-        display: 'flex',
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(6px)',
+        border: '1px solid rgba(79, 70, 229, 0.2)',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+        padding: '5px 12px',
+        borderRadius: '16px',
+        display: 'inline-flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        gap: '6px',
+        fontSize: '12px',
+        fontWeight: 600,
+        color: '#1e293b',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
         flexShrink: 0,
       }}
+      title="Refresh Page"
     >
-      <button
-        onClick={handleRefresh}
-        style={{
-          background: '#f8fafc',
-          border: '1px solid #cbd5e1',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          padding: '5px 14px',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          fontSize: '12px',
-          fontWeight: 600,
-          color: '#334155',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-        }}
-        title="Refresh Page if Stuck"
-      >
-        <i className={`fa-solid fa-rotate-right ${isSpinning ? 'fa-spin' : ''}`} style={{ color: '#4f46e5' }}></i>
-        <span>Refresh Page</span>
-      </button>
-    </div>
+      <i className={`fa-solid fa-rotate-right ${isSpinning ? 'fa-spin' : ''}`} style={{ color: '#4f46e5', fontSize: '13px' }}></i>
+      <span>Refresh</span>
+    </button>
   );
 }

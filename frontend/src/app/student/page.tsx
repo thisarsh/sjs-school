@@ -8,6 +8,7 @@ import StudentAttendanceSummary from '@/components/student/StudentAttendanceSumm
 import LeaveForm from '@/components/student/LeaveForm';
 import ComplaintForm from '@/components/shared/ComplaintForm';
 import ComingSoonModal from '@/components/shared/ComingSoonModal';
+import UniversalRefreshButton from '@/components/shared/UniversalRefreshButton';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -167,7 +168,10 @@ function StudentDashboardContent() {
             {/* Top Navbar */}
             <div className="student-top-nav">
               <i className="fa-solid fa-bars"></i>
-              <i className="fa-regular fa-bell"></i>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <UniversalRefreshButton />
+                <i className="fa-regular fa-bell" onClick={() => router.push('?tab=notices')}></i>
+              </div>
             </div>
 
             {/* Profile Info */}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState , Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
@@ -81,12 +81,12 @@ function StudentDashboardContent() {
     queryKey: ['studentAttendance', student?.id],
     queryFn: async () => {
       if (!student) return [];
-      
+
       // Only fetch current month data for the dashboard to drastically improve load speed
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
-      
+
       const token = localStorage.getItem("sjs_token");
       const res = await api.post('/attendance/register', {
         studentIds: [student.id],
@@ -106,7 +106,7 @@ function StudentDashboardContent() {
     const d = new Date(r.date);
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   }) : [];
-  
+
   const presentDays = currentMonthData.filter((r: any) => r.status === 'PRESENT').length;
   const totalDays = currentMonthData.length;
   const attendancePercentage = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
@@ -116,11 +116,11 @@ function StudentDashboardContent() {
     const d = new Date(r.date);
     return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
-  
+
   let todayStatusText = 'NA';
   let todayStatusClass = 'text-gray-400';
   let todayIconSvg = <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>;
-  
+
   if (todayRecord) {
     if (todayRecord.status === 'PRESENT') {
       todayStatusText = 'PRESENT';
@@ -154,17 +154,17 @@ function StudentDashboardContent() {
 
   return (
     <div className="student-dashboard-wrap">
-      <ComingSoonModal 
-        isOpen={!!comingSoonFeature} 
-        onClose={() => setComingSoonFeature(null)} 
-        featureName={comingSoonFeature || ''} 
+      <ComingSoonModal
+        isOpen={!!comingSoonFeature}
+        onClose={() => setComingSoonFeature(null)}
+        featureName={comingSoonFeature || ''}
       />
 
       {/* --- HOME DASHBOARD VIEW --- */}
       {activeTab === 'home' ? (
         <>
           <div className="student-hero-bg"></div>
-          
+
           <div className="student-content">
             {/* Top Navbar */}
             <div className="student-top-nav">
@@ -213,32 +213,31 @@ function StudentDashboardContent() {
                 <div className="student-metric-icon">
                   <svg className="progress-ring" viewBox="0 0 50 50">
                     <circle className="track" cx="25" cy="25" r={radius}></circle>
-                    <circle 
-                      className="indicator" 
-                      cx="25" 
-                      cy="25" 
-                      r={radius} 
-                      strokeDasharray={circumference} 
+                    <circle
+                      className="indicator"
+                      cx="25"
+                      cy="25"
+                      r={radius}
+                      strokeDasharray={circumference}
                       strokeDashoffset={strokeDashoffset}
                     ></circle>
                   </svg>
-                  <div className="progress-text">{attendancePercentage}%</div>
+                  <span className="student-metric-percent">{Math.round(attendancePercentage)}%</span>
                 </div>
-                <div className="metric-info">
-                  <div className="metric-title">Attendance</div>
-                  <div className="metric-sub success">{attendancePercentage}% Session</div>
+                <div className="student-metric-info">
+                  <div className="student-metric-title">Attendance</div>
+                  <div className="student-metric-subtitle">Updated today</div>
                 </div>
               </div>
-              
-              <div className="student-metric-card" onClick={() => router.push(`?tab=attendance`)}>
-                <div className="fee-alert-icon" style={{ backgroundColor: todayStatusText === 'PRESENT' ? '#dcfce7' : todayStatusText === 'ABSENT' ? '#fee2e2' : todayStatusText === 'HOLIDAY' ? '#ffedd5' : '#f1f5f9', color: todayStatusText === 'PRESENT' ? '#22c55e' : todayStatusText === 'ABSENT' ? '#ef4444' : todayStatusText === 'HOLIDAY' ? '#f97316' : '#9ca3af' }}>
-                  {todayIconSvg}
+
+              <div className="student-metric-card" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
+                <div className="student-metric-icon bg-green-light">
+                  <i className="fa-solid fa-wallet text-green"></i>
                 </div>
-                <div className="metric-info">
-                  <div className="metric-title">Today's Attendance</div>
-                  <div className={`metric-sub ${todayStatusClass}`} style={{ fontWeight: 700 }}>{todayStatusText}</div>
+                <div className="student-metric-info">
+                  <div className="student-metric-title">Fees Paid</div>
+                  <div className="student-metric-subtitle">Quarter 1</div>
                 </div>
-                <i className="fa-solid fa-chevron-right" style={{ color: '#9ca3af', fontSize: '14px' }}></i>
               </div>
             </div>
 
@@ -251,7 +250,7 @@ function StudentDashboardContent() {
                 </div>
                 <div className="student-grid-label">Attendance</div>
               </div>
-              
+
               <div className="student-grid-item" onClick={() => setComingSoonFeature('Timetable')} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-purple-light">
                   <i className="fa-solid fa-calendar-days"></i>
@@ -265,21 +264,7 @@ function StudentDashboardContent() {
                 </div>
                 <div className="student-grid-label">Homework</div>
               </div>
-              
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Marks & Results')} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-blue-light">
-                  <i className="fa-solid fa-chart-simple"></i>
-                </div>
-                <div className="student-grid-label">Marks & Results</div>
-              </div>
-              
-              <div className="student-grid-item" onClick={() => router.push(`?tab=leave`)} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-pink-light">
-                  <i className="fa-solid fa-file-invoice"></i>
-                </div>
-                <div className="student-grid-label">Leave Application</div>
-              </div>
-              
+
               <div className="student-grid-item" onClick={() => router.push('?tab=notices')} style={{ cursor: 'pointer', position: 'relative' }}>
                 <div className="student-grid-icon bg-yellow-light">
                   <i className="fa-solid fa-bullhorn"></i>
@@ -289,28 +274,63 @@ function StudentDashboardContent() {
                     </div>
                   )}
                 </div>
-                <div className="student-grid-label">Notices &<br/>Announcements</div>
+                <div className="student-grid-label">Notices &<br />Announcements</div>
               </div>
-              
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Study Material')} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-blue-light">
-                  <i className="fa-solid fa-book"></i>
+
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Gallery')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-pink-light">
+                  <i className="fa-solid fa-images"></i>
                 </div>
-                <div className="student-grid-label">Study Material</div>
+                <div className="student-grid-label">Gallery</div>
               </div>
-              
+
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Marks & Results')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-blue-light">
+                  <i className="fa-solid fa-chart-simple"></i>
+                </div>
+                <div className="student-grid-label">Marks & Results</div>
+              </div>
+
+              <div className="student-grid-item" onClick={() => router.push(`?tab=leave`)} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-pink-light">
+                  <i className="fa-solid fa-file-invoice"></i>
+                </div>
+                <div className="student-grid-label">Leave Application</div>
+              </div>
+
               <div className="student-grid-item" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-green-light">
                   <i className="fa-solid fa-wallet"></i>
                 </div>
                 <div className="student-grid-label">Fees</div>
               </div>
-              
+
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Academic Calendar')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-purple-light">
+                  <i className="fa-solid fa-calendar-check"></i>
+                </div>
+                <div className="student-grid-label">Academic<br />Calendar</div>
+              </div>
+
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Study Material')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-blue-light">
+                  <i className="fa-solid fa-book"></i>
+                </div>
+                <div className="student-grid-label">Study Material</div>
+              </div>
+
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Transport')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-orange-light">
+                  <i className="fa-solid fa-bus-simple"></i>
+                </div>
+                <div className="student-grid-label">Transport</div>
+              </div>
+
               <div className="student-grid-item" onClick={() => router.push('?tab=complaint')} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-purple-light">
                   <i className="fa-solid fa-comment-dots"></i>
                 </div>
-                <div className="student-grid-label">Complaint /<br/>Grievance</div>
+                <div className="student-grid-label">Complaint /<br />Grievance</div>
               </div>
             </div>
 
@@ -323,7 +343,7 @@ function StudentDashboardContent() {
                 </div>
                 <a href="#" className="updates-view-all">View All <i className="fa-solid fa-chevron-right" style={{ fontSize: '10px' }}></i></a>
               </div>
-              
+
               <div className="update-item">
                 <div className="update-dot" style={{ background: '#22c55e' }}></div>
                 <div className="update-content">
@@ -334,7 +354,7 @@ function StudentDashboardContent() {
                   <div className="update-desc">School will remain closed on Thursday.</div>
                 </div>
               </div>
-              
+
               <div className="update-item">
                 <div className="update-dot" style={{ background: '#f97316' }}></div>
                 <div className="update-content">
@@ -354,8 +374,8 @@ function StudentDashboardContent() {
           {/* Standardized Independent Page Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', background: 'white', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <button 
-                onClick={() => router.push('?tab=home')} 
+              <button
+                onClick={() => router.push('?tab=home')}
                 style={{ background: '#f1f5f9', border: 'none', width: '38px', height: '38px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#0f172a', fontSize: '16px', transition: 'all 0.2s ease' }}
               >
                 <i className="fa-solid fa-arrow-left"></i>
@@ -432,14 +452,14 @@ function StudentDashboardContent() {
           <i className="fa-regular fa-calendar student-nav-icon"></i>
           <span className="student-nav-label">Timetable</span>
         </div>
-        
+
         <div className="student-nav-fab-container">
           <div className="student-nav-fab" onClick={() => router.push(`/student/profile?id=${student?.scholarNumber}`)}>
             <i className="fa-solid fa-qrcode"></i>
           </div>
           <span className="student-nav-fab-label">ID Card</span>
         </div>
-        
+
         <div className={`student-nav-item ${activeTab === 'leave' ? 'active' : ''}`} onClick={() => router.push('?tab=leave')}>
           <i className="fa-solid fa-envelope-open-text student-nav-icon"></i>
           <span className="student-nav-label">Leave</span>

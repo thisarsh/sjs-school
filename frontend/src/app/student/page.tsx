@@ -151,22 +151,13 @@ function StudentDashboardContent() {
         onClose={() => setComingSoonFeature(null)} 
         featureName={comingSoonFeature || ''} 
       />
-      <div className="student-hero-bg"></div>
-      
-      <div className="student-content">
-        {activeTab !== 'home' && (
-          <div style={{ padding: '16px 0', display: 'flex', alignItems: 'center' }}>
-            <button 
-              onClick={() => router.push('?tab=home')} 
-              style={{ background: '#ffffff', border: '1px solid #e5e7eb', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', color: '#111827', fontSize: '16px' }}
-            >
-              <i className="fa-solid fa-arrow-left"></i>
-            </button>
-          </div>
-        )}
-        
-        {activeTab !== 'leave' && activeTab !== 'complaint' && (
-          <>
+
+      {/* --- HOME DASHBOARD VIEW --- */}
+      {activeTab === 'home' ? (
+        <>
+          <div className="student-hero-bg"></div>
+          
+          <div className="student-content">
             {/* Top Navbar */}
             <div className="student-top-nav">
               <i className="fa-solid fa-bars"></i>
@@ -200,213 +191,221 @@ function StudentDashboardContent() {
                 <i className="fa-solid fa-location-dot"></i> SJS Public School, Lalganj
               </div>
             </div>
-          </>
-        )}
 
-        {/* Search Bar */}
-        {activeTab === 'home' && (
-          <>
+            {/* Search Bar */}
             <div className="student-search-bar">
-          <i className="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Search timetable, homework, results..." />
-          <i className="fa-solid fa-sliders"></i>
-        </div>
+              <i className="fa-solid fa-magnifying-glass"></i>
+              <input type="text" placeholder="Search timetable, homework, results..." />
+              <i className="fa-solid fa-sliders"></i>
+            </div>
 
-        {/* Metrics Row */}
-        <div className="student-metrics-row">
-          <div className="student-metric-card" onClick={() => router.push(`?tab=attendance`)}>
-            <div className="student-metric-icon">
-              <svg className="progress-ring" viewBox="0 0 50 50">
-                <circle className="track" cx="25" cy="25" r={radius}></circle>
-                <circle 
-                  className="indicator" 
-                  cx="25" 
-                  cy="25" 
-                  r={radius} 
-                  strokeDasharray={circumference} 
-                  strokeDashoffset={strokeDashoffset}
-                ></circle>
-              </svg>
-              <div className="progress-text">{attendancePercentage}%</div>
-            </div>
-            <div className="metric-info">
-              <div className="metric-title">Attendance</div>
-              <div className="metric-sub success">{attendancePercentage}% Session</div>
-            </div>
-          </div>
-          
-          <div className="student-metric-card" onClick={() => router.push(`?tab=attendance`)}>
-            <div className="fee-alert-icon" style={{ backgroundColor: todayStatusText === 'PRESENT' ? '#dcfce7' : todayStatusText === 'ABSENT' ? '#fee2e2' : todayStatusText === 'HOLIDAY' ? '#ffedd5' : '#f1f5f9', color: todayStatusText === 'PRESENT' ? '#22c55e' : todayStatusText === 'ABSENT' ? '#ef4444' : todayStatusText === 'HOLIDAY' ? '#f97316' : '#9ca3af' }}>
-              {todayIconSvg}
-            </div>
-            <div className="metric-info">
-              <div className="metric-title">Today's Attendance</div>
-              <div className={`metric-sub ${todayStatusClass}`} style={{ fontWeight: 700 }}>{todayStatusText}</div>
-            </div>
-            <i className="fa-solid fa-chevron-right" style={{ color: '#9ca3af', fontSize: '14px' }}></i>
-          </div>
-        </div>
-
-        {/* 9-Grid Actions */}
-        <div className="student-grid">
-          <div className="student-grid-item" onClick={() => router.push(`?tab=attendance`)}>
-            <div className="student-grid-icon bg-green-light">
-              <i className="fa-solid fa-clipboard-check"></i>
-            </div>
-            <div className="student-grid-label">Attendance</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => setComingSoonFeature('Timetable')} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-purple-light">
-              <i className="fa-solid fa-calendar-days"></i>
-            </div>
-            <div className="student-grid-label">Timetable</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => setComingSoonFeature('Homework')} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-orange-light">
-              <i className="fa-solid fa-pen-to-square"></i>
-            </div>
-            <div className="student-grid-label">Homework</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => setComingSoonFeature('Marks & Results')} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-blue-light">
-              <i className="fa-solid fa-chart-simple"></i>
-            </div>
-            <div className="student-grid-label">Marks & Results</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => router.push(`?tab=leave`)} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-pink-light">
-              <i className="fa-solid fa-file-invoice"></i>
-            </div>
-            <div className="student-grid-label">Leave Application</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => router.push('?tab=notices')} style={{ cursor: 'pointer', position: 'relative' }}>
-            <div className="student-grid-icon bg-yellow-light">
-              <i className="fa-solid fa-bullhorn"></i>
-              {unreadNoticesCount > 0 && (
-                <div style={{ position: 'absolute', top: '8px', right: '12px', background: '#ef4444', color: 'white', fontSize: '11px', fontWeight: 700, borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}>
-                  {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+            {/* Metrics Row */}
+            <div className="student-metrics-row">
+              <div className="student-metric-card" onClick={() => router.push(`?tab=attendance`)}>
+                <div className="student-metric-icon">
+                  <svg className="progress-ring" viewBox="0 0 50 50">
+                    <circle className="track" cx="25" cy="25" r={radius}></circle>
+                    <circle 
+                      className="indicator" 
+                      cx="25" 
+                      cy="25" 
+                      r={radius} 
+                      strokeDasharray={circumference} 
+                      strokeDashoffset={strokeDashoffset}
+                    ></circle>
+                  </svg>
+                  <span className="student-metric-percent">{Math.round(attendancePercentage)}%</span>
                 </div>
-              )}
-            </div>
-            <div className="student-grid-label">Notices &<br/>Announcements</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => setComingSoonFeature('Study Material')} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-blue-light">
-              <i className="fa-solid fa-book"></i>
-            </div>
-            <div className="student-grid-label">Study Material</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-green-light">
-              <i className="fa-solid fa-wallet"></i>
-            </div>
-            <div className="student-grid-label">Fees</div>
-          </div>
-          
-          <div className="student-grid-item" onClick={() => router.push('?tab=complaint')} style={{ cursor: 'pointer' }}>
-            <div className="student-grid-icon bg-purple-light">
-              <i className="fa-solid fa-comment-dots"></i>
-            </div>
-            <div className="student-grid-label">Complaint /<br/>Grievance</div>
-          </div>
-        </div>
-
-        {/* Recent Updates */}
-        <div className="student-updates-card">
-          <div className="updates-header">
-            <div className="updates-title">
-              <i className="fa-solid fa-file-lines" style={{ color: '#6366f1' }}></i>
-              Recent Updates
-            </div>
-            <a href="#" className="updates-view-all">View All <i className="fa-solid fa-chevron-right" style={{ fontSize: '10px' }}></i></a>
-          </div>
-          
-          <div className="update-item">
-            <div className="update-dot" style={{ background: '#22c55e' }}></div>
-            <div className="update-content">
-              <div className="update-top">
-                <div className="update-title">Holiday on 29 May 2025</div>
-                <div className="update-time">2h ago</div>
+                <div className="student-metric-info">
+                  <div className="student-metric-title">Attendance</div>
+                  <div className="student-metric-subtitle">Updated today</div>
+                </div>
               </div>
-              <div className="update-desc">School will remain closed on Thursday.</div>
-            </div>
-          </div>
-          
-          <div className="update-item">
-            <div className="update-dot" style={{ background: '#f97316' }}></div>
-            <div className="update-content">
-              <div className="update-top">
-                <div className="update-title">Maths Assignment</div>
-                <div className="update-time">1d ago</div>
+              
+              <div className="student-metric-card" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
+                <div className="student-metric-icon bg-green-light">
+                  <i className="fa-solid fa-wallet text-green"></i>
+                </div>
+                <div className="student-metric-info">
+                  <div className="student-metric-title">Fees Paid</div>
+                  <div className="student-metric-subtitle">Quarter 1</div>
+                </div>
               </div>
-              <div className="update-desc">New assignment uploaded in Maths.</div>
             </div>
-          </div>
-        </div>
-        </>
-      )}
-        
-        {activeTab === 'attendance' && (
-          <StudentAttendanceSummary attendanceData={attendanceData || []} />
-        )}
 
-        {activeTab === 'leave' && (
-          <LeaveForm applicant={student} role="STUDENT" />
-        )}
-
-        {activeTab === 'complaint' && (
-          <ComplaintForm applicant={student} role="STUDENT" />
-        )}
-
-        {(activeTab === 'account' || activeTab === 'profile') && (
-          <StudentAccountView student={student} userEmail={user?.email} onLogout={handleLogout} />
-        )}
-
-        {/* NOTICES TAB */}
-        {activeTab === 'notices' && (
-          <div style={{ padding: '20px', paddingBottom: '120px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <i className="fa-solid fa-bullhorn" style={{ color: '#4f46e5' }}></i>
-              School Announcements
-            </h2>
-            {(!noticesData?.notices || noticesData.notices.length === 0) ? (
-              <div style={{ background: 'white', borderRadius: '16px', padding: '40px 20px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                <i className="fa-regular fa-bell-slash" style={{ fontSize: '32px', color: '#94a3b8', marginBottom: '12px' }}></i>
-                <div style={{ fontSize: '15px', fontWeight: 600, color: '#64748b' }}>No announcements right now</div>
+            {/* Action Grid */}
+            <div className="student-grid-title">Quick Actions</div>
+            <div className="student-grid">
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Homework')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-purple-light">
+                  <i className="fa-solid fa-book-open"></i>
+                </div>
+                <div className="student-grid-label">Homework</div>
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {noticesData.notices.map((n: any) => (
-                  <div key={n.id} style={{ background: 'white', borderRadius: '16px', padding: '18px', boxShadow: '0 4px 14px rgba(0,0,0,0.06)', borderLeft: '4px solid #4f46e5' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b' }}>{n.title}</span>
-                      <span style={{ fontSize: '11px', fontWeight: 600, background: '#f1f5f9', color: '#64748b', padding: '4px 10px', borderRadius: '12px' }}>
-                        {new Date(n.createdAt).toLocaleDateString('en-IN')}
-                      </span>
+              
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Marks & Results')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-blue-light">
+                  <i className="fa-solid fa-chart-simple"></i>
+                </div>
+                <div className="student-grid-label">Marks & Results</div>
+              </div>
+              
+              <div className="student-grid-item" onClick={() => router.push(`?tab=leave`)} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-pink-light">
+                  <i className="fa-solid fa-file-invoice"></i>
+                </div>
+                <div className="student-grid-label">Leave Application</div>
+              </div>
+              
+              <div className="student-grid-item" onClick={() => router.push('?tab=notices')} style={{ cursor: 'pointer', position: 'relative' }}>
+                <div className="student-grid-icon bg-yellow-light">
+                  <i className="fa-solid fa-bullhorn"></i>
+                  {unreadNoticesCount > 0 && (
+                    <div style={{ position: 'absolute', top: '8px', right: '12px', background: '#ef4444', color: 'white', fontSize: '11px', fontWeight: 700, borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}>
+                      {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
                     </div>
-                    <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.6', margin: 0, whiteSpace: 'pre-line' }}>{n.message}</p>
+                  )}
+                </div>
+                <div className="student-grid-label">Notices &<br/>Announcements</div>
+              </div>
+              
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Study Material')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-blue-light">
+                  <i className="fa-solid fa-book"></i>
+                </div>
+                <div className="student-grid-label">Study Material</div>
+              </div>
+              
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-green-light">
+                  <i className="fa-solid fa-wallet"></i>
+                </div>
+                <div className="student-grid-label">Fees</div>
+              </div>
+              
+              <div className="student-grid-item" onClick={() => router.push('?tab=complaint')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-purple-light">
+                  <i className="fa-solid fa-comment-dots"></i>
+                </div>
+                <div className="student-grid-label">Complaint /<br/>Grievance</div>
+              </div>
+            </div>
+
+            {/* Recent Updates */}
+            <div className="student-updates-card">
+              <div className="updates-header">
+                <div className="updates-title">
+                  <i className="fa-solid fa-file-lines" style={{ color: '#6366f1' }}></i>
+                  Recent Updates
+                </div>
+                <a href="#" className="updates-view-all">View All <i className="fa-solid fa-chevron-right" style={{ fontSize: '10px' }}></i></a>
+              </div>
+              
+              <div className="update-item">
+                <div className="update-dot" style={{ background: '#22c55e' }}></div>
+                <div className="update-content">
+                  <div className="update-top">
+                    <div className="update-title">Holiday on 29 May 2025</div>
+                    <div className="update-time">2h ago</div>
                   </div>
-                ))}
+                  <div className="update-desc">School will remain closed on Thursday.</div>
+                </div>
+              </div>
+              
+              <div className="update-item">
+                <div className="update-dot" style={{ background: '#f97316' }}></div>
+                <div className="update-content">
+                  <div className="update-top">
+                    <div className="update-title">Maths Assignment</div>
+                    <div className="update-time">1d ago</div>
+                  </div>
+                  <div className="update-desc">New assignment uploaded in Maths.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        /* --- DEDICATED INDEPENDENT FULL-WIDTH FEATURE PAGES --- */
+        <div style={{ width: '100%', minHeight: '100vh', background: '#f8fafc', paddingBottom: '130px' }}>
+          {/* Standardized Independent Page Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', background: 'white', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <button 
+                onClick={() => router.push('?tab=home')} 
+                style={{ background: '#f1f5f9', border: 'none', width: '38px', height: '38px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#0f172a', fontSize: '16px', transition: 'all 0.2s ease' }}
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+              </button>
+              <div>
+                <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                  {activeTab === 'attendance' && 'Attendance Overview'}
+                  {activeTab === 'leave' && 'Leave Applications'}
+                  {activeTab === 'complaint' && 'Grievance & Feedback'}
+                  {(activeTab === 'account' || activeTab === 'profile') && 'Student Account'}
+                  {activeTab === 'notices' && 'School Announcements'}
+                </h2>
+                <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>
+                  SJS Public School Portal
+                </div>
+              </div>
+            </div>
+            <UniversalRefreshButton />
+          </div>
+
+          {/* Full-Width Page Content Container */}
+          <div style={{ width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '16px' }}>
+            {activeTab === 'attendance' && (
+              <StudentAttendanceSummary attendanceData={attendanceData || []} />
+            )}
+
+            {activeTab === 'leave' && (
+              <LeaveForm applicant={student} role="STUDENT" />
+            )}
+
+            {activeTab === 'complaint' && (
+              <ComplaintForm applicant={student} role="STUDENT" />
+            )}
+
+            {(activeTab === 'account' || activeTab === 'profile') && (
+              <StudentAccountView student={student} userEmail={user?.email} onLogout={handleLogout} />
+            )}
+
+            {activeTab === 'notices' && (
+              <div style={{ padding: '6px 0' }}>
+                {(!noticesData?.notices || noticesData.notices.length === 0) ? (
+                  <div style={{ background: 'white', borderRadius: '16px', padding: '40px 20px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                    <i className="fa-regular fa-bell-slash" style={{ fontSize: '32px', color: '#94a3b8', marginBottom: '12px' }}></i>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: '#64748b' }}>No announcements right now</div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    {noticesData.notices.map((n: any) => (
+                      <div key={n.id} style={{ background: 'white', borderRadius: '16px', padding: '18px', boxShadow: '0 4px 14px rgba(0,0,0,0.06)', borderLeft: '4px solid #4f46e5' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                          <span style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b' }}>{n.title}</span>
+                          <span style={{ fontSize: '11px', fontWeight: 600, background: '#f1f5f9', color: '#64748b', padding: '4px 10px', borderRadius: '12px' }}>
+                            {new Date(n.createdAt).toLocaleDateString('en-IN')}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.6', margin: 0, whiteSpace: 'pre-line' }}>{n.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <div className="student-bottom-nav">
-        <div className="student-nav-item active">
+        <div className={`student-nav-item ${activeTab === 'home' ? 'active' : ''}`} onClick={() => router.push('?tab=home')}>
           <i className="fa-solid fa-house student-nav-icon"></i>
           <span className="student-nav-label">Home</span>
         </div>
-        <div className="student-nav-item">
+        <div className="student-nav-item" onClick={() => setComingSoonFeature('Timetable')}>
           <i className="fa-regular fa-calendar student-nav-icon"></i>
           <span className="student-nav-label">Timetable</span>
         </div>

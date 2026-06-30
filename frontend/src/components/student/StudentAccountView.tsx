@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 
 interface StudentAccountViewProps {
   student: any;
@@ -19,6 +20,12 @@ export default function StudentAccountView({
   >("personal");
   
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  useMobileBackHandler({
+    activeTab: 'account',
+    isModalOpen: showLogoutConfirm,
+    onCloseModal: () => setShowLogoutConfirm(false),
+  });
 
   const toggleSection = (section: "personal" | "contact" | "documents") => {
     setExpandedSection((prev) => (prev === section ? null : section));

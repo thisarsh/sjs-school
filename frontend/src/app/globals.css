@@ -33,10 +33,21 @@ html, body {
   padding: 0;
   font-family: var(--font); 
   color: var(--text); 
-  background: var(--off); 
+  background: #09131f; 
   overflow-x: hidden;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
+}
+
+.mobile-app-container {
+  width: 100%;
+  max-width: 450px;
+  min-height: 100vh;
+  background: var(--off);
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.45);
+  overflow-x: hidden;
 }
 
 /* ── Layout ── */

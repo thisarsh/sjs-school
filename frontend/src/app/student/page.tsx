@@ -11,6 +11,7 @@ import ComingSoonModal from '@/components/shared/ComingSoonModal';
 import UniversalRefreshButton from '@/components/shared/UniversalRefreshButton';
 import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 import StudentAccountView from '@/components/student/StudentAccountView';
+import { useMobileBackHandler } from '@/hooks/useMobileBackHandler';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -19,6 +20,13 @@ function StudentDashboardContent() {
   const activeTab = searchParams.get('tab') || 'home';
   const [user, setUser] = useState<any>(null);
   const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
+
+  useMobileBackHandler({
+    activeTab,
+    isModalOpen: !!comingSoonFeature,
+    onCloseModal: () => setComingSoonFeature(null),
+    onReturnHome: () => router.push('?tab=home', { scroll: false }),
+  });
 
   useEffect(() => {
     const userData = localStorage.getItem("sjs_user");

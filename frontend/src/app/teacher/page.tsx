@@ -14,12 +14,19 @@ import AttendanceMarking from "@/components/teacher/AttendanceMarking";
 import TeacherProfileView from "@/components/teacher/TeacherProfileView";
 import LeaveForm from "@/components/student/LeaveForm";
 import ComplaintForm from "@/components/shared/ComplaintForm";
+import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 
 function TeacherDashboardContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const router = useRouter();
 
   const activeTab = searchParams.get("tab") || "home";
+
+  useMobileBackHandler({
+    activeTab,
+    onReturnHome: () => router.push(`${pathname}?tab=home`, { scroll: false }),
+  });
 
   const setActiveTab = (tab: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -31,8 +38,6 @@ function TeacherDashboardContent() {
   const [attendanceData, setAttendanceData] = useState<any>({});
   const [greeting, setGreeting] = useState("Good Morning,");
   const [globalAlert, setGlobalAlert] = useState<{message: string, type: 'success' | 'error' | 'info'} | null>(null);
-
-  const router = useRouter();
 
   const { data: teacherProfile, isLoading } = useQuery({
     queryKey: ['teacherProfile'],

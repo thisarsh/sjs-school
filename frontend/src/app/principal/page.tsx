@@ -8,6 +8,7 @@ import api from "@/lib/api";
 import AttendanceRegister from "@/components/teacher/AttendanceRegister";
 import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
+import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -103,6 +104,11 @@ function PrincipalDashboardContent() {
   const pathname = usePathname();
 
   const activeTab = searchParams.get("tab") || "home";
+
+  useMobileBackHandler({
+    activeTab,
+    onReturnHome: () => router.push(`${pathname}?tab=home`, { scroll: false }),
+  });
 
   const setActiveTab = (tab: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));

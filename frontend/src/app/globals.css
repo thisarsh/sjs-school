@@ -54,6 +54,18 @@ html, body {
   flex-direction: column;
 }
 
+.login-full-screen-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 99999;
+  background: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 /* ── Layout ── */
 .page-wrap { display: flex; min-height: 100%; flex: 1; }
 .sidebar {

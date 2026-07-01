@@ -383,10 +383,13 @@
     .layout-container {
       flex-direction: column;
       align-items: center;
-      justify-content: space-evenly; /* Balances the space above and below */
+      justify-content: flex-start;
+      gap: 1.5rem;
       padding: 1rem;
+      padding-top: 5vh;
       padding-bottom: 6vh; /* Leave room for footer */
-      height: 100vh;
+      min-height: 100vh;
+      height: auto;
     }
     
     .brand-section {
@@ -394,8 +397,8 @@
       padding-right: 0;
       align-items: center;
       text-align: center;
-      margin-bottom: 0.5rem;
-      padding-top: 14vh;
+      margin-bottom: 0;
+      padding-top: 2vh;
       z-index: 10; /* Ensure text is above the gradient */
     }
     

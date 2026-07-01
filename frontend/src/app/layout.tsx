@@ -28,6 +28,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+import ClientContainer from "@/components/shared/ClientContainer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,9 +42,9 @@ export default function RootLayout({
       </head>
       <body>
         <QueryProvider>
-          <div className="mobile-app-container">
+          <ClientContainer>
             {children}
-          </div>
+          </ClientContainer>
         </QueryProvider>
       </body>
     </html>

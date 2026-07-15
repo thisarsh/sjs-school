@@ -84,6 +84,8 @@ export default function LoginPage() {
       if (response.data.token) {
         localStorage.setItem("sjs_token", response.data.token);
         localStorage.setItem("sjs_user", JSON.stringify(response.data.user));
+        localStorage.setItem("sjs_theme", "light");
+        document.documentElement.setAttribute('data-theme', 'light');
         
         const role = String(response.data.user.role).toUpperCase();
         if (role === "SUPER_ADMIN") {

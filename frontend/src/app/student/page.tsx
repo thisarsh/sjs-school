@@ -198,12 +198,6 @@ function StudentDashboardContent() {
               </div>
             </div>
 
-            {/* Search Bar */}
-            <div className="student-search-bar">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <input type="text" placeholder="Search timetable, homework, results..." />
-              <i className="fa-solid fa-sliders"></i>
-            </div>
 
             {/* Metrics Row */}
             <div className="student-metrics-row">

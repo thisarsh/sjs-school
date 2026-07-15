@@ -1,7 +1,7 @@
 "use client";
 import { Suspense } from 'react';
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
@@ -161,10 +161,24 @@ function PrincipalDashboardContent() {
   const [accountSearchTerm, setAccountSearchTerm] = useState("");
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
-  const [globalSearchFilter, setGlobalSearchFilter] = useState<'student' | 'teacher'>('student');
+  const [globalSearchFilter, setGlobalSearchFilter] = useState<'all' | 'student' | 'teacher'>('all');
   const [showSearchFilter, setShowSearchFilter] = useState(false);
   const [expandedClassSection, setExpandedClassSection] = useState<string | null>(null);
   
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowGlobalSearch(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Action Required states
   const [actionReqType, setActionReqType] = useState<'complaints' | 'attendance' | 'leaves'>(() => {
     if (typeof window !== 'undefined') return (sessionStorage.getItem('sjs_p_actionReqType') as any) || 'complaints';
@@ -614,14 +628,20 @@ function PrincipalDashboardContent() {
               <div className="hero-location"><i className="fa-solid fa-location-dot"></i> SJS Public School, Lalganj</div>
             </div>
 
-            <div className="floating-search-container" style={{ position: 'relative' }}>
+            <div className="floating-search-container" ref={searchRef} style={{ position: 'relative' }}>
               <div className="floating-search">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <input
                   type="text"
                   id="principalSearch"
                   name="search"
-                  placeholder={globalSearchFilter === 'student' ? "Search students..." : "Search teachers..."}
+                  placeholder={
+                    globalSearchFilter === 'all'
+                      ? "Search students, teachers by name, phone..."
+                      : globalSearchFilter === 'student'
+                        ? "Search students..."
+                        : "Search teachers..."
+                  }
                   style={{ border: 'none', outline: 'none', background: 'transparent', flex: 1, marginLeft: '12px' }}
                   value={globalSearchTerm}
                   onChange={(e) => {
@@ -639,6 +659,7 @@ function PrincipalDashboardContent() {
                   ></i>
                   {showSearchFilter && (
                     <div style={{ position: 'absolute', right: 0, top: '24px', background: 'white', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 100, overflow: 'hidden', width: '120px', border: '1px solid #e2e8f0' }}>
+                      <div onClick={() => { setGlobalSearchFilter('all'); setShowSearchFilter(false); }} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: 600, background: globalSearchFilter === 'all' ? '#e0e7ff' : 'white', color: globalSearchFilter === 'all' ? '#4f46e5' : '#475569', cursor: 'pointer' }}>All</div>
                       <div onClick={() => { setGlobalSearchFilter('student'); setShowSearchFilter(false); }} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: 600, background: globalSearchFilter === 'student' ? '#e0e7ff' : 'white', color: globalSearchFilter === 'student' ? '#4f46e5' : '#475569', cursor: 'pointer' }}>Students</div>
                       <div onClick={() => { setGlobalSearchFilter('teacher'); setShowSearchFilter(false); }} style={{ padding: '10px 16px', fontSize: '13px', fontWeight: 600, background: globalSearchFilter === 'teacher' ? '#e0e7ff' : 'white', color: globalSearchFilter === 'teacher' ? '#4f46e5' : '#475569', cursor: 'pointer' }}>Teachers</div>
                     </div>
@@ -653,38 +674,55 @@ function PrincipalDashboardContent() {
                   `}</style>
 
                   {/* Students Section */}
-                  {globalSearchFilter === 'student' && studentsList && studentsList.filter((s: any) => {
+                  {(globalSearchFilter === 'all' || globalSearchFilter === 'student') && studentsList && studentsList.filter((s: any) => {
                     const term = globalSearchTerm.toLowerCase();
-                    return (s.firstName?.toLowerCase() || '').includes(term) || (s.lastName?.toLowerCase() || '').includes(term) || (s.scholarNumber?.toLowerCase() || '').includes(term);
-                  }).slice(0, 5).map((s: any, index: number, arr: any[]) => (
+                    return (
+                      (s.firstName?.toLowerCase() || '').includes(term) ||
+                      (s.lastName?.toLowerCase() || '').includes(term) ||
+                      (s.scholarNumber?.toLowerCase() || '').includes(term) ||
+                      (s.parentMobile?.toLowerCase() || '').includes(term) ||
+                      (s.parentSecondaryMobile?.toLowerCase() || '').includes(term)
+                    );
+                  }).slice(0, 5).map((s: any, index: number) => (
                     <div key={`student-header-${index}`}>
                       {index === 0 && <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '8px', paddingLeft: '8px' }}>Students</div>}
-                      <div onClick={() => router.push(`/student/profile?id=${s.scholarNumber}`)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderRadius: '12px', cursor: 'pointer' }} className="global-search-item">
+                      <div onClick={() => { router.push(`/student/profile?id=${s.scholarNumber}`); setShowGlobalSearch(false); }} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderRadius: '12px', cursor: 'pointer' }} className="global-search-item">
                         <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px', color: '#64748b' }}>
                           {s.firstName?.[0] || 'S'}
                         </div>
                         <div>
                           <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{s.firstName} {s.lastName}</div>
-                          <div style={{ fontSize: '12px', color: '#64748b' }}>Class {s.className || 'N/A'}-{s.sectionName || 'N/A'} • {s.scholarNumber}</div>
+                          <div style={{ fontSize: '12px', color: '#64748b' }}>
+                            Class {s.className || 'N/A'}-{s.sectionName || 'N/A'} • Scholar No: {s.scholarNumber}
+                            {s.parentMobile && ` • Mobile: ${s.parentMobile}`}
+                          </div>
                         </div>
                       </div>
                     </div>
                   ))}
 
                   {/* Teachers Section */}
-                  {globalSearchFilter === 'teacher' && teachersList && teachersList.filter((t: any) => {
+                  {(globalSearchFilter === 'all' || globalSearchFilter === 'teacher') && teachersList && teachersList.filter((t: any) => {
                     const term = globalSearchTerm.toLowerCase();
-                    return (t.firstName?.toLowerCase() || '').includes(term) || (t.lastName?.toLowerCase() || '').includes(term) || (t.subject?.toLowerCase() || '').includes(term);
+                    return (
+                      (t.firstName?.toLowerCase() || '').includes(term) ||
+                      (t.lastName?.toLowerCase() || '').includes(term) ||
+                      (t.subject?.toLowerCase() || '').includes(term) ||
+                      (t.phone?.toLowerCase() || '').includes(term)
+                    );
                   }).slice(0, 5).map((t: any, index: number) => (
                     <div key={`teacher-header-${index}`}>
                       {index === 0 && <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginTop: '12px', marginBottom: '8px', paddingLeft: '8px' }}>Teachers</div>}
-                      <div onClick={() => router.push(`/teacher/${t.id}`)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderRadius: '12px', cursor: 'pointer' }} className="global-search-item">
+                      <div onClick={() => { router.push(`/teacher/${t.id}`); setShowGlobalSearch(false); }} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderRadius: '12px', cursor: 'pointer' }} className="global-search-item">
                         <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px', color: '#64748b' }}>
                           {t.firstName?.[0] || 'T'}
                         </div>
                         <div>
                           <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{t.firstName} {t.lastName}</div>
-                          <div style={{ fontSize: '12px', color: '#64748b' }}>{t.subject || 'Teacher'}</div>
+                          <div style={{ fontSize: '12px', color: '#64748b' }}>
+                            Subject: {t.subject || 'Teacher'}
+                            {t.phone && ` • Phone: ${t.phone}`}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -692,15 +730,48 @@ function PrincipalDashboardContent() {
 
                   {((globalSearchFilter === 'student' && (!studentsList || studentsList.filter((s: any) => {
                     const term = globalSearchTerm.toLowerCase();
-                    return (s.firstName?.toLowerCase() || '').includes(term) || (s.lastName?.toLowerCase() || '').includes(term) || (s.scholarNumber?.toLowerCase() || '').includes(term);
-                  }).length === 0)) || (globalSearchFilter === 'teacher' && (!teachersList || teachersList.filter((t: any) => {
+                    return (
+                      (s.firstName?.toLowerCase() || '').includes(term) ||
+                      (s.lastName?.toLowerCase() || '').includes(term) ||
+                      (s.scholarNumber?.toLowerCase() || '').includes(term) ||
+                      (s.parentMobile?.toLowerCase() || '').includes(term) ||
+                      (s.parentSecondaryMobile?.toLowerCase() || '').includes(term)
+                    );
+                  }).length === 0)) ||
+                  (globalSearchFilter === 'teacher' && (!teachersList || teachersList.filter((t: any) => {
                     const term = globalSearchTerm.toLowerCase();
-                    return (t.firstName?.toLowerCase() || '').includes(term) || (t.lastName?.toLowerCase() || '').includes(term) || (t.subject?.toLowerCase() || '').includes(term);
-                  }).length === 0))) && (
-                      <div style={{ padding: '20px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
-                        No {globalSearchFilter}s found matching "{globalSearchTerm}"
-                      </div>
-                    )}
+                    return (
+                      (t.firstName?.toLowerCase() || '').includes(term) ||
+                      (t.lastName?.toLowerCase() || '').includes(term) ||
+                      (t.subject?.toLowerCase() || '').includes(term) ||
+                      (t.phone?.toLowerCase() || '').includes(term)
+                    );
+                  }).length === 0)) ||
+                  (globalSearchFilter === 'all' &&
+                    (!studentsList || studentsList.filter((s: any) => {
+                      const term = globalSearchTerm.toLowerCase();
+                      return (
+                        (s.firstName?.toLowerCase() || '').includes(term) ||
+                        (s.lastName?.toLowerCase() || '').includes(term) ||
+                        (s.scholarNumber?.toLowerCase() || '').includes(term) ||
+                        (s.parentMobile?.toLowerCase() || '').includes(term) ||
+                        (s.parentSecondaryMobile?.toLowerCase() || '').includes(term)
+                      );
+                    }).length === 0) &&
+                    (!teachersList || teachersList.filter((t: any) => {
+                      const term = globalSearchTerm.toLowerCase();
+                      return (
+                        (t.firstName?.toLowerCase() || '').includes(term) ||
+                        (t.lastName?.toLowerCase() || '').includes(term) ||
+                        (t.subject?.toLowerCase() || '').includes(term) ||
+                        (t.phone?.toLowerCase() || '').includes(term)
+                      );
+                    }).length === 0)
+                  )) && (
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                      No results found matching "{globalSearchTerm}"
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -637,6 +637,20 @@ tbody tr:last-child td { border-bottom: none; }
   }
 }
 
+@media (max-width: 1024px) {
+  html {
+    background: #000000 !important;
+  }
+  body {
+    transform: translate3d(0, 0, 0) !important;
+    margin-top: 24px !important;
+    margin-top: env(safe-area-inset-top, 24px) !important;
+    height: calc(100dvh - 24px) !important;
+    height: calc(100dvh - env(safe-area-inset-top, 24px)) !important;
+    background: var(--off) !important;
+  }
+}
+
 /* PC/Desktop Responsiveness Overrides */
 
 

@@ -79,15 +79,6 @@ export default function TeacherHome({
         </div>
       </div>
 
-      {/* 2. Search Bar */}
-      <div className="search-bar-container">
-        <div className="search-bar">
-          <i className="fa-solid fa-magnifying-glass"></i>
-          <input id="global-student-search" name="globalStudentSearch" autoComplete="off" type="text" placeholder="Search students..." />
-          <i className="fa-solid fa-sliders"></i>
-        </div>
-      </div>
-
       <div className="dashboard-section">
 
         {/* 3. Attendance Card */}

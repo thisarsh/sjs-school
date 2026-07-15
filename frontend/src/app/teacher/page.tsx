@@ -15,6 +15,8 @@ import TeacherProfileView from "@/components/teacher/TeacherProfileView";
 import LeaveForm from "@/components/student/LeaveForm";
 import ComplaintForm from "@/components/shared/ComplaintForm";
 import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
+import ThemeToggle from "@/components/shared/ThemeToggle";
+import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 
 function TeacherDashboardContent() {
   const searchParams = useSearchParams();
@@ -38,6 +40,44 @@ function TeacherDashboardContent() {
   const [attendanceData, setAttendanceData] = useState<any>({});
   const [greeting, setGreeting] = useState("Good Morning,");
   const [globalAlert, setGlobalAlert] = useState<{message: string, type: 'success' | 'error' | 'info'} | null>(null);
+
+  const [tabHistory, setTabHistory] = useState<string[]>(['home']);
+
+  useEffect(() => {
+    setTabHistory(prev => {
+      if (prev[prev.length - 1] === activeTab) return prev;
+      const idx = prev.indexOf(activeTab);
+      if (idx !== -1) {
+        return prev.slice(0, idx + 1);
+      }
+      return [...prev, activeTab];
+    });
+  }, [activeTab]);
+
+  const handleBackClick = () => {
+    if (tabHistory.length > 1) {
+      const newHistory = [...tabHistory];
+      newHistory.pop();
+      const prevTab = newHistory[newHistory.length - 1];
+      setTabHistory(newHistory);
+      setActiveTab(prevTab);
+    } else {
+      setActiveTab('home');
+    }
+  };
+
+  const getShortPageName = (tab: string) => {
+    switch (tab) {
+      case 'students': return 'Students';
+      case 'attendance_register': return 'Att. Reg.';
+      case 'attendance': return 'Mark Att.';
+      case 'leave': return 'Leaves';
+      case 'complaint': return 'Grievance';
+      case 'profile': return 'Profile';
+      case 'notices': return 'Notices';
+      default: return 'Portal';
+    }
+  };
 
   const { data: teacherProfile, isLoading } = useQuery({
     queryKey: ['teacherProfile'],
@@ -131,18 +171,60 @@ function TeacherDashboardContent() {
 
   return (
     <div className="app-wrap">
-      <div className="app-content" style={{ padding: 0, paddingBottom: "100px" }}>
-
-        {activeTab !== 'home' && (
-          <div style={{ padding: '16px 20px 0 20px', display: 'flex', alignItems: 'center' }}>
-            <button 
-              onClick={() => setActiveTab('home')} 
-              style={{ background: '#ffffff', border: '1px solid #e5e7eb', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', color: '#111827', fontSize: '16px' }}
-            >
-              <i className="fa-solid fa-arrow-left"></i>
-            </button>
-          </div>
+      {/* Floating Constant Header */}
+      <div className="portal-header" style={{
+        position: 'sticky',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        background: 'var(--white)',
+        borderBottom: '1px solid var(--border)',
+        padding: '12px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        {activeTab === 'home' ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <i className="fa-solid fa-bars menu-trigger" style={{ fontSize: '20px', cursor: 'pointer', color: 'var(--text)' }}></i>
+              <span style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--navy)' }}>SJS Faculty</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <ThemeToggle />
+              <UniversalRefreshButton />
+              <div onClick={() => setActiveTab('notices')} style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
+                <i className="fa-regular fa-bell" style={{ fontSize: '20px', color: 'var(--text)' }}></i>
+                {unreadNoticesCount > 0 && (
+                  <div style={{ position: 'absolute', top: '-6px', right: '-8px', background: '#ef4444', color: 'white', fontSize: '10px', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', border: '2px solid white' }}>
+                    {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button 
+                onClick={handleBackClick} 
+                style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+              </button>
+              <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
+                {getShortPageName(activeTab)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <UniversalRefreshButton />
+            </div>
+          </>
         )}
+      </div>
+      <div className="app-content" style={{ padding: 0, paddingBottom: "100px" }}>
 
         {/* HOME TAB */}
         {activeTab === 'home' && (

@@ -24,21 +24,6 @@ export default function TeacherHome({
       />
       {/* 1. Hero Section */}
       <div className="mobile-hero">
-        <div className="top-actions">
-          <i className="fa-solid fa-bars top-icon"></i>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <ThemeToggle />
-            <UniversalRefreshButton />
-            <div onClick={() => setActiveTab('notices')} style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
-              <i className="fa-regular fa-bell top-icon"></i>
-              {unreadNoticesCount > 0 && (
-                <div style={{ position: 'absolute', top: '-2px', right: '-2px', background: '#ef4444', color: 'white', fontSize: '10px', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', border: '2px solid white' }}>
-                  {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
 
         <div className="avatar-container">
           {teacherProfile?.profilePic ? (

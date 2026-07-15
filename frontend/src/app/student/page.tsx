@@ -21,6 +21,45 @@ function StudentDashboardContent() {
   const activeTab = searchParams.get('tab') || 'home';
   const [user, setUser] = useState<any>(null);
   const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
+  const [tabHistory, setTabHistory] = useState<string[]>(['home']);
+
+  useEffect(() => {
+    setTabHistory(prev => {
+      if (prev[prev.length - 1] === activeTab) return prev;
+      const idx = prev.indexOf(activeTab);
+      if (idx !== -1) {
+        return prev.slice(0, idx + 1);
+      }
+      return [...prev, activeTab];
+    });
+  }, [activeTab]);
+
+  const handleBackClick = () => {
+    if (tabHistory.length > 1) {
+      const newHistory = [...tabHistory];
+      newHistory.pop();
+      const prevTab = newHistory[newHistory.length - 1];
+      setTabHistory(newHistory);
+      router.push(`?tab=${prevTab}`);
+    } else {
+      router.push('?tab=home');
+    }
+  };
+
+  const getShortPageName = (tab: string) => {
+    switch (tab) {
+      case 'attendance': return 'Attendance';
+      case 'timetable': return 'Timetable';
+      case 'fees': return 'Fees';
+      case 'marks': return 'Marks';
+      case 'leave': return 'Leaves';
+      case 'complaint': return 'Grievance';
+      case 'profile': return 'Profile';
+      case 'account': return 'Account';
+      case 'notices': return 'Notices';
+      default: return 'Portal';
+    }
+  };
 
   useMobileBackHandler({
     activeTab,
@@ -157,28 +196,66 @@ function StudentDashboardContent() {
         featureName={comingSoonFeature || ''}
       />
 
+      {/* Floating Constant Header */}
+      <div className="portal-header" style={{
+        position: 'sticky',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        background: 'var(--white)',
+        borderBottom: '1px solid var(--border)',
+        padding: '12px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        {activeTab === 'home' ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <i className="fa-solid fa-bars menu-trigger" style={{ fontSize: '20px', cursor: 'pointer', color: 'var(--text)' }}></i>
+              <span style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--navy)' }}>SJS School</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <ThemeToggle />
+              <UniversalRefreshButton />
+              <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <i className="fa-regular fa-bell" style={{ fontSize: '20px', color: 'var(--text)' }}></i>
+                {unreadNoticesCount > 0 && (
+                  <div style={{ position: 'absolute', top: '-6px', right: '-8px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>
+                    {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button 
+                onClick={handleBackClick} 
+                style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+              </button>
+              <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
+                {getShortPageName(activeTab)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <UniversalRefreshButton />
+            </div>
+          </>
+        )}
+      </div>
+
       {/* --- HOME DASHBOARD VIEW --- */}
       {activeTab === 'home' ? (
         <>
           <div className="student-hero-bg"></div>
 
           <div className="student-content">
-            {/* Top Navbar */}
-            <div className="student-top-nav">
-              <i className="fa-solid fa-bars"></i>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <ThemeToggle />
-                <UniversalRefreshButton />
-                <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                  <i className="fa-regular fa-bell"></i>
-                  {unreadNoticesCount > 0 && (
-                    <div style={{ position: 'absolute', top: '-6px', right: '-8px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>
-                      {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
 
             {/* Profile Info */}
             <div className="student-hero-profile">
@@ -364,31 +441,6 @@ function StudentDashboardContent() {
       ) : (
         /* --- DEDICATED INDEPENDENT FULL-WIDTH FEATURE PAGES --- */
         <div style={{ width: '100%', minHeight: '100vh', background: '#f8fafc', paddingBottom: '130px' }}>
-          {/* Standardized Independent Page Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', background: 'white', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <button
-                onClick={() => router.push('?tab=home')}
-                style={{ background: '#f1f5f9', border: 'none', width: '38px', height: '38px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#0f172a', fontSize: '16px', transition: 'all 0.2s ease' }}
-              >
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div>
-                <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  {activeTab === 'attendance' && 'Attendance Overview'}
-                  {activeTab === 'leave' && 'Leave Applications'}
-                  {activeTab === 'complaint' && 'Grievance & Feedback'}
-                  {(activeTab === 'account' || activeTab === 'profile') && 'Student Account'}
-                  {activeTab === 'notices' && 'School Announcements'}
-                </h2>
-                <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>
-                  SJS Public School Portal
-                </div>
-              </div>
-            </div>
-            <UniversalRefreshButton />
-          </div>
-
           {/* Full-Width Page Content Container */}
           <div style={{ width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '16px' }}>
             {activeTab === 'attendance' && (

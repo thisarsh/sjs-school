@@ -179,6 +179,64 @@ function PrincipalDashboardContent() {
     };
   }, []);
 
+  const [tabHistory, setTabHistory] = useState<string[]>(['home']);
+
+  useEffect(() => {
+    setTabHistory(prev => {
+      if (prev[prev.length - 1] === activeTab) return prev;
+      const idx = prev.indexOf(activeTab);
+      if (idx !== -1) {
+        return prev.slice(0, idx + 1);
+      }
+      return [...prev, activeTab];
+    });
+  }, [activeTab]);
+
+  const handleBackClick = () => {
+    if (activeTab === 'teachers_section' && teachersSubTab !== 'directory') {
+      setTeachersSubTab('directory');
+      return;
+    }
+    if (activeTab === 'attendance_overview' && selectedAttendanceClassSection) {
+      setSelectedAttendanceClassSection(null);
+      return;
+    }
+    if (activeTab === 'complaints' && popupComplaintModal) {
+      setPopupComplaintModal(null);
+      return;
+    }
+    if (activeTab === 'leave_requests' && popupLeaveModal) {
+      setPopupLeaveModal(null);
+      return;
+    }
+
+    if (tabHistory.length > 1) {
+      const newHistory = [...tabHistory];
+      newHistory.pop();
+      const prevTab = newHistory[newHistory.length - 1];
+      setTabHistory(newHistory);
+      setActiveTab(prevTab);
+    } else {
+      setActiveTab('home');
+    }
+  };
+
+  const getShortPageName = (tab: string) => {
+    switch (tab) {
+      case 'manage': return 'Manage';
+      case 'students_section': return 'Students';
+      case 'teachers_section': return 'Teachers';
+      case 'classes_section': return 'Classes';
+      case 'attendance_overview': return 'Attendance';
+      case 'notices': return 'Notices';
+      case 'action_required': return 'Issues';
+      case 'leave_requests': return 'Leaves';
+      case 'complaints': return 'Grievances';
+      case 'account_management': return 'Security';
+      default: return 'Portal';
+    }
+  };
+
   // Action Required states
   const [actionReqType, setActionReqType] = useState<'complaints' | 'attendance' | 'leaves'>(() => {
     if (typeof window !== 'undefined') return (sessionStorage.getItem('sjs_p_actionReqType') as any) || 'complaints';
@@ -605,23 +663,65 @@ function PrincipalDashboardContent() {
 
   return (
     <div className="app-wrap">
+      {/* Floating Constant Header */}
+      <div className="portal-header" style={{
+        position: 'sticky',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        background: 'var(--white)',
+        borderBottom: '1px solid var(--border)',
+        padding: '12px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        {activeTab === 'home' ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <i className="fa-solid fa-bars menu-trigger" style={{ fontSize: '20px', cursor: 'pointer', color: 'var(--text)' }}></i>
+              <span style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--navy)' }}>SJS Portal</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <ThemeToggle />
+              <UniversalRefreshButton />
+              <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer', position: 'relative' }}>
+                <i className="fa-regular fa-bell" style={{ fontSize: '20px', color: 'var(--text)' }}></i>
+                {newIssuesCount > 0 && (
+                  <div className="badge-circle" style={{ position: 'absolute', top: '-6px', right: '-8px' }}>
+                    {displayNewIssuesCount}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button 
+                onClick={handleBackClick} 
+                style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+              </button>
+              <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
+                {getShortPageName(activeTab)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <UniversalRefreshButton />
+            </div>
+          </>
+        )}
+      </div>
       <div className="app-content" style={{ padding: 0, paddingBottom: "100px" }}>
 
         {/* HOME TAB */}
         {activeTab === 'home' && (
           <div className="view-panel active">
             <div className="mobile-hero">
-              <div className="top-actions">
-                <i className="fa-solid fa-bars top-icon"></i>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <ThemeToggle />
-                  <UniversalRefreshButton />
-                  <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer' }}>
-                    <i className="fa-regular fa-bell"></i>
-                    {newIssuesCount > 0 && <div className="badge-circle">{displayNewIssuesCount}</div>}
-                  </div>
-                </div>
-              </div>
               <img src="/assets/logo.png" alt="SJS Logo" className="hero-logo" />
               <div className="hero-greeting">{greeting},</div>
               <div className="hero-name">{userName}</div>
@@ -859,7 +959,7 @@ function PrincipalDashboardContent() {
         {/* DIRECTORY TAB */}
         {activeTab === 'manage' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div className="page-title" style={{ fontSize: "22px", marginBottom: "16px" }}>Manage School</div>
+
 
             <div className="list-menu">
               <div className="list-item" onClick={() => { setPreviousTab("manage"); setActiveTab("students_section"); }} style={{ cursor: 'pointer' }}>
@@ -924,12 +1024,7 @@ function PrincipalDashboardContent() {
         {/* LEAVE REQUESTS TAB */}
         {activeTab === 'leave_requests' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setActiveTab(previousTab)} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>Leave Requests</div>
-            </div>
+
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
               <button
@@ -1045,12 +1140,7 @@ function PrincipalDashboardContent() {
         {/* COMPLAINTS TAB */}
         {activeTab === 'complaints' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setActiveTab(previousTab)} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>Grievance Inbox</div>
-            </div>
+
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
               <button
@@ -1162,12 +1252,7 @@ function PrincipalDashboardContent() {
         {/* ACCOUNT MANAGEMENT TAB */}
         {activeTab === 'account_management' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setActiveTab(previousTab)} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>Account Management</div>
-            </div>
+
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
               <button
@@ -1340,7 +1425,7 @@ function PrincipalDashboardContent() {
         {/* NOTIFICATIONS TAB */}
         {activeTab === 'notices' && (
           <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
-            <div className="page-title" style={{ fontSize: "22px", marginBottom: "16px" }}>Broadcast Announcements</div>
+
 
             {/* CREATE ANNOUNCEMENT CARD */}
             <div style={{ background: 'white', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', marginBottom: '24px', border: '1px solid #e2e8f0' }}>
@@ -1458,7 +1543,7 @@ function PrincipalDashboardContent() {
         {/* ACTION REQUIRED TAB */}
         {activeTab === 'action_required' && (
           <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '100px' }}>
-            <div className="page-title" style={{ fontSize: "22px", marginBottom: "24px" }}>Action Required</div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               
               <div 
@@ -1610,12 +1695,7 @@ function PrincipalDashboardContent() {
         {/* STUDENTS DIRECTORY SECTION */}
         {activeTab === 'students_section' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setActiveTab(previousTab)} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>Students Directory</div>
-            </div>
+
 
             <div style={{ background: 'white', padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '16px' }}>
               <i className="fa-solid fa-magnifying-glass" style={{ color: '#9ca3af' }}></i>
@@ -1730,12 +1810,7 @@ function PrincipalDashboardContent() {
         {/* TEACHERS DIRECTORY & NEW REQUESTS SECTION */}
         {(activeTab === 'teachers_section' || activeTab === 'approvals') && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setActiveTab(previousTab)} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>Teachers</div>
-            </div>
+
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
               <button
@@ -1869,12 +1944,7 @@ function PrincipalDashboardContent() {
         {/* CLASSES SECTION TAB */}
         {activeTab === 'classes_section' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setActiveTab(previousTab)} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>Academic Classes</div>
-            </div>
+
 
             <p style={{ fontSize: '14px', color: 'var(--muted)', marginBottom: '20px' }}>
               Static hierarchy of all 15 grade levels mapped with sections A, B, C, D, E.
@@ -1918,22 +1988,11 @@ function PrincipalDashboardContent() {
         {/* ATTENDANCE OVERVIEW TAB */}
         {activeTab === 'attendance_overview' && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => {
-                if (selectedAttendanceClassSection) {
-                  setSelectedAttendanceClassSection(null);
-                } else {
-                  setActiveTab(previousTab);
-                }
-              }} style={{ background: 'var(--white)', border: 'none', padding: '8px 12px', borderRadius: '10px', boxShadow: 'var(--shadow)', cursor: 'pointer' }}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div className="page-title" style={{ fontSize: "22px", margin: 0 }}>
-                {selectedAttendanceClassSection
-                  ? `Attendance for ${['PG', 'Nursery', 'KG'].includes(selectedAttendanceClassSection.grade) ? selectedAttendanceClassSection.grade : `Class ${selectedAttendanceClassSection.grade}`} - ${selectedAttendanceClassSection.sectionName}`
-                  : "Attendance Overview"}
+            {selectedAttendanceClassSection && (
+              <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' }}>
+                Class {selectedAttendanceClassSection.grade} - {selectedAttendanceClassSection.sectionName}
               </div>
-            </div>
+            )}
 
             {!selectedAttendanceClassSection ? (
               <>

@@ -191,68 +191,47 @@ function StudentDashboardContent() {
   }
 
   return (
-    <div className="student-dashboard-wrap" style={{ paddingTop: '60px' }}>
+    <div className="student-dashboard-wrap" style={{ paddingTop: activeTab === 'home' ? '0' : '60px' }}>
       <ComingSoonModal
         isOpen={!!comingSoonFeature}
         onClose={() => setComingSoonFeature(null)}
         featureName={comingSoonFeature || ''}
       />
 
-      {/* Floating Constant Header */}
-      <div className="portal-header" style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '60px',
-        boxSizing: 'border-box',
-        zIndex: 1000,
-        background: 'var(--white)',
-        borderBottom: '1px solid var(--border)',
-        padding: '12px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxShadow: 'var(--shadow-sm)'
-      }}>
-        {activeTab === 'home' ? (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <i className="fa-solid fa-bars menu-trigger" style={{ fontSize: '20px', cursor: 'pointer', color: 'var(--text)' }}></i>
-              <span style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--navy)' }}>SJS School</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <ThemeToggle />
-              <UniversalRefreshButton />
-              <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                <i className="fa-regular fa-bell" style={{ fontSize: '20px', color: 'var(--text)' }}></i>
-                {unreadNoticesCount > 0 && (
-                  <div style={{ position: 'absolute', top: '-6px', right: '-8px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>
-                    {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <button 
-                onClick={handleBackClick} 
-                style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
-              >
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
-                {getShortPageName(activeTab)}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <UniversalRefreshButton />
-            </div>
-          </>
-        )}
-      </div>
+      {/* Floating Constant Header (Non-Home Pages only) */}
+      {activeTab !== 'home' && (
+        <div className="portal-header" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '60px',
+          boxSizing: 'border-box',
+          zIndex: 1000,
+          background: 'var(--white)',
+          borderBottom: '1px solid var(--border)',
+          padding: '12px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: 'var(--shadow-sm)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button 
+              onClick={handleBackClick} 
+              style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
+              {getShortPageName(activeTab)}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <UniversalRefreshButton />
+          </div>
+        </div>
+      )}
 
       {/* --- HOME DASHBOARD VIEW --- */}
       {activeTab === 'home' ? (
@@ -260,6 +239,22 @@ function StudentDashboardContent() {
           <div className="student-hero-bg"></div>
 
           <div className="student-content">
+            {/* Top Navbar */}
+            <div className="student-top-nav">
+              <i className="fa-solid fa-bars"></i>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <ThemeToggle />
+                <UniversalRefreshButton />
+                <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <i className="fa-regular fa-bell"></i>
+                  {unreadNoticesCount > 0 && (
+                    <div style={{ position: 'absolute', top: '-6px', right: '-8px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>
+                      {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Profile Info */}
             <div className="student-hero-profile">

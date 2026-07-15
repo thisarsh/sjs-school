@@ -662,68 +662,58 @@ function PrincipalDashboardContent() {
   }
 
   return (
-    <div className="app-wrap" style={{ paddingTop: '60px' }}>
-      {/* Floating Constant Header */}
-      <div className="portal-header" style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '60px',
-        boxSizing: 'border-box',
-        zIndex: 1000,
-        background: 'var(--white)',
-        borderBottom: '1px solid var(--border)',
-        padding: '12px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxShadow: 'var(--shadow-sm)'
-      }}>
-        {activeTab === 'home' ? (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <i className="fa-solid fa-bars menu-trigger" style={{ fontSize: '20px', cursor: 'pointer', color: 'var(--text)' }}></i>
-              <span style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--navy)' }}>SJS Portal</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <ThemeToggle />
-              <UniversalRefreshButton />
-              <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer', position: 'relative' }}>
-                <i className="fa-regular fa-bell" style={{ fontSize: '20px', color: 'var(--text)' }}></i>
-                {newIssuesCount > 0 && (
-                  <div className="badge-circle" style={{ position: 'absolute', top: '-6px', right: '-8px' }}>
-                    {displayNewIssuesCount}
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <button 
-                onClick={handleBackClick} 
-                style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
-              >
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
-                {getShortPageName(activeTab)}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <UniversalRefreshButton />
-            </div>
-          </>
-        )}
-      </div>
+    <div className="app-wrap" style={{ paddingTop: activeTab === 'home' ? '0' : '60px' }}>
+      {/* Floating Constant Header (Non-Home Pages only) */}
+      {activeTab !== 'home' && (
+        <div className="portal-header" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '60px',
+          boxSizing: 'border-box',
+          zIndex: 1000,
+          background: 'var(--white)',
+          borderBottom: '1px solid var(--border)',
+          padding: '12px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: 'var(--shadow-sm)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button 
+              onClick={handleBackClick} 
+              style={{ background: 'var(--white)', border: '1px solid var(--border)', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)', fontSize: '16px' }}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--navy)' }}>
+              {getShortPageName(activeTab)}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <UniversalRefreshButton />
+          </div>
+        </div>
+      )}
       <div className="app-content" style={{ padding: 0, paddingBottom: "100px" }}>
 
         {/* HOME TAB */}
         {activeTab === 'home' && (
           <div className="view-panel active">
             <div className="mobile-hero">
+              <div className="top-actions">
+                <i className="fa-solid fa-bars top-icon"></i>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <ThemeToggle />
+                  <UniversalRefreshButton />
+                  <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer' }}>
+                    <i className="fa-regular fa-bell"></i>
+                    {newIssuesCount > 0 && <div className="badge-circle">{displayNewIssuesCount}</div>}
+                  </div>
+                </div>
+              </div>
               <img src="/assets/logo.png" alt="SJS Logo" className="hero-logo" />
               <div className="hero-greeting">{greeting},</div>
               <div className="hero-name">{userName}</div>

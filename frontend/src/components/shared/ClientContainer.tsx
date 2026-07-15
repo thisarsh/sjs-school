@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { App as CapacitorApp } from "@capacitor/app";
 
 export default function ClientContainer({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLoginPage = pathname === "/";
+  const lastBackPressRef = useRef<number>(0);
+  const [showExitToast, setShowExitToast] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -22,18 +24,35 @@ export default function ClientContainer({ children }: { children: React.ReactNod
           const isNotHome = tab !== 'home';
 
           if (isPortal && isNotHome) {
-            // Dispatch event to page hooks for in-app tab navigation
+            // On a subpage — navigate back through tab history
             window.dispatchEvent(new CustomEvent('sjs-back-click'));
           } else if (isPortal && !isNotHome) {
-            // On dashboard portal home tab — minimize app (like native Android apps)
-            // This sends app to background instead of killing it
-            CapacitorApp.minimizeApp();
+            // On home tab — double-press to exit
+            const now = Date.now();
+            if (now - lastBackPressRef.current < 2000) {
+              // Second press within 2 seconds — minimize app
+              setShowExitToast(false);
+              CapacitorApp.minimizeApp();
+            } else {
+              // First press — show toast
+              lastBackPressRef.current = now;
+              setShowExitToast(true);
+              setTimeout(() => setShowExitToast(false), 2000);
+            }
           } else {
-            // Outside portal, use history back if available, otherwise minimize
+            // Outside portal (login page etc.)
             if (canGoBack) {
               window.history.back();
             } else {
-              CapacitorApp.minimizeApp();
+              const now = Date.now();
+              if (now - lastBackPressRef.current < 2000) {
+                setShowExitToast(false);
+                CapacitorApp.minimizeApp();
+              } else {
+                lastBackPressRef.current = now;
+                setShowExitToast(true);
+                setTimeout(() => setShowExitToast(false), 2000);
+              }
             }
           }
         });
@@ -50,10 +69,33 @@ export default function ClientContainer({ children }: { children: React.ReactNod
     };
   }, []);
 
+  const exitToast = showExitToast ? (
+    <div style={{
+      position: 'fixed',
+      bottom: '90px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      background: 'rgba(0, 0, 0, 0.8)',
+      color: 'white',
+      padding: '10px 24px',
+      borderRadius: '24px',
+      fontSize: '13px',
+      fontWeight: 600,
+      zIndex: 99999,
+      pointerEvents: 'none',
+      animation: 'fadeIn 0.2s ease',
+      whiteSpace: 'nowrap',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+    }}>
+      Press back again to exit
+    </div>
+  ) : null;
+
   if (isLoginPage) {
     return (
       <div className="login-full-screen-wrapper">
         {children}
+        {exitToast}
       </div>
     );
   }
@@ -61,6 +103,7 @@ export default function ClientContainer({ children }: { children: React.ReactNod
   return (
     <div className="mobile-app-container">
       {children}
+      {exitToast}
     </div>
   );
 }

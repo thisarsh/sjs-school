@@ -230,6 +230,7 @@ function PrincipalDashboardContent() {
       case 'classes_section': return 'Classes';
       case 'attendance_overview': return 'Attendance';
       case 'notices': return 'Notices';
+      case 'notices_new': return 'New Notice';
       case 'action_required': return 'Issues';
       case 'leave_requests': return 'Leaves';
       case 'complaints': return 'Grievances';
@@ -263,6 +264,7 @@ function PrincipalDashboardContent() {
   const [noticeMsg, setNoticeMsg] = useState('');
   const [noticeAudience, setNoticeAudience] = useState('ALL');
   const [isPublishingNotice, setIsPublishingNotice] = useState(false);
+  const [showNoticeSuccess, setShowNoticeSuccess] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('sjs_last_seen_action_req_count');
@@ -448,7 +450,7 @@ function PrincipalDashboardContent() {
       setNoticeMsg('');
       setNoticeAudience('ALL');
       refetchNotices();
-      alert("Notice published and broadcasted successfully via push notification!");
+      setShowNoticeSuccess(true);
     } catch (err: any) {
       alert("Failed to publish notice: " + (err?.response?.data?.error || err.message));
     } finally {
@@ -1428,96 +1430,29 @@ function PrincipalDashboardContent() {
         {/* NOTIFICATIONS TAB */}
         {activeTab === 'notices' && (
           <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
-
-
-            {/* CREATE ANNOUNCEMENT CARD */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', marginBottom: '24px', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <i className="fa-solid fa-bullhorn" style={{ color: '#4f46e5' }}></i>
-                Create New Announcement
-              </div>
-
-              <form onSubmit={handlePublishNotice}>
-                <div style={{ marginBottom: '14px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>Title</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Tomorrow is declared a holiday"
-                    value={noticeTitle}
-                    onChange={(e) => setNoticeTitle(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: '14px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>Send To Audience</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {[
-                      { id: 'ALL', label: 'All School Staff & Students' },
-                      { id: 'TEACHERS', label: 'Teachers Only' },
-                      { id: 'STUDENTS', label: 'Students Only' },
-                      { id: 'PARENTS', label: 'Parents Only' }
-                    ].map((opt) => (
-                      <button
-                        type="button"
-                        key={opt.id}
-                        onClick={() => setNoticeAudience(opt.id)}
-                        style={{
-                          padding: '8px 14px',
-                          borderRadius: '20px',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          border: noticeAudience === opt.id ? '2px solid #4f46e5' : '1px solid #e2e8f0',
-                          background: noticeAudience === opt.id ? '#eef2ff' : '#f8fafc',
-                          color: noticeAudience === opt.id ? '#4f46e5' : '#64748b',
-                          transition: 'all 0.2s'
-                        }}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>Message Body</label>
-                  <textarea
-                    required
-                    rows={4}
-                    placeholder="Enter full details of the notice..."
-                    value={noticeMsg}
-                    onChange={(e) => setNoticeMsg(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', resize: 'vertical' }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isPublishingNotice}
-                  style={{
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '12px 20px',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
-                  }}
-                >
-                  <i className={`fa-solid ${isPublishingNotice ? 'fa-spinner fa-spin' : 'fa-paper-plane'}`}></i>
-                  <span>{isPublishingNotice ? 'Publishing & Sending Push...' : 'Publish & Broadcast'}</span>
-                </button>
-              </form>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--navy)' }}>Broadcast History</div>
+              <button
+                onClick={() => { setPreviousTab("notices"); setActiveTab('notices_new'); }}
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 18px',
+                  borderRadius: '12px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)'
+                }}
+              >
+                <i className="fa-solid fa-plus"></i> New Broadcast
+              </button>
             </div>
 
-            <div style={{ fontSize: '16px', fontWeight: 700, color: '#1e293b', marginBottom: '14px' }}>Published History</div>
             {(!noticesData?.notices || noticesData.notices.length === 0) ? (
               <div className="empty-state">
                 <div className="empty-state-icon"><i className="fa-regular fa-bell-slash"></i></div>
@@ -1541,6 +1476,96 @@ function PrincipalDashboardContent() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* CREATE ANNOUNCEMENT TAB */}
+        {activeTab === 'notices_new' && (
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+            <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--muted)', marginBottom: '20px' }}>
+              Broadcast a push notification and portal announcement to staff, students, or parents.
+            </div>
+
+            <form onSubmit={handlePublishNotice} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: 'var(--navy)', marginBottom: '8px' }}>Announcement Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Urgent Update: School Holiday Declaration"
+                  value={noticeTitle}
+                  onChange={(e) => setNoticeTitle(e.target.value)}
+                  style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', background: 'white', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: 'var(--navy)', marginBottom: '8px' }}>Send to Target Audience</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  {[
+                    { id: 'ALL', label: 'Everyone (All Staff & Students)' },
+                    { id: 'TEACHERS', label: 'Faculty & Teachers Only' },
+                    { id: 'STUDENTS', label: 'Students Only' },
+                    { id: 'PARENTS', label: 'Parents Only' }
+                  ].map((opt) => (
+                    <button
+                      type="button"
+                      key={opt.id}
+                      onClick={() => setNoticeAudience(opt.id)}
+                      style={{
+                        padding: '10px 18px',
+                        borderRadius: '20px',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        border: noticeAudience === opt.id ? '2px solid #4f46e5' : '1px solid #e2e8f0',
+                        background: noticeAudience === opt.id ? '#eef2ff' : 'white',
+                        color: noticeAudience === opt.id ? '#4f46e5' : '#64748b',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: 700, color: 'var(--navy)', marginBottom: '8px' }}>Announcement Message</label>
+                <textarea
+                  required
+                  rows={6}
+                  placeholder="Type the detailed message here..."
+                  value={noticeMsg}
+                  onChange={(e) => setNoticeMsg(e.target.value)}
+                  style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none', resize: 'vertical', background: 'white', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isPublishingNotice}
+                style={{
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '14px 24px',
+                  borderRadius: '12px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)',
+                  marginTop: '10px'
+                }}
+              >
+                <i className={`fa-solid ${isPublishingNotice ? 'fa-spinner fa-spin' : 'fa-paper-plane'}`}></i>
+                <span>{isPublishingNotice ? 'Publishing & Broadcasting...' : 'Publish & Broadcast Notice'}</span>
+              </button>
+            </form>
           </div>
         )}
         {/* ACTION REQUIRED TAB */}
@@ -2548,6 +2573,72 @@ function PrincipalDashboardContent() {
                 <i className="fa-solid fa-check" style={{ marginRight: '6px' }}></i> Approve
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showNoticeSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            background: 'var(--white)',
+            borderRadius: '24px',
+            padding: '32px 24px',
+            textAlign: 'center',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+            maxWidth: '340px',
+            width: '100%',
+            animation: 'scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}>
+            <div style={{
+              width: '72px',
+              height: '72px',
+              borderRadius: '50%',
+              background: '#d1fae5',
+              color: '#10b981',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '32px',
+              margin: '0 auto 20px'
+            }}>
+              <i className="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--navy)', marginBottom: '8px' }}>Published</h3>
+            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px', lineHeight: 1.5 }}>
+              Notice published and broadcasted successfully via push notification!
+            </p>
+            <button
+              onClick={() => {
+                setShowNoticeSuccess(false);
+                setActiveTab('notices');
+              }}
+              style={{
+                width: '100%',
+                background: 'var(--navy)',
+                color: 'white',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '12px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: 'var(--shadow)'
+              }}
+            >
+              Okay
+            </button>
           </div>
         </div>
       )}

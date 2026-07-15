@@ -238,14 +238,6 @@ function TeacherDashboardContent() {
           />
         )}
         
-        {/* NOTICES TAB */}
-        {activeTab === 'notices' && (
-          <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <h2>Notices</h2>
-            <p>School and class notices will go here.</p>
-          </div>
-        )}
-
         {/* ATTENDANCE REGISTER TAB */}
         {activeTab === 'attendance_register' && (
           <AttendanceRegister myStudents={myStudents} />

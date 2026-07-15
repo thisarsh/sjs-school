@@ -25,10 +25,7 @@ function TeacherDashboardContent() {
 
   const activeTab = searchParams.get("tab") || "home";
 
-  useMobileBackHandler({
-    activeTab,
-    onReturnHome: () => router.push(`${pathname}?tab=home`, { scroll: false }),
-  });
+
 
   const setActiveTab = (tab: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -80,6 +77,12 @@ function TeacherDashboardContent() {
       default: return 'Portal';
     }
   };
+
+  useMobileBackHandler({
+    activeTab,
+    onBack: handleBackClick,
+    onReturnHome: handleBackClick,
+  });
 
   const { data: teacherProfile, isLoading } = useQuery({
     queryKey: ['teacherProfile'],

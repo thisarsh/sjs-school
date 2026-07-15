@@ -67,7 +67,8 @@ function StudentDashboardContent() {
     activeTab,
     isModalOpen: !!comingSoonFeature,
     onCloseModal: () => setComingSoonFeature(null),
-    onReturnHome: () => router.push('?tab=home', { scroll: false }),
+    onBack: handleBackClick,
+    onReturnHome: handleBackClick,
   });
 
   useEffect(() => {

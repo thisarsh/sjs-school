@@ -106,10 +106,7 @@ function PrincipalDashboardContent() {
 
   const activeTab = searchParams.get("tab") || "home";
 
-  useMobileBackHandler({
-    activeTab,
-    onReturnHome: () => router.push(`${pathname}?tab=home`, { scroll: false }),
-  });
+
 
   const setActiveTab = (tab: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -236,6 +233,12 @@ function PrincipalDashboardContent() {
       default: return 'Portal';
     }
   };
+
+  useMobileBackHandler({
+    activeTab,
+    onBack: handleBackClick,
+    onReturnHome: handleBackClick,
+  });
 
   // Action Required states
   const [actionReqType, setActionReqType] = useState<'complaints' | 'attendance' | 'leaves'>(() => {

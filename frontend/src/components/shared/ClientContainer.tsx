@@ -22,17 +22,18 @@ export default function ClientContainer({ children }: { children: React.ReactNod
           const isNotHome = tab !== 'home';
 
           if (isPortal && isNotHome) {
-            // Dispatch event to page hooks
+            // Dispatch event to page hooks for in-app tab navigation
             window.dispatchEvent(new CustomEvent('sjs-back-click'));
           } else if (isPortal && !isNotHome) {
-            // On dashboard portal home tab, exit app immediately
-            CapacitorApp.exitApp();
+            // On dashboard portal home tab — minimize app (like native Android apps)
+            // This sends app to background instead of killing it
+            CapacitorApp.minimizeApp();
           } else {
-            // Outside portal, use history back if available, otherwise exit
+            // Outside portal, use history back if available, otherwise minimize
             if (canGoBack) {
               window.history.back();
             } else {
-              CapacitorApp.exitApp();
+              CapacitorApp.minimizeApp();
             }
           }
         });

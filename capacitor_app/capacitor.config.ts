@@ -8,9 +8,6 @@ const config: CapacitorConfig = {
     url: 'https://sjs-school.vercel.app'
   },
   plugins: {
-    App: {
-      disableBackButtonHandler: true,
-    },
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],
     },

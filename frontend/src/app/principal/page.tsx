@@ -266,6 +266,18 @@ function PrincipalDashboardContent() {
   const [isPublishingNotice, setIsPublishingNotice] = useState(false);
   const [showNoticeSuccess, setShowNoticeSuccess] = useState(false);
 
+  // Custom dialog targets for Security/Account Management
+  const [passwordResetTarget, setPasswordResetTarget] = useState<{ id: string, name: string, role: 'STUDENT' | 'TEACHER' } | null>(null);
+  const [newPasswordInput, setNewPasswordInput] = useState('');
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [showPasswordText, setShowPasswordText] = useState(false);
+
+  const [accountDeleteTarget, setAccountDeleteTarget] = useState<{ id: string, name: string, role: 'STUDENT' | 'TEACHER' } | null>(null);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  // Inline assignment saving state
+  const [isSavingAssignment, setIsSavingAssignment] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem('sjs_last_seen_action_req_count');
     if (saved) setLastSeenIssuesCount(parseInt(saved, 10));
@@ -436,7 +448,7 @@ function PrincipalDashboardContent() {
   const handlePublishNotice = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!noticeTitle.trim() || !noticeMsg.trim()) {
-      alert("Please enter both title and message");
+      setPopupNotice({ title: "⚠️ Missing Info", message: "Please enter both title and message" });
       return;
     }
     setIsPublishingNotice(true);
@@ -452,7 +464,7 @@ function PrincipalDashboardContent() {
       refetchNotices();
       setShowNoticeSuccess(true);
     } catch (err: any) {
-      alert("Failed to publish notice: " + (err?.response?.data?.error || err.message));
+      setPopupNotice({ title: "❌ Failed", message: err.response?.data?.error || err.message });
     } finally {
       setIsPublishingNotice(false);
     }
@@ -552,38 +564,44 @@ function PrincipalDashboardContent() {
     }
   };
 
-  const handleResetPassword = async (id: string, role: 'STUDENT' | 'TEACHER') => {
-    if (!confirm('Are you sure you want to reset the password for this account?')) return;
+  const handleResetPasswordAction = async () => {
+    if (!passwordResetTarget || newPasswordInput.trim().length < 6) return;
+    setIsResettingPassword(true);
     try {
       const token = localStorage.getItem("sjs_token");
-      const newPassword = prompt('Enter new password (min 6 characters):');
-      if (!newPassword || newPassword.length < 6) {
-        setPopupNotice({ title: "❌ Error", message: "Password must be at least 6 characters long." });
-        return;
-      }
+      const { id, role } = passwordResetTarget;
       const endpoint = role === 'STUDENT' ? `/students/${id}` : `/teachers/${id}`;
-      await api.put(endpoint, { password: newPassword }, {
+      await api.put(endpoint, { password: newPasswordInput.trim() }, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      setPasswordResetTarget(null);
+      setNewPasswordInput('');
       setPopupNotice({ title: "✅ Success!", message: "Password updated successfully!" });
     } catch (err: any) {
       setPopupNotice({ title: "❌ Error", message: err.response?.data?.error || err.message });
+    } finally {
+      setIsResettingPassword(false);
     }
   };
 
-  const handleDeleteAccount = async (id: string, role: 'STUDENT' | 'TEACHER') => {
-    if (!confirm('Are you sure you want to completely delete this account? This cannot be undone.')) return;
+  const handleDeleteAccountAction = async () => {
+    if (!accountDeleteTarget) return;
+    setIsDeletingAccount(true);
     try {
       const token = localStorage.getItem("sjs_token");
+      const { id, role } = accountDeleteTarget;
       const endpoint = role === 'STUDENT' ? `/students/${id}` : `/teachers/${id}`;
       await api.delete(endpoint, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      setAccountDeleteTarget(null);
       setPopupNotice({ title: "✅ Success!", message: "Account deleted successfully!" });
       if (role === 'STUDENT') queryClient.invalidateQueries({ queryKey: ['studentsDirectory'] });
       else queryClient.invalidateQueries({ queryKey: ['teachersDirectory'] });
     } catch (err: any) {
       setPopupNotice({ title: "❌ Error", message: err.response?.data?.error || err.message });
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -1325,10 +1343,16 @@ function PrincipalDashboardContent() {
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={() => handleResetPassword(t.id, 'TEACHER')} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                        <button 
+                          onClick={() => setPasswordResetTarget({ id: t.id, name: `${t.firstName} ${t.lastName}`, role: 'TEACHER' })} 
+                          style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                        >
                           Reset Password
                         </button>
-                        <button onClick={() => handleDeleteAccount(t.id, 'TEACHER')} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                        <button 
+                          onClick={() => setAccountDeleteTarget({ id: t.id, name: `${t.firstName} ${t.lastName}`, role: 'TEACHER' })} 
+                          style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                        >
                           Delete
                         </button>
                       </div>
@@ -1404,10 +1428,16 @@ function PrincipalDashboardContent() {
                                         <button onClick={() => router.push(`/student/profile?id=${student.scholarNumber}`)} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
                                           Profile
                                         </button>
-                                        <button onClick={() => handleResetPassword(student.id, 'STUDENT')} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                                        <button 
+                                          onClick={() => setPasswordResetTarget({ id: student.id, name: `${student.firstName} ${student.lastName}`, role: 'STUDENT' })} 
+                                          style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                                        >
                                           Reset Pwd
                                         </button>
-                                        <button onClick={() => handleDeleteAccount(student.id, 'STUDENT')} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                                        <button 
+                                          onClick={() => setAccountDeleteTarget({ id: student.id, name: `${student.firstName} ${student.lastName}`, role: 'STUDENT' })} 
+                                          style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                                        >
                                           Delete
                                         </button>
                                       </div>

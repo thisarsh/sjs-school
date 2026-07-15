@@ -287,7 +287,7 @@ function TeacherDashboardContent() {
 
         {/* NOTICES TAB */}
         {activeTab === 'notices' && (
-          <div style={{ padding: '20px', paddingBottom: '120px' }}>
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
             <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1e293b', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <i className="fa-solid fa-bullhorn" style={{ color: '#4f46e5' }}></i>
               School Announcements

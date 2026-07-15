@@ -86,7 +86,8 @@ export default function StudentApplicationForm() {
       setFormData(prev => ({ ...prev, profilePic: data.url }));
     } catch (err) {
       console.error(err);
-      alert('Failed to upload image to server');
+      setStatus('ERROR');
+      setErrorMsg('Failed to upload profile photo to server. Please try again.');
     } finally {
       setIsUploadingImage(false);
     }

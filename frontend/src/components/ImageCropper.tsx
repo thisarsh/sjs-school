@@ -42,7 +42,7 @@ export default function ImageCropper({ imageSrc, onCropComplete, onCancel }: Ima
       onCropComplete(previewUrl, finalFile);
     } catch (error) {
       console.error("Error cropping/compressing image", error);
-      alert("Failed to process image. Please try another one.");
+      onCancel();
     } finally {
       setIsProcessing(false);
     }

@@ -21,29 +21,17 @@ function StudentDashboardContent() {
   const activeTab = searchParams.get('tab') || 'home';
   const [user, setUser] = useState<any>(null);
   const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
-  const [tabHistory, setTabHistory] = useState<string[]>(['home']);
-
-  useEffect(() => {
-    setTabHistory(prev => {
-      if (prev[prev.length - 1] === activeTab) return prev;
-      const idx = prev.indexOf(activeTab);
-      if (idx !== -1) {
-        return prev.slice(0, idx + 1);
-      }
-      return [...prev, activeTab];
-    });
-  }, [activeTab]);
+  const getParentTab = (tab: string): string => {
+    switch (tab) {
+      case 'leave_new': return 'leave';
+      case 'complaint_new': return 'complaint';
+      default: return 'home';
+    }
+  };
 
   const handleBackClick = () => {
-    if (tabHistory.length > 1) {
-      const newHistory = [...tabHistory];
-      newHistory.pop();
-      const prevTab = newHistory[newHistory.length - 1];
-      setTabHistory(newHistory);
-      router.push(`?tab=${prevTab}`);
-    } else {
-      router.push('?tab=home');
-    }
+    const parentTab = getParentTab(activeTab);
+    router.push(`?tab=${parentTab}`);
   };
 
   const getShortPageName = (tab: string) => {

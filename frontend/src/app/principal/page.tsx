@@ -176,18 +176,14 @@ function PrincipalDashboardContent() {
     };
   }, []);
 
-  const [tabHistory, setTabHistory] = useState<string[]>(['home']);
-
-  useEffect(() => {
-    setTabHistory(prev => {
-      if (prev[prev.length - 1] === activeTab) return prev;
-      const idx = prev.indexOf(activeTab);
-      if (idx !== -1) {
-        return prev.slice(0, idx + 1);
-      }
-      return [...prev, activeTab];
-    });
-  }, [activeTab]);
+  const getParentTab = (tab: string): string => {
+    switch (tab) {
+      case 'notices_new': return 'notices';
+      case 'action_required_detail': return 'action_required';
+      case 'section_page': return 'classes_section';
+      default: return 'home';
+    }
+  };
 
   const handleBackClick = () => {
     if (activeTab === 'teachers_section' && teachersSubTab !== 'directory') {
@@ -211,15 +207,8 @@ function PrincipalDashboardContent() {
       return;
     }
 
-    if (tabHistory.length > 1) {
-      const newHistory = [...tabHistory];
-      newHistory.pop();
-      const prevTab = newHistory[newHistory.length - 1];
-      setTabHistory(newHistory);
-      setActiveTab(prevTab);
-    } else {
-      setActiveTab('home');
-    }
+    const parentTab = getParentTab(activeTab);
+    setActiveTab(parentTab);
   };
 
   const getShortPageName = (tab: string) => {

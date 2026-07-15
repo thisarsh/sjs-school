@@ -195,7 +195,11 @@ function PrincipalDashboardContent() {
       return;
     }
     if (activeTab === 'attendance_overview' && selectedAttendanceClassSection) {
-      setSelectedAttendanceClassSection(null);
+      if (attendanceViewParam && attendanceViewParam !== 'summary') {
+        setSelectedAttendanceClassSection(selectedAttendanceClassSection, 'summary');
+      } else {
+        setSelectedAttendanceClassSection(null);
+      }
       return;
     }
     if (activeTab === 'complaints' && popupComplaintModal) {
@@ -230,6 +234,10 @@ function PrincipalDashboardContent() {
       case 'leave_requests': return 'Leaves';
       case 'complaints': return 'Grievances';
       case 'account_management': return 'Security';
+      case 'action_required_detail':
+        return actionReqType === 'complaints' ? 'Grievances' : actionReqType === 'attendance' ? 'Attendance' : 'Leaves';
+      case 'section_page':
+        return selectedClassSection ? `${selectedClassSection.grade}-${selectedClassSection.sectionName}` : 'Section';
       default: return 'Portal';
     }
   };
@@ -1598,23 +1606,8 @@ function PrincipalDashboardContent() {
 
         {/* ACTION REQUIRED DETAIL TAB */}
         {activeTab === 'action_required_detail' && (
-          <div className="view-panel active" style={{ padding: '0', paddingBottom: '100px' }}>
-            <div style={{ background: 'var(--navy)', padding: '20px', color: 'white', display: 'flex', alignItems: 'center', gap: '16px', position: 'sticky', top: 0, zIndex: 10 }}>
-              <button 
-                onClick={() => setActiveTab('action_required')}
-                style={{ background: 'rgba(255,255,255,0.2)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div style={{ fontSize: "20px", fontWeight: 700 }}>
-                {actionReqType === 'complaints' && "New Complaints"}
-                {actionReqType === 'attendance' && "Low Attendance"}
-                {actionReqType === 'leaves' && "Leave Requests"}
-              </div>
-            </div>
-
-            <div style={{ padding: '20px' }}>
-              {actionReqType === 'complaints' && (
+          <div className="view-panel active" style={{ padding: '20px', paddingBottom: '100px' }}>
+            {actionReqType === 'complaints' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {recentUnseenComplaints.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No new complaints in the last 7 days.</div>
@@ -1683,7 +1676,6 @@ function PrincipalDashboardContent() {
                   )}
                 </div>
               )}
-            </div>
           </div>
         )}
 
@@ -2054,19 +2046,11 @@ function PrincipalDashboardContent() {
         {/* SINGLE SECTION PAGE VIEW */}
         {activeTab === 'section_page' && selectedClassSection && (
           <div className="view-panel active" style={{ padding: '24px 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', position: 'relative', minHeight: '48px' }}>
-              <button
-                onClick={() => { setSelectedClassSection(null); setAssigningRole(null); setActiveTab("classes_section"); }}
-                style={{ background: 'var(--white)', border: 'none', width: '40px', height: '40px', borderRadius: '50%', boxShadow: 'var(--shadow)', cursor: 'pointer', color: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute', left: 0, fontSize: '16px' }}
-              >
-                <i className="fa-solid fa-arrow-left"></i>
-              </button>
-              <div style={{ textAlign: 'center' }}>
-                <span style={{ fontSize: '11px', color: '#c9a84c', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '1px', display: 'block', marginBottom: '2px' }}>Academic Section Profile</span>
-                <h2 className="page-title" style={{ fontSize: "20px", margin: 0, color: '#0a192f' }}>
-                  {['PG', 'Nursery', 'KG'].includes(selectedClassSection.grade) ? selectedClassSection.grade : `Class ${selectedClassSection.grade}`} - Section {selectedClassSection.sectionName}
-                </h2>
-              </div>
+            <div style={{ marginBottom: '24px', textAlign: 'center' }}>
+              <span style={{ fontSize: '11px', color: '#c9a84c', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '1px', display: 'block', marginBottom: '2px' }}>Academic Section Profile</span>
+              <h2 className="page-title" style={{ fontSize: "20px", margin: 0, color: '#0a192f' }}>
+                {['PG', 'Nursery', 'KG'].includes(selectedClassSection.grade) ? selectedClassSection.grade : `Class ${selectedClassSection.grade}`} - Section {selectedClassSection.sectionName}
+              </h2>
             </div>
 
             {/* 1. CLASS TEACHER CARD */}

@@ -24,7 +24,11 @@ export default function ClientContainer({ children }: { children: React.ReactNod
           if (isPortal && isNotHome) {
             // Dispatch event to page hooks
             window.dispatchEvent(new CustomEvent('sjs-back-click'));
+          } else if (isPortal && !isNotHome) {
+            // On dashboard portal home tab, exit app immediately
+            CapacitorApp.exitApp();
           } else {
+            // Outside portal, use history back if available, otherwise exit
             if (canGoBack) {
               window.history.back();
             } else {

@@ -3,8 +3,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import './LeaveForm.css';
 
-export default function LeaveForm({ applicant, role = 'STUDENT' }: { applicant: any, role?: 'STUDENT' | 'TEACHER' }) {
-  const [view, setView] = useState<'list' | 'create'>('list');
+interface LeaveFormProps {
+  applicant: any;
+  role?: 'STUDENT' | 'TEACHER';
+  view?: 'list' | 'create';
+  onNavigateToCreate?: () => void;
+  onNavigateToList?: () => void;
+}
+
+export default function LeaveForm({ 
+  applicant, 
+  role = 'STUDENT', 
+  view = 'list',
+  onNavigateToCreate,
+  onNavigateToList
+}: LeaveFormProps) {
   const [formData, setFormData] = useState({
     type: 'Sick Leave',
     fromDate: '',
@@ -13,10 +26,11 @@ export default function LeaveForm({ applicant, role = 'STUDENT' }: { applicant: 
     attachmentUrl: '',
     parentConsent: false
   });
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const queryClient = useQueryClient();
 
-  const { data: leaves, isLoading } = useQuery({
+  const { data: leaves = [], isLoading } = useQuery({
     queryKey: ['myLeaves'],
     queryFn: async () => {
       const token = localStorage.getItem("sjs_token");
@@ -58,17 +72,16 @@ export default function LeaveForm({ applicant, role = 'STUDENT' }: { applicant: 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myLeaves'] });
-      setView('list');
-      setFormData({ type: 'Sick Leave', fromDate: '', toDate: '', reason: '', attachmentUrl: '', parentConsent: false });
+      setShowSuccess(true);
     }
   });
 
   if (view === 'list') {
     return (
       <div className="leave-module">
-        <div className="leave-header">
+        <div className="leave-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
           <h2 className="leave-title">My Leaves</h2>
-          <button onClick={() => setView('create')} className="leave-btn-primary">
+          <button onClick={onNavigateToCreate} className="leave-btn-primary">
             + Request Leave
           </button>
         </div>
@@ -113,18 +126,80 @@ export default function LeaveForm({ applicant, role = 'STUDENT' }: { applicant: 
   }
 
   return (
-    <div className="leave-module">
-      <div className="leave-header" style={{ justifyContent: 'flex-start', gap: '12px' }}>
-        <button onClick={() => setView('list')} className="leave-back-btn">
-          <i className="fa-solid fa-arrow-left"></i>
-        </button>
-        <h2 className="leave-title">Request Leave</h2>
-      </div>
+    <div className="leave-module" style={{ padding: 0 }}>
+      {/* Success Modal */}
+      {showSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            background: 'var(--white)',
+            borderRadius: '24px',
+            padding: '32px 24px',
+            textAlign: 'center',
+            maxWidth: '360px',
+            width: '100%',
+            boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)',
+          }}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: '#d1fae5',
+              color: '#059669',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '28px',
+              margin: '0 auto 16px'
+            }}>
+              <i className="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text)', marginBottom: '8px' }}>
+              Request Submitted!
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--muted)', marginBottom: '24px', lineHeight: '1.5' }}>
+              Your leave request has been sent for approval.
+            </p>
+            <button
+              onClick={() => {
+                setShowSuccess(false);
+                setFormData({ type: 'Sick Leave', fromDate: '', toDate: '', reason: '', attachmentUrl: '', parentConsent: false });
+                if (onNavigateToList) onNavigateToList();
+              }}
+              style={{
+                width: '100%',
+                background: 'var(--navy)',
+                color: 'white',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '12px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: 'var(--shadow)'
+              }}
+            >
+              Okay
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div className="leave-form-container">
-        
-        {/* Auto-filled Section */}
-        <div className="leave-applicant-box">
+      {/* Full-width container (no card container background, borders, top-lines) */}
+      <div style={{ width: '100%' }}>
+        {/* Applicant Details */}
+        <div className="leave-applicant-box" style={{ background: 'var(--white)', borderRadius: '16px', padding: '16px', marginBottom: '24px', border: '1px solid var(--border)' }}>
           <div className="leave-applicant-label">Applicant Details</div>
           <div className="leave-applicant-name">{applicant?.firstName} {applicant?.lastName}</div>
           <div className="leave-applicant-sub">
@@ -228,12 +303,14 @@ export default function LeaveForm({ applicant, role = 'STUDENT' }: { applicant: 
 
         <div className="leave-actions">
           <button 
-            onClick={() => setView('list')}
+            type="button"
+            onClick={onNavigateToList}
             className="leave-btn-cancel"
           >
             Cancel
           </button>
           <button 
+            type="button"
             onClick={() => applyMutation.mutate()}
             disabled={!formData.fromDate || !formData.toDate || !formData.reason || totalDays <= 0 || (role === 'STUDENT' && !formData.parentConsent) || applyMutation.isPending}
             className="leave-btn-submit"

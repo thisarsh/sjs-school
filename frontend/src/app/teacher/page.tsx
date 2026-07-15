@@ -72,7 +72,9 @@ function TeacherDashboardContent() {
       case 'attendance_register': return 'Att. Reg.';
       case 'attendance': return 'Mark Att.';
       case 'leave': return 'Leaves';
-      case 'complaint': return 'Grievance';
+      case 'leave_new': return 'New Leave';
+      case 'complaint': return 'Grievances';
+      case 'complaint_new': return 'New Grievance';
       case 'profile': return 'Profile';
       case 'notices': return 'Notices';
       default: return 'Portal';
@@ -280,13 +282,25 @@ function TeacherDashboardContent() {
           />
         )}
         {/* LEAVE TAB */}
-        {activeTab === 'leave' && (
-          <LeaveForm applicant={teacherProfile} role="TEACHER" />
+        {(activeTab === 'leave' || activeTab === 'leave_new') && (
+          <LeaveForm 
+            applicant={teacherProfile} 
+            role="TEACHER" 
+            view={activeTab === 'leave' ? 'list' : 'create'}
+            onNavigateToCreate={() => setActiveTab('leave_new')}
+            onNavigateToList={() => setActiveTab('leave')}
+          />
         )}
 
         {/* COMPLAINT TAB */}
-        {activeTab === 'complaint' && (
-          <ComplaintForm applicant={teacherProfile} role="TEACHER" />
+        {(activeTab === 'complaint' || activeTab === 'complaint_new') && (
+          <ComplaintForm 
+            applicant={teacherProfile} 
+            role="TEACHER" 
+            view={activeTab === 'complaint' ? 'list' : 'create'}
+            onNavigateToCreate={() => setActiveTab('complaint_new')}
+            onNavigateToList={() => setActiveTab('complaint')}
+          />
         )}
 
         {/* PROFILE TAB */}

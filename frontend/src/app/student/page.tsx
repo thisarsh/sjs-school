@@ -53,7 +53,9 @@ function StudentDashboardContent() {
       case 'fees': return 'Fees';
       case 'marks': return 'Marks';
       case 'leave': return 'Leaves';
-      case 'complaint': return 'Grievance';
+      case 'leave_new': return 'New Leave';
+      case 'complaint': return 'Grievances';
+      case 'complaint_new': return 'New Grievance';
       case 'profile': return 'Profile';
       case 'account': return 'Account';
       case 'notices': return 'Notices';
@@ -449,12 +451,24 @@ function StudentDashboardContent() {
               <StudentAttendanceSummary attendanceData={attendanceData || []} />
             )}
 
-            {activeTab === 'leave' && (
-              <LeaveForm applicant={student} role="STUDENT" />
+            {(activeTab === 'leave' || activeTab === 'leave_new') && (
+              <LeaveForm 
+                applicant={student} 
+                role="STUDENT" 
+                view={activeTab === 'leave' ? 'list' : 'create'}
+                onNavigateToCreate={() => router.push('?tab=leave_new')}
+                onNavigateToList={() => router.push('?tab=leave')}
+              />
             )}
 
-            {activeTab === 'complaint' && (
-              <ComplaintForm applicant={student} role="STUDENT" />
+            {(activeTab === 'complaint' || activeTab === 'complaint_new') && (
+              <ComplaintForm 
+                applicant={student} 
+                role="STUDENT" 
+                view={activeTab === 'complaint' ? 'list' : 'create'}
+                onNavigateToCreate={() => router.push('?tab=complaint_new')}
+                onNavigateToList={() => router.push('?tab=complaint')}
+              />
             )}
 
             {(activeTab === 'account' || activeTab === 'profile') && (

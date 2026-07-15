@@ -9,6 +9,7 @@ import AttendanceRegister from "@/components/teacher/AttendanceRegister";
 import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -599,6 +600,7 @@ function PrincipalDashboardContent() {
               <div className="top-actions">
                 <i className="fa-solid fa-bars top-icon"></i>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <ThemeToggle />
                   <UniversalRefreshButton />
                   <div className="top-icon" onClick={() => setActiveTab('action_required')} style={{ cursor: 'pointer' }}>
                     <i className="fa-regular fa-bell"></i>

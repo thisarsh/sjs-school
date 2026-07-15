@@ -7,6 +7,28 @@ import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 export default function AttendanceRegister({ myStudents, initialView = 'weekly' }: { myStudents: any[], initialView?: 'weekly' | 'monthly' | 'yearly' }) {
   const router = useRouter();
   const [registerView, setRegisterView] = useState<'weekly' | 'monthly' | 'yearly'>(initialView);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState<'rollNumber' | 'name'>('rollNumber');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const filteredStudents = (myStudents || [])
+    .filter((s: any) => {
+      const fullName = `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase();
+      return fullName.includes(searchTerm.toLowerCase()) || (s.rollNumber || '').includes(searchTerm);
+    })
+    .sort((a: any, b: any) => {
+      let comparison = 0;
+      if (sortField === 'rollNumber') {
+        const rollA = parseInt(a.rollNumber) || 0;
+        const rollB = parseInt(b.rollNumber) || 0;
+        comparison = rollA - rollB;
+      } else {
+        const nameA = `${a.firstName || ''} ${a.lastName || ''}`.toLowerCase();
+        const nameB = `${b.firstName || ''} ${b.lastName || ''}`.toLowerCase();
+        comparison = nameA.localeCompare(nameB);
+      }
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
 
   const getRegisterDateRange = (view: string) => {
     const today = new Date();
@@ -150,6 +172,55 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
         </button>
       </div>
 
+      {/* Search and Sort Toolbars */}
+      <div style={{ padding: '0 20px', marginBottom: '16px', display: 'flex', gap: '10px' }}>
+        <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
+          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', color: '#9ca3af' }}></i>
+          <input
+            type="text"
+            placeholder="Search student..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 12px 10px 36px',
+              borderRadius: '10px',
+              border: '1px solid var(--border)',
+              background: 'var(--white)',
+              color: 'var(--text)',
+              fontSize: '13px',
+              outline: 'none'
+            }}
+          />
+        </div>
+        <button
+          onClick={() => {
+            if (sortField === 'name') {
+              setSortField('rollNumber');
+            } else {
+              setSortField('name');
+            }
+            setSortOrder('asc');
+          }}
+          style={{
+            padding: '10px 14px',
+            borderRadius: '10px',
+            border: '1px solid var(--border)',
+            background: 'var(--white)',
+            color: 'var(--text)',
+            fontSize: '13px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+        >
+          <i className="fa-solid fa-sort"></i>
+          {sortField === 'rollNumber' ? 'Roll No' : 'Name'}
+        </button>
+      </div>
+
       <div style={{ flex: 1, overflowX: 'auto', overflowY: 'auto', WebkitOverflowScrolling: 'touch', padding: '0 20px', paddingBottom: '100px' }}>
         {isLoadingRegister ? (
           <SchoolLoadingScreen title="Loading Attendance Register..." subtitle="Calculating attendance statistics" />
@@ -159,12 +230,12 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
             <thead>
               <tr>
-                <th style={{ position: 'sticky', top: 0, left: 0, background: '#fdfbf7', zIndex: 10, padding: '10px 8px', textAlign: 'left', borderBottom: '2px solid #e5e7eb', color: '#374151', minWidth: '120px' }}>Student</th>
+                <th style={{ position: 'sticky', top: 0, left: 0, background: 'var(--white)', zIndex: 10, padding: '10px 8px', textAlign: 'left', borderBottom: '2px solid var(--border)', color: 'var(--text)', minWidth: '120px' }}>Student</th>
                 {registerView === 'yearly' ? (
                   <>
-                    <th style={{ position: 'sticky', top: 0, background: '#fdfbf7', zIndex: 5, padding: '10px 8px', textAlign: 'center', borderBottom: '2px solid #e5e7eb', color: '#6b7280' }}>Working Days</th>
-                    <th style={{ position: 'sticky', top: 0, background: '#fdfbf7', zIndex: 5, padding: '10px 8px', textAlign: 'center', borderBottom: '2px solid #e5e7eb', color: '#6b7280' }}>Days Present</th>
-                    <th style={{ position: 'sticky', top: 0, background: '#fdfbf7', zIndex: 5, padding: '10px 8px', textAlign: 'center', borderBottom: '2px solid #e5e7eb', color: '#6b7280' }}>Attendance %</th>
+                    <th style={{ position: 'sticky', top: 0, background: 'var(--white)', zIndex: 5, padding: '10px 8px', textAlign: 'center', borderBottom: '2px solid var(--border)', color: 'var(--text2)' }}>Working Days</th>
+                    <th style={{ position: 'sticky', top: 0, background: 'var(--white)', zIndex: 5, padding: '10px 8px', textAlign: 'center', borderBottom: '2px solid var(--border)', color: 'var(--text2)' }}>Days Present</th>
+                    <th style={{ position: 'sticky', top: 0, background: 'var(--white)', zIndex: 5, padding: '10px 8px', textAlign: 'center', borderBottom: '2px solid var(--border)', color: 'var(--text2)' }}>Attendance %</th>
                   </>
                 ) : (() => {
                   const { startDate, endDate } = getRegisterDateRange(registerView);
@@ -173,7 +244,7 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
                   const ths = [];
                   let current = new Date(start);
                   while (current <= end) {
-                    ths.push(<th key={current.toISOString()} style={{ position: 'sticky', top: 0, background: '#fdfbf7', zIndex: 5, padding: '10px 4px', textAlign: 'center', borderBottom: '2px solid #e5e7eb', color: '#6b7280', minWidth: '30px' }}>{current.getDate()}</th>);
+                    ths.push(<th key={current.toISOString()} style={{ position: 'sticky', top: 0, background: 'var(--white)', zIndex: 5, padding: '10px 4px', textAlign: 'center', borderBottom: '2px solid var(--border)', color: 'var(--text2)', minWidth: '30px' }}>{current.getDate()}</th>);
                     current.setDate(current.getDate() + 1);
                   }
                   return ths;
@@ -181,8 +252,7 @@ export default function AttendanceRegister({ myStudents, initialView = 'weekly' 
               </tr>
             </thead>
             <tbody>
-              {[...myStudents]
-                .sort((a: any, b: any) => (parseInt(a.rollNumber) || 0) - (parseInt(b.rollNumber) || 0))
+              {filteredStudents
                 .map((student: any) => {
                   if (registerView === 'yearly') {
                     const classDates = new Set(registerData?.map((r: any) => new Date(r.date).toISOString().split('T')[0]));

@@ -26,6 +26,280 @@
   --font-display: 'Playfair Display', serif;
 }
 
+html[data-theme="dark"] {
+  /* True AMOLED Pitch Black Theme Tokens */
+  --white:   #0d0d0d;   /* Card backgrounds, dropdowns, panels */
+  --off:     #000000;   /* Page backgrounds */
+  --border:  #1c1c1e;   /* Subtle border colors */
+  --text:    #ffffff;   /* Pure white primary text */
+  --text2:   #a1a1a6;   /* Light gray secondary text */
+  --muted:   #5b5b5f;   /* Gray muted text/icons */
+  --navy:    #ffffff;   /* Heading text overrides */
+  --navy2:   #08080a;   /* Inner block backgrounds */
+  --navy3:   #151518;   /* Buttons & secondary elements */
+  --shadow:  0 2px 12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.95);
+
+  /* login.css overrides for Dark Mode */
+  --bg-card: #0c0c0d !important;
+  --text-main: #ffffff !important;
+  --text-muted: #a1a1a6 !important;
+  --border-color: #1c1c1e !important;
+  --gold-light: #16140f !important;
+  
+  background-color: #000000 !important;
+}
+
+/* Global Document & Page level Dark Mode rules */
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] .student-dashboard-wrap,
+html[data-theme="dark"] .app-wrap,
+html[data-theme="dark"] .login-full-screen-wrapper {
+  background-color: #000000 !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Dashboard UI Components Dark Mode Overrides */
+html[data-theme="dark"] .student-hero-bg::after {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, #000000 100%) !important;
+}
+
+html[data-theme="dark"] .student-top-nav i,
+html[data-theme="dark"] .top-icon {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .student-avatar-container,
+html[data-theme="dark"] .logo-container {
+  background: #0d0d0d !important;
+  border-color: #1c1c1e !important;
+}
+
+html[data-theme="dark"] .student-avatar-fallback {
+  background: #151518 !important;
+  color: #a1a1a6 !important;
+}
+
+html[data-theme="dark"] .student-greeting,
+html[data-theme="dark"] .hero-greeting {
+  color: #a1a1a6 !important;
+}
+
+html[data-theme="dark"] .student-name,
+html[data-theme="dark"] .hero-name,
+html[data-theme="dark"] .school-title,
+html[data-theme="dark"] .welcome-title {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .school-location,
+html[data-theme="dark"] .welcome-subtitle {
+  color: #a1a1a6 !important;
+}
+
+html[data-theme="dark"] .brand-section::before {
+  background: radial-gradient(circle, rgba(20, 20, 20, 0.9) 0%, rgba(10, 10, 10, 0.7) 40%, rgba(0, 0, 0, 0) 70%) !important;
+}
+
+html[data-theme="dark"] .badges-desktop {
+  background: #0d0d0d !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+
+html[data-theme="dark"] .badge-text strong {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .badge-text span {
+  color: #a1a1a6 !important;
+}
+
+html[data-theme="dark"] .login-card {
+  border: 1px solid #1c1c1e !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+}
+
+html[data-theme="dark"] .student-details-badge,
+html[data-theme="dark"] .avatar-pill {
+  background: #151518 !important;
+  color: #ffffff !important;
+  border: 1px solid #1c1c1e !important;
+}
+
+html[data-theme="dark"] .student-bottom-nav,
+html[data-theme="dark"] .bottom-nav {
+  background: #0d0d0d !important;
+  border-top: 1px solid #1c1c1e !important;
+}
+
+html[data-theme="dark"] .student-nav-item,
+html[data-theme="dark"] .nav-item {
+  color: #5b5b5f !important;
+}
+
+html[data-theme="dark"] .student-nav-item.active,
+html[data-theme="dark"] .nav-item.active {
+  color: #d4af37 !important;
+}
+
+html[data-theme="dark"] .student-nav-fab-label {
+  color: #a1a1a6 !important;
+}
+
+html[data-theme="dark"] .mobile-hero::before {
+  background: rgba(0, 0, 0, 0.9) !important;
+}
+
+html[data-theme="dark"] .mobile-hero::after {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.92) 50%, #000000 100%) !important;
+}
+
+html[data-theme="dark"] .avatar-img {
+  border: 4px solid #0d0d0d !important;
+}
+
+/* Card overrides for all sections */
+html[data-theme="dark"] .card, 
+html[data-theme="dark"] .sas-card, 
+html[data-theme="dark"] .sas-metric-card,
+html[data-theme="dark"] .student-metric-card,
+html[data-theme="dark"] .metric-card,
+html[data-theme="dark"] .action-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .notice-card,
+html[data-theme="dark"] .request-card {
+  background: #0d0d0d !important;
+  background-color: #0d0d0d !important;
+  border: 1px solid #1c1c1e !important;
+  color: #ffffff !important;
+}
+
+/* Search bar container & input overrides for all portals */
+html[data-theme="dark"] .student-search-bar,
+html[data-theme="dark"] .search-bar,
+html[data-theme="dark"] .floating-search,
+html[data-theme="dark"] .floating-search-container,
+html[data-theme="dark"] .app-search {
+  background: #0d0d0d !important;
+  background-color: #0d0d0d !important;
+  border: 1px solid #1c1c1e !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .student-search-bar input,
+html[data-theme="dark"] .search-bar input,
+html[data-theme="dark"] .floating-search input,
+html[data-theme="dark"] .app-search input {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #ffffff !important;
+  border: none !important;
+  outline: none !important;
+}
+
+html[data-theme="dark"] .student-search-bar i,
+html[data-theme="dark"] .search-bar i,
+html[data-theme="dark"] .floating-search i,
+html[data-theme="dark"] .app-search i {
+  color: #a1a1a6 !important;
+}
+
+/* Global placeholder contrast overrides */
+html[data-theme="dark"] ::placeholder,
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #8e8e93 !important;
+  opacity: 1 !important;
+}
+
+/* Dropdown select options styling */
+html[data-theme="dark"] select,
+html[data-theme="dark"] option {
+  background-color: #0d0d0d !important;
+  color: #ffffff !important;
+}
+
+/* Form labels contrast fixes */
+html[data-theme="dark"] label {
+  color: #a1a1a6 !important;
+}
+
+/* Leave and Complaint forms Dark Mode Overrides */
+html[data-theme="dark"] .leave-empty-state,
+html[data-theme="dark"] .complaint-empty-state,
+html[data-theme="dark"] .leave-card,
+html[data-theme="dark"] .complaint-card,
+html[data-theme="dark"] .form-card,
+html[data-theme="dark"] .form-container,
+html[data-theme="dark"] .leave-form,
+html[data-theme="dark"] .complaint-form,
+html[data-theme="dark"] .form-wrap,
+html[data-theme="dark"] .leave-form-container,
+html[data-theme="dark"] .complaint-form-container {
+  background: #0d0d0d !important;
+  background-color: #0d0d0d !important;
+  border: 1px solid #1c1c1e !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .leave-title,
+html[data-theme="dark"] .complaint-title,
+html[data-theme="dark"] .leave-card-type,
+html[data-theme="dark"] .complaint-card-type,
+html[data-theme="dark"] .leave-empty-title,
+html[data-theme="dark"] .complaint-empty-title {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .leave-empty-sub,
+html[data-theme="dark"] .complaint-empty-sub,
+html[data-theme="dark"] .leave-card-dates,
+html[data-theme="dark"] .complaint-card-dates {
+  color: #a1a1a6 !important;
+}
+
+/* Standard tables & inputs for all pages */
+html[data-theme="dark"] table,
+html[data-theme="dark"] th {
+  background-color: #0d0d0d !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #1c1c1e !important;
+}
+
+html[data-theme="dark"] td {
+  background-color: #000000 !important;
+  color: #a1a1a6 !important;
+  border-bottom: 1px solid #1c1c1e !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background-color: #0d0d0d !important;
+  border: 1px solid #1c1c1e !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .app-header {
+  background: #0d0d0d !important;
+  border-bottom: 1px solid #1c1c1e !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .view-panel {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Base Transition for Theme Shifts */
+body, div, header, aside, main, table, th, td, button, input, select, textarea, a, i, span, h1, h2, h3, h4 {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+
 html, body { 
   height: 100dvh;
   width: 100dvw;
@@ -33,23 +307,18 @@ html, body {
   padding: 0;
   font-family: var(--font); 
   color: var(--text); 
-  background: #09131f; 
+  background: var(--off); 
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .mobile-app-container {
-  width: min(100dvw, 440px, calc((100dvh - 30px) * (9 / 19)));
-  height: min(calc(100dvh - 30px), calc(100dvw * (19 / 9)), calc(440px * (19 / 9)));
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   background: var(--off);
   position: relative;
-  margin: auto;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.65);
   overflow-x: hidden;
   overflow-y: auto;
-  border-radius: 24px;
   display: flex;
   flex-direction: column;
 }
@@ -351,6 +620,7 @@ tbody tr:last-child td { border-bottom: none; }
 .view-panel.active { display: block; animation: slideIn 0.3s ease forwards; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
+
 @media (max-width: 768px) {
   .page-wrap {
     flex-direction: column;
@@ -366,3 +636,209 @@ tbody tr:last-child td { border-bottom: none; }
     overflow-y: visible !important;
   }
 }
+
+/* PC/Desktop Responsiveness Overrides */
+
+
+/* Statically Compiled School Loading Screen Styles (Prevents FOUC) */
+.school-loading-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%);
+  z-index: 9999;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+html[data-theme="dark"] .school-loading-wrapper {
+  background: linear-gradient(135deg, #000000 0%, #08080a 50%, #0d0d0d 100%) !important;
+}
+
+.loading-content-box {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.logo-orbit-container {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.orbit-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(201, 168, 76, 0.455);
+  animation: orbitRotate 12s linear infinite;
+}
+
+.orbit-dot-1, .orbit-dot-2, .orbit-dot-3 {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #c9a84c;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.8);
+}
+.orbit-dot-1 { top: -4px; left: 50%; transform: translateX(-50%); }
+.orbit-dot-2 { bottom: 18px; left: 8px; }
+.orbit-dot-3 { bottom: 18px; right: 8px; }
+
+.logo-center-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(13, 27, 42, 0.12), 0 0 0 4px rgba(201, 168, 76, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 10px;
+  animation: logoPulse 3s ease-in-out infinite;
+}
+
+html[data-theme="dark"] .logo-center-circle {
+  background: #0d0d0d !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 0 4px rgba(201, 168, 76, 0.35) !important;
+}
+
+.logo-img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.loading-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0d1b2a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+}
+
+html[data-theme="dark"] .loading-title {
+  color: #ffffff !important;
+}
+
+.loading-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+  font-weight: 500;
+}
+
+html[data-theme="dark"] .loading-subtitle {
+  color: #a1a1a6 !important;
+}
+
+.spinner-ring {
+  width: 36px;
+  height: 36px;
+  border: 3.5px solid rgba(201, 168, 76, 0.25);
+  border-top-color: #c9a84c;
+  border-right-color: #0d1b2a;
+  border-radius: 50%;
+  animation: spinFast 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+html[data-theme="dark"] .spinner-ring {
+  border: 3.5px solid rgba(201, 168, 76, 0.25) !important;
+  border-top-color: #c9a84c !important;
+  border-right-color: #ffffff !important;
+}
+
+/* Animated Waves at Bottom */
+.waves-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 1;
+}
+
+.waves-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: 200%;
+  height: 120px;
+}
+
+.wave-layer-1 {
+  fill: rgba(201, 168, 76, 0.18);
+  animation: moveWaves1 12s linear infinite;
+  z-index: 2;
+}
+.wave-layer-2 {
+  fill: rgba(201, 168, 76, 0.28);
+  animation: moveWaves2 8s linear infinite;
+  z-index: 3;
+}
+.wave-layer-3 {
+  fill: rgba(13, 27, 42, 0.08);
+  animation: moveWaves3 6s linear infinite;
+  z-index: 4;
+}
+
+html[data-theme="dark"] .wave-layer-3 {
+  fill: rgba(255, 255, 255, 0.04) !important;
+}
+
+@keyframes orbitRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes spinFast {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes moveWaves1 {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes moveWaves2 {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes moveWaves3 {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+

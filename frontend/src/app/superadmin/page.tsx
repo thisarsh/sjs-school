@@ -7,6 +7,7 @@ import api from "@/lib/api";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import "./superadmin.css";
 import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 function SuperAdminDashboardContent() {
   const router = useRouter();
@@ -122,6 +123,7 @@ function SuperAdminDashboardContent() {
             </div>
           </div>
           <div className="header-actions">
+            <ThemeToggle />
             <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text)" }}>Admin User</span>
             <div className="header-avatar">A</div>
           </div>

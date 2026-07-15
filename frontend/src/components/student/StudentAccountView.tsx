@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/lib/api";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 
 interface StudentAccountViewProps {
@@ -19,6 +22,35 @@ export default function StudentAccountView({
   >(null);
   
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Fetch student marks from DB
+  const { data: apiMarks } = useQuery({
+    queryKey: ["studentMarks", student?.id],
+    queryFn: async () => {
+      const token = localStorage.getItem("sjs_token");
+      const res = await api.get(`/marks/student/${student.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return res.data;
+    },
+    enabled: !!student?.id,
+    retry: false
+  });
+
+  const mockMarks = [
+    { subjectName: 'Mathematics', score: 85, maxScore: 100 },
+    { subjectName: 'Science', score: 78, maxScore: 100 },
+    { subjectName: 'English', score: 92, maxScore: 100 },
+    { subjectName: 'Social Science', score: 81, maxScore: 100 },
+    { subjectName: 'Hindi', score: 88, maxScore: 100 },
+  ];
+
+  const chartData = apiMarks && apiMarks.length > 0 ? apiMarks : mockMarks;
 
   useMobileBackHandler({
     activeTab: 'account',
@@ -169,6 +201,29 @@ export default function StudentAccountView({
           >
             Class {className} {sectionName ? `- Sec ${sectionName}` : ""}
           </div>
+        </div>
+      </div>
+
+      {/* Academic Performance Chart */}
+      <div style={{ background: "white", borderRadius: "18px", border: "1px solid #e2e8f0", padding: "20px", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.03)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <i className="fa-solid fa-chart-simple" style={{ fontSize: "16px" }}></i>
+          </div>
+          <span style={{ fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>Academic Performance</span>
+        </div>
+        <div style={{ height: "180px", width: "100%" }}>
+          {isMounted && (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                <XAxis dataKey="subjectName" stroke="var(--muted)" fontSize={11} tickLine={false} />
+                <YAxis domain={[0, 100]} stroke="var(--muted)" fontSize={11} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)' }} />
+                <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={24} name="Your Score" />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 

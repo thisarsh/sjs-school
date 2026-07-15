@@ -29,6 +29,7 @@ export const viewport: Viewport = {
 };
 
 import ClientContainer from "@/components/shared/ClientContainer";
+import CommandPalette from "@/components/shared/CommandPalette";
 
 export default function RootLayout({
   children,
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <ClientContainer>
+            <CommandPalette />
             {children}
           </ClientContainer>
         </QueryProvider>

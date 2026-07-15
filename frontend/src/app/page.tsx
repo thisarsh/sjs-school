@@ -121,6 +121,12 @@ export default function LoginPage() {
     <>
       <div className="bg-image"></div>
       <div className="bg-leaves"></div>
+      <div className="desktop-bg-curve">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+          <path d="M 28 0 C -2 25, -2 75, 28 100 L 100 100 L 100 0 Z" fill="#ffffff" />
+          <path d="M 30 0 C 0 25, 0 75, 30 100 L 100 100 L 100 0 Z" fill="#081e3f" />
+        </svg>
+      </div>
 
       <div className="layout-container">
         
@@ -144,15 +150,21 @@ export default function LoginPage() {
 
           <div className="badges-desktop">
             <div className="badge">
-              <i className="fa-solid fa-shield-halved badge-icon"></i>
+              <div className="badge-icon-wrapper">
+                <i className="fa-solid fa-shield-halved badge-icon"></i>
+              </div>
               <div className="badge-text"><strong>Excellence</strong><span>in Education</span></div>
             </div>
             <div className="badge">
-              <i className="fa-solid fa-trophy badge-icon"></i>
+              <div className="badge-icon-wrapper">
+                <i className="fa-solid fa-trophy badge-icon"></i>
+              </div>
               <div className="badge-text"><strong>Discipline</strong><span>in Practice</span></div>
             </div>
             <div className="badge">
-              <i className="fa-regular fa-star badge-icon"></i>
+              <div className="badge-icon-wrapper">
+                <i className="fa-regular fa-star badge-icon"></i>
+              </div>
               <div className="badge-text"><strong>Character</strong><span>for Life</span></div>
             </div>
           </div>
@@ -261,6 +273,15 @@ export default function LoginPage() {
                 </div>
               )}
             </form>
+          </div>
+
+          {/* Desktop-only Quote under the card */}
+          <div className="desktop-quote-container">
+            <p className="desktop-quote">
+              <span className="quote-mark">“</span> Education is the most powerful <span className="quote-mark">”</span> <br />
+              <span className="quote-subtext">weapon which you can use to change the world.</span>
+            </p>
+            <div className="quote-divider"></div>
           </div>
         </div>
       </div>

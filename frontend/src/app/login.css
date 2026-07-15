@@ -474,3 +474,495 @@
     .login-card { padding: 1rem; }
     .badges-mobile { padding: 0.5rem; margin-top: 0.5rem; }
   }
+
+  /* Global Hide for Desktop-Only Elements (Hidden on mobile/tablet by default) */
+  .desktop-bg-curve {
+    display: none;
+  }
+  .desktop-quote-container {
+    display: none;
+  }
+
+  /* DESKTOP MAKE-OVER MEDIA QUERY (Only kicks in above 1024px) */
+  @media (min-width: 1025px) {
+    body {
+      background: #081e3f !important;
+    }
+
+    .desktop-bg-curve {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100vh;
+      z-index: 2;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .desktop-quote-container {
+      display: flex;
+      margin-top: 4vh;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 70%;
+      height: 100%;
+      background: url('/assets/school.jpg') center/cover no-repeat;
+      filter: none;
+      z-index: 1;
+      transform: none;
+    }
+    .bg-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 45%, rgba(255, 255, 255, 0) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .bg-leaves {
+      display: none !important;
+    }
+
+    .layout-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 6vw;
+      align-items: center;
+    }
+
+    /* Left Side */
+    .brand-section {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 4vw;
+      position: relative;
+      z-index: 5;
+      padding-top: 0;
+    }
+    .brand-section::before {
+      display: none !important;
+    }
+
+    .logo-container {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 3.5vh;
+      order: 1;
+    }
+    .logo-container img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+    }
+
+    .welcome-title {
+      order: 2;
+      color: #4f6482;
+      font-family: 'Inter', sans-serif !important;
+      text-transform: uppercase;
+      font-size: 0.95rem !important;
+      letter-spacing: 2px !important;
+      font-weight: 700 !important;
+      margin-bottom: 1vh !important;
+      line-height: 1.2 !important;
+    }
+    .welcome-title span {
+      display: none !important;
+    }
+    .welcome-title::after {
+      content: ' BACK TO';
+    }
+
+    .school-title {
+      order: 3;
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 3.5rem !important;
+      font-weight: 800 !important;
+      color: #0b1f3c !important;
+      margin-bottom: 1vh !important;
+      letter-spacing: -0.5px !important;
+    }
+
+    .welcome-decoration {
+      order: 4;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-bottom: 2.5vh !important;
+    }
+    .welcome-decoration .line {
+      height: 3px !important;
+      width: 80px !important;
+      background: #c9a84c !important;
+    }
+    .welcome-decoration .dot {
+      display: none !important;
+    }
+
+    .school-location {
+      order: 5;
+      font-size: 1.05rem !important;
+      color: #5b6f8a !important;
+      margin-bottom: 2vh !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+    .school-location i {
+      color: #c9a84c;
+    }
+
+    .welcome-subtitle {
+      order: 6;
+      font-size: 1.15rem !important;
+      color: #475569 !important;
+      font-weight: 500;
+      margin-bottom: 6vh !important;
+      position: relative;
+      height: 1.5rem;
+      visibility: hidden;
+    }
+    .welcome-subtitle::after {
+      content: 'Nurturing Excellence. Building Futures.';
+      visibility: visible;
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    /* Desktop Badges at the bottom */
+    .badges-desktop {
+      order: 7;
+      display: flex;
+      background: transparent !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      width: auto !important;
+      gap: 2.5vw !important;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 !important;
+      border-right: none !important;
+    }
+    
+    .badge-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .badge:nth-child(1) .badge-icon-wrapper { background: #eff6ff; color: #2563eb; }
+    .badge:nth-child(2) .badge-icon-wrapper { background: #fef3c7; color: #d97706; }
+    .badge:nth-child(3) .badge-icon-wrapper { background: #dcfce7; color: #16a34a; }
+
+    .badge-icon {
+      font-size: 1.15rem !important;
+      color: inherit !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    .badge-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .badge-text strong {
+      display: block;
+      font-size: 0.95rem !important;
+      color: #0b1f3c;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .badge-text span {
+      font-size: 0.8rem !important;
+      color: #64748b;
+      line-height: 1.2;
+    }
+
+    /* Right Side: Login Card */
+    .login-section {
+      flex: 0.95;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-left: 2vw;
+      z-index: 5;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 32px !important;
+      padding: 48px 40px !important;
+      box-shadow: 0 20px 40px rgba(8, 30, 63, 0.18) !important;
+      border: none !important;
+      width: 100%;
+      max-width: 480px !important;
+      z-index: 10;
+    }
+
+    .login-card h3 {
+      font-size: 1.15rem !important;
+      font-weight: 700;
+      margin-bottom: 2vh !important;
+      color: #0b1f3c;
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px !important;
+      margin-bottom: 3vh !important;
+    }
+
+    .role-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 16px !important;
+      padding: 16px 8px !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      text-align: center;
+    }
+
+    .role-btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1 !important;
+    }
+    .role-btn.active {
+      border: 1.5px solid #e2b95b !important;
+      background: rgba(201,168,76,0.06) !important;
+    }
+    .role-btn.active::after {
+      content: '\f058';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      color: #c9a84c;
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      font-size: 1.15rem;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .role-icon {
+      width: 40px !important;
+      height: 40px !important;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem !important;
+    }
+    .role-parent .role-icon { background: #eff6ff; color: #3b82f6; }
+    .role-student .role-icon { background: #ecfdf5; color: #10b981; }
+    .role-staff .role-icon { background: #fffbeb; color: #d97706; }
+
+    .role-name {
+      font-size: 0.85rem !important;
+      font-weight: 700 !important;
+      color: #475569;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #2b579a !important;
+      margin-bottom: 3vh !important;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .divider:not(:empty)::before { margin-right: 1rem; }
+    .divider:not(:empty)::after { margin-left: 1rem; }
+
+    .form-group {
+      margin-bottom: 2.5vh !important;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.9rem !important;
+      font-weight: 600;
+      color: #475569 !important;
+      margin-bottom: 8px !important;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute;
+      left: 16px !important;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 14px 16px 14px 44px !important;
+      border: 1px solid #e2e8f0 !important;
+      background: #f8fafc !important;
+      border-radius: 12px !important;
+      font-size: 0.95rem !important;
+      font-family: inherit;
+      color: #1e293b !important;
+      transition: all 0.2s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #2b579a !important;
+      box-shadow: 0 0 0 3px rgba(43,87,154,0.15) !important;
+      background: #ffffff !important;
+    }
+    .eye-icon {
+      position: absolute;
+      right: 16px !important;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3vh !important;
+      font-size: 0.9rem !important;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: #475569;
+    }
+    .checkbox-group input {
+      accent-color: #2b579a;
+      width: 16px;
+      height: 16px;
+    }
+    .forgot-link {
+      color: #3b82f6 !important;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #2b579a !important;
+      color: white !important;
+      border: none;
+      padding: 14px !important;
+      border-radius: 12px !important;
+      font-size: 1.05rem !important;
+      font-weight: 700 !important;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(43,87,154,0.25) !important;
+      transition: all 0.2s ease;
+    }
+    .submit-btn:hover {
+      background: #1f3f70 !important;
+      box-shadow: 0 6px 16px rgba(43,87,154,0.35) !important;
+    }
+
+    .desktop-quote {
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .desktop-quote .quote-mark {
+      color: #c9a84c;
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+    .desktop-quote .quote-subtext {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-weight: 400;
+    }
+    .quote-divider {
+      width: 40px;
+      height: 3px;
+      background: #c9a84c;
+      margin-top: 12px;
+      border-radius: 2px;
+    }
+
+    .info-banner {
+      background: #fffdf5;
+      border: 1px solid #f6e8cc;
+      border-radius: 12px !important;
+      padding: 12px 16px !important;
+      margin-top: 2.5vh !important;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .global-footer {
+      display: none !important;
+    }
+  }

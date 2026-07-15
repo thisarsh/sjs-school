@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ComingSoonModal from '@/components/shared/ComingSoonModal';
 import UniversalRefreshButton from '@/components/shared/UniversalRefreshButton';
+import ThemeToggle from '@/components/shared/ThemeToggle';
 
 export default function TeacherHome({
   teacherProfile,
@@ -26,6 +27,7 @@ export default function TeacherHome({
         <div className="top-actions">
           <i className="fa-solid fa-bars top-icon"></i>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <ThemeToggle />
             <UniversalRefreshButton />
             <div onClick={() => setActiveTab('notices')} style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
               <i className="fa-regular fa-bell top-icon"></i>

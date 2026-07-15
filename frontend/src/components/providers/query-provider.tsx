@@ -11,6 +11,12 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
           queries: {
             staleTime: 1000 * 60 * 5, // 5 minutes
             refetchOnWindowFocus: false,
+            retry: (failureCount, error: any) => {
+              if (error?.response?.status === 401 || error?.response?.status === 403) {
+                return false;
+              }
+              return failureCount < 3;
+            },
           },
         },
       })

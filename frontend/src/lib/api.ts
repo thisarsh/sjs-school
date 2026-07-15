@@ -23,16 +23,18 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle global errors (like 401 Unauthorized)
+// Response interceptor to handle global errors (like 401 Unauthorized or 403 Forbidden)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('sjs_token');
         localStorage.removeItem('sjs_user');
         if (window.location.pathname !== '/') {
           window.location.href = '/';
+          // Return a pending promise to swallow the error and prevent console log pollution
+          return new Promise(() => {});
         }
       }
     }

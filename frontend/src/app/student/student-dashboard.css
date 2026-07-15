@@ -421,3 +421,18 @@
   font-weight: 600;
   color: #9ca3af;
 }
+
+/* PC/Desktop Responsiveness Overrides */
+@media (min-width: 1025px) {
+  .student-bottom-nav {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: 600px !important;
+    border-top-left-radius: 24px !important;
+    border-top-right-radius: 24px !important;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #f1f5f9 !important;
+    border-bottom: none !important;
+  }
+}
+

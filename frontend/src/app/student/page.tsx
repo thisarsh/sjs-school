@@ -12,6 +12,7 @@ import UniversalRefreshButton from '@/components/shared/UniversalRefreshButton';
 import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 import StudentAccountView from '@/components/student/StudentAccountView';
 import { useMobileBackHandler } from '@/hooks/useMobileBackHandler';
+import ThemeToggle from '@/components/shared/ThemeToggle';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -166,6 +167,7 @@ function StudentDashboardContent() {
             <div className="student-top-nav">
               <i className="fa-solid fa-bars"></i>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <ThemeToggle />
                 <UniversalRefreshButton />
                 <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                   <i className="fa-regular fa-bell"></i>

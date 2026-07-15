@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import StudentAttendanceCalendar from './StudentAttendanceCalendar';
 import './StudentAttendanceSummary.css';
 
@@ -11,6 +14,11 @@ export default function StudentAttendanceSummary({ attendanceData }: StudentAtte
   const router = useRouter();
   const [activeView, setActiveView] = useState<'summary' | 'calendar'>('summary');
   const [calendarMode, setCalendarMode] = useState<'week' | 'month'>('week');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const calculateMetrics = (data: any[], start: Date, end: Date) => {
     const filtered = data.filter((r) => {
@@ -44,6 +52,39 @@ export default function StudentAttendanceSummary({ attendanceData }: StudentAtte
   const weekMetrics = calculateMetrics(attendanceData || [], startOfWeek, todayEnd);
   const monthMetrics = calculateMetrics(attendanceData || [], startOfMonth, endOfMonth);
   const yearMetrics = calculateMetrics(attendanceData || [], startOfYear, endOfYear);
+
+  const getMonthlyTrend = (data: any[]) => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const trendMap: { [key: string]: { present: number, total: number } } = {};
+    const now = new Date();
+    
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const label = `${months[d.getMonth()]} ${d.getFullYear().toString().slice(2)}`;
+      trendMap[label] = { present: 0, total: 0 };
+    }
+
+    if (Array.isArray(data)) {
+      data.forEach((r) => {
+        const d = new Date(r.date);
+        const label = `${months[d.getMonth()]} ${d.getFullYear().toString().slice(2)}`;
+        if (trendMap[label] !== undefined) {
+          trendMap[label].total += 1;
+          if (r.status === 'PRESENT' || r.status === 'HALF_DAY') {
+            trendMap[label].present += (r.status === 'HALF_DAY' ? 0.5 : 1);
+          }
+        }
+      });
+    }
+
+    return Object.keys(trendMap).map((label) => {
+      const { present, total } = trendMap[label];
+      const percent = total > 0 ? Math.round((present / total) * 100) : 0;
+      return { name: label, Percentage: percent };
+    });
+  };
+
+  const monthlyTrendData = getMonthlyTrend(attendanceData || []);
 
   let todayStatus = 'No Data';
   let todayColor = '#9ca3af';
@@ -107,12 +148,7 @@ export default function StudentAttendanceSummary({ attendanceData }: StudentAtte
 
   return (
     <div className="student-attendance-summary-wrapper">
-      <div className="sas-header">
-        <button className="sas-back-btn" onClick={() => router.push('?tab=home')}>
-          <i className="fa-solid fa-arrow-left"></i>
-        </button>
-        <h2 className="sas-title">Attendance Summary</h2>
-      </div>
+
 
       <div className="sas-today-card" style={{ borderLeft: `4px solid ${todayColor}` }}>
         <div className="sas-today-info">
@@ -187,6 +223,29 @@ export default function StudentAttendanceSummary({ attendanceData }: StudentAtte
                 <span>Total Working Days: <b>{yearMetrics.total}</b></span>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="sas-metric-card full-width">
+          <div className="sas-metric-header">Attendance Trend (Last 6 Months)</div>
+          <div className="sas-metric-body" style={{ height: '200px', width: '100%', marginTop: '15px' }}>
+            {isMounted && (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={monthlyTrendData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorPercent" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="name" stroke="var(--muted)" fontSize={11} tickLine={false} />
+                  <YAxis domain={[0, 100]} stroke="var(--muted)" fontSize={11} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text)' }} />
+                  <Area type="monotone" dataKey="Percentage" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPercent)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
       </div>

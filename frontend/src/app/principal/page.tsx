@@ -662,13 +662,15 @@ function PrincipalDashboardContent() {
   }
 
   return (
-    <div className="app-wrap">
+    <div className="app-wrap" style={{ paddingTop: '60px' }}>
       {/* Floating Constant Header */}
       <div className="portal-header" style={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
+        height: '60px',
+        boxSizing: 'border-box',
         zIndex: 1000,
         background: 'var(--white)',
         borderBottom: '1px solid var(--border)',

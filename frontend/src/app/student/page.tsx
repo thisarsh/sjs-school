@@ -189,7 +189,7 @@ function StudentDashboardContent() {
   }
 
   return (
-    <div className="student-dashboard-wrap">
+    <div className="student-dashboard-wrap" style={{ paddingTop: '60px' }}>
       <ComingSoonModal
         isOpen={!!comingSoonFeature}
         onClose={() => setComingSoonFeature(null)}
@@ -198,10 +198,12 @@ function StudentDashboardContent() {
 
       {/* Floating Constant Header */}
       <div className="portal-header" style={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
+        height: '60px',
+        boxSizing: 'border-box',
         zIndex: 1000,
         background: 'var(--white)',
         borderBottom: '1px solid var(--border)',

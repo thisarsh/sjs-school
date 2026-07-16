@@ -307,7 +307,7 @@ function TeacherDashboardContent() {
 
         {/* ACADEMIC CALENDAR TAB */}
         {activeTab === 'calendar' && (
-          <div className="view-panel active" style={{ padding: '16px 20px', paddingBottom: '120px' }}>
+          <div className="view-panel active" style={{ padding: '4px 16px', paddingBottom: '120px' }}>
             <AcademicCalendar />
           </div>
         )}

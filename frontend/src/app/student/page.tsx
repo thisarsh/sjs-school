@@ -485,15 +485,9 @@ function StudentDashboardContent() {
                 )}
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* ACADEMIC CALENDAR TAB */}
-      {activeTab === 'calendar' && (
-        <div style={{ width: '100%', minHeight: '100vh', background: '#f8fafc', paddingBottom: '130px' }}>
-          <div style={{ width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '16px' }}>
-            <AcademicCalendar />
+            {activeTab === 'calendar' && (
+              <AcademicCalendar />
+            )}
           </div>
         </div>
       )}

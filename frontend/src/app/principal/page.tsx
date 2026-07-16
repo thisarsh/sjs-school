@@ -2332,7 +2332,7 @@ function PrincipalDashboardContent() {
 
       {/* ACADEMIC CALENDAR TAB */}
       {activeTab === 'calendar' && (
-        <div className="app-content" style={{ padding: '16px', paddingBottom: '120px' }}>
+        <div className="app-content" style={{ padding: '4px 16px', paddingBottom: '120px' }}>
           <AcademicCalendar />
         </div>
       )}

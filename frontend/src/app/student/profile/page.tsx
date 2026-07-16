@@ -241,53 +241,47 @@ function StudentProfileContent() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
             
             {/* Father Card */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', border: '1px solid #f1f5f9' }}>
+            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', border: '1px solid #f1f5f9' }}>
               <div>
                 <div style={{ fontSize: '11px', color: '#3b82f6', fontWeight: 700, marginBottom: '4px' }}>Father's Name</div>
-                <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>{student.fatherName || 'N/A'}</div>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>{student.fatherName || 'N/A'}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#475569', fontSize: '13px', fontWeight: 500 }}>
                   <i className="fa-solid fa-phone" style={{ color: '#94a3b8', width: '16px' }}></i> 
                   <span>{student.parentMobile || 'N/A'}</span>
-                  {student.parentMobile && (
-                    <div style={{ display: 'inline-flex', gap: '8px', marginLeft: '8px', alignItems: 'center' }}>
-                      <a href={`tel:${student.parentMobile}`} style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} title="Call Father">
-                        <i className="fa-solid fa-phone" style={{ fontSize: '11px' }}></i>
-                      </a>
-                      <a href={`https://wa.me/91${student.parentMobile.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#e8f5e9', color: '#25D366', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} title="WhatsApp Father">
-                        <i className="fa-brands fa-whatsapp" style={{ fontSize: '13px' }}></i>
-                      </a>
-                    </div>
-                  )}
                 </div>
               </div>
-              <div style={{ background: '#eff6ff', width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6', fontSize: '20px' }}>
-                <i className="fa-regular fa-user"></i>
-              </div>
+              {student.parentMobile && (
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <a href={`tel:${student.parentMobile}`} style={{ background: '#eff6ff', color: '#2563eb', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 6px rgba(37,99,235,0.08)' }} title="Call Father">
+                    <i className="fa-solid fa-phone" style={{ fontSize: '15px' }}></i>
+                  </a>
+                  <a href={`https://wa.me/91${student.parentMobile.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#e8f5e9', color: '#25D366', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 6px rgba(37,211,102,0.08)' }} title="WhatsApp Father">
+                    <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px' }}></i>
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Mother Card */}
-            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', border: '1px solid #f1f5f9' }}>
+            <div style={{ background: 'white', borderRadius: '16px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', border: '1px solid #f1f5f9' }}>
               <div>
                 <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 700, marginBottom: '4px' }}>Mother's Name</div>
-                <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>{student.motherName || 'N/A'}</div>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>{student.motherName || 'N/A'}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#475569', fontSize: '13px', fontWeight: 500 }}>
                   <i className="fa-solid fa-phone" style={{ color: '#94a3b8', width: '16px' }}></i>
                   <span>{student.parentSecondaryMobile || 'N/A'}</span>
-                  {student.parentSecondaryMobile && (
-                    <div style={{ display: 'inline-flex', gap: '8px', marginLeft: '8px', alignItems: 'center' }}>
-                      <a href={`tel:${student.parentSecondaryMobile}`} style={{ background: '#fdf4ff', color: '#d946ef', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} title="Call Mother">
-                        <i className="fa-solid fa-phone" style={{ fontSize: '11px' }}></i>
-                      </a>
-                      <a href={`https://wa.me/91${student.parentSecondaryMobile.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#e8f5e9', color: '#25D366', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }} title="WhatsApp Mother">
-                        <i className="fa-brands fa-whatsapp" style={{ fontSize: '13px' }}></i>
-                      </a>
-                    </div>
-                  )}
                 </div>
               </div>
-              <div style={{ background: '#fdf4ff', width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d946ef', fontSize: '20px' }}>
-                <i className="fa-regular fa-user"></i>
-              </div>
+              {student.parentSecondaryMobile && (
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <a href={`tel:${student.parentSecondaryMobile}`} style={{ background: '#fdf4ff', color: '#d946ef', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 6px rgba(217,70,239,0.08)' }} title="Call Mother">
+                    <i className="fa-solid fa-phone" style={{ fontSize: '15px' }}></i>
+                  </a>
+                  <a href={`https://wa.me/91${student.parentSecondaryMobile.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ background: '#e8f5e9', color: '#25D366', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', boxShadow: '0 2px 6px rgba(37,211,102,0.08)' }} title="WhatsApp Mother">
+                    <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px' }}></i>
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Email Card */}

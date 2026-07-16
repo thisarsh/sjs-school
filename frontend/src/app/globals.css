@@ -467,7 +467,7 @@ tbody tr:last-child td { border-bottom: none; }
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  background: var(--off);
+  background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%);
   position: relative;
   overflow-x: hidden;
 }

@@ -316,7 +316,7 @@ function TeacherDashboardContent() {
 
       {/* Floating Action Buttons for Mark All */}
       {activeTab === 'attendance' && myStudents && myStudents.length > 0 && (
-        <div style={{ position: 'fixed', bottom: '72px', left: 0, right: 0, maxWidth: '480px', margin: '0 auto', padding: '12px 20px', display: 'flex', gap: '12px', zIndex: 99, background: '#fdfbf7', borderTop: '1px solid #f1f5f9' }}>
+        <div style={{ position: 'fixed', bottom: '72px', left: 0, right: 0, maxWidth: '480px', margin: '0 auto', padding: '12px 20px', display: 'flex', gap: '12px', zIndex: 99, background: 'linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%)', borderTop: '1px solid #f1f5f9' }}>
           <button 
             onClick={() => {
               const newAtt = { ...attendanceData };

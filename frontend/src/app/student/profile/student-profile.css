@@ -2,7 +2,7 @@
   height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background-color: #f8fafc;
+  background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%);
   font-family: 'Inter', sans-serif;
   color: #0f172a;
   padding-bottom: 60px;

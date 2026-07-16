@@ -2,7 +2,7 @@
   height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: #f0ebf8; /* Google Form purple tint background */
+  background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%);
   font-family: 'Inter', sans-serif;
   padding: 40px 20px 80px 20px;
   display: flex;

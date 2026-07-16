@@ -1,6 +1,6 @@
 
 /* Specific Principal App Overrides */
-body, html { background: #fdfbf7; }
+body, html { background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%); }
 
 .mobile-hero {
   position: relative;

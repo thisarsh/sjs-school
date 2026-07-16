@@ -1,11 +1,11 @@
 /* Specific Teacher App Styles */
-body, html { background: #fdfbf7; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+body, html { background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%); margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 .app-wrap {
   max-width: 480px;
   width: 100%;
   margin: 0 auto;
-  background: #fdfbf7;
+  background: linear-gradient(135deg, #fdfbf7 0%, #f8f3e7 50%, #f3ece0 100%);
   min-height: 100%;
   flex: 1;
   position: relative;

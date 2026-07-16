@@ -1,4 +1,5 @@
 import pool from '../config/prisma';
+import { PushService } from './push.service';
 
 export class AttendanceService {
   async getTodayAttendance() {
@@ -34,6 +35,32 @@ export class AttendanceService {
        RETURNING *`,
       [today, studentIds, statuses]
     );
+
+    // Send push notification to absent students
+    const absentStudentIds = attendanceData
+      .filter(r => r.status === 'ABSENT')
+      .map(r => r.studentId);
+
+    if (absentStudentIds.length > 0) {
+      try {
+        const studentUsers = await pool.query(
+          'SELECT "userId" FROM "Student" WHERE id = ANY($1)',
+          [absentStudentIds]
+        );
+        const userIds = studentUsers.rows.map(row => row.userId);
+
+        if (userIds.length > 0) {
+          PushService.sendToUsers(
+            userIds,
+            'Attendance Alert: Absent',
+            `You have been marked absent for today (${istDateStr}).`,
+            { type: 'ATTENDANCE_ABSENT', date: istDateStr }
+          ).catch(err => console.error('Error sending absent student push:', err));
+        }
+      } catch (err) {
+        console.error('Failed to send absent push notifications:', err);
+      }
+    }
 
     return res.rows;
   }

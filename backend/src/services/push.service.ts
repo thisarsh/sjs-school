@@ -79,7 +79,6 @@ export class PushService {
             color: '#1a73e8',                // SJS school brand blue accent color
             channelId: channelId,            // Dedicated notification channel ID
             sound: 'default',
-            clickAction: actionCategory,     // Native Action buttons category
             imageUrl: imageUrl,              // High-resolution school logo / notice banner
           }
         },

@@ -105,15 +105,9 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
                   }
                 }
                 
-                let targetUrl = '';
-                if (data.type === 'NOTICE') {
-                  targetUrl = `/${role}?tab=notices`;
-                } else if (data.type === 'LEAVE_STATUS' || data.type === 'LEAVE_REQUEST') {
-                  targetUrl = `/${role}?tab=leave`;
-                } else if (data.type === 'COMPLAINT_STATUS' || data.type === 'COMPLAINT_REQUEST') {
-                  targetUrl = `/${role}?tab=complaint`;
-                } else if (data.type === 'ATTENDANCE_ABSENT') {
-                  targetUrl = `/${role}?tab=attendance`;
+                let targetUrl = `/${role}?tab=notices`; // Default: Notice/Announcements tab
+                if (data.type === 'ATTENDANCE_ABSENT') {
+                  targetUrl = `/${role}`; // Open Home Screen
                 }
 
                 if (targetUrl) {

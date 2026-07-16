@@ -45,10 +45,42 @@ export class PushService {
         return;
       }
 
+      const notificationImage = data?.imageUrl || 'https://sjs-school.vercel.app/assets/logo.png';
+
       const message: MulticastMessage = {
-        notification: { title, body },
+        notification: { 
+          title, 
+          body 
+        },
         tokens: tokens,
-        data: data || {}
+        data: data || {},
+        android: {
+          priority: 'high',
+          notification: {
+            icon: 'ic_stat_notification', // Monochrome small notification icon
+            color: '#1a73e8',              // SJS school brand blue accent color
+            channelId: 'sjs_school_alerts', // High importance notifications channel
+            sound: 'default',
+            imageUrl: notificationImage,      // Logo avatar / attachment image
+            tag: data?.type || 'general',
+          }
+        },
+        apns: {
+          payload: {
+            aps: {
+              sound: 'default',
+              badge: 1,
+              mutableContent: true, // Enables rendering images/attachments in iOS notifications
+              alert: {
+                title,
+                body
+              }
+            }
+          },
+          fcmOptions: {
+            imageUrl: notificationImage
+          }
+        }
       };
 
       const response = await getMessaging().sendEachForMulticast(message);

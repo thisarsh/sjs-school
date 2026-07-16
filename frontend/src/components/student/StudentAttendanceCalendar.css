@@ -1,5 +1,5 @@
 .student-attendance-calendar-wrapper {
-  background-color: #f8fafc;
+  background-color: transparent;
   border-radius: 20px;
   padding: 20px;
   min-height: calc(100vh - 120px);

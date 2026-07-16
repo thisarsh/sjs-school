@@ -1,6 +1,6 @@
 .student-attendance-summary-wrapper {
   padding: 20px;
-  background-color: #f8fafc;
+  background-color: transparent;
   min-height: calc(100vh - 120px);
   margin-top: 15px;
   border-radius: 20px;

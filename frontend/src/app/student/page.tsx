@@ -192,7 +192,7 @@ function StudentDashboardContent() {
   }
 
   return (
-    <div className="student-dashboard-wrap" style={{ paddingTop: activeTab === 'home' ? '0' : '60px', paddingBottom: '30px' }}>
+    <div className="student-dashboard-wrap" style={{ paddingTop: activeTab === 'home' ? '0' : '60px' }}>
       {/* Bell shake animation */}
       <style>{`
         @keyframes bellShake {
@@ -268,19 +268,13 @@ function StudentDashboardContent() {
             {/* Top Navbar */}
             <div className="student-top-nav">
               <ThemeToggle />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                  <i className={`fa-solid fa-bell${unreadNoticesCount > 0 ? ' bell-shake' : ''}`} style={{ fontSize: '22px' }}></i>
-                  {unreadNoticesCount > 0 && (
-                    <div style={{ position: 'absolute', top: '-8px', right: '-10px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', minWidth: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white', padding: '0 4px' }}>
-                      {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
-                    </div>
-                  )}
-                </div>
-                <UniversalRefreshButton />
-                <div onClick={() => router.push('?tab=account')} style={{ cursor: 'pointer', width: '34px', height: '34px', borderRadius: '50%', background: 'linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '14px', fontWeight: 700, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-                  {student?.firstName ? student.firstName.charAt(0).toUpperCase() : '?'}
-                </div>
+              <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <i className={`fa-solid fa-bell${unreadNoticesCount > 0 ? ' bell-shake' : ''}`} style={{ fontSize: '22px' }}></i>
+                {unreadNoticesCount > 0 && (
+                  <div style={{ position: 'absolute', top: '-8px', right: '-10px', background: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 700, borderRadius: '50%', minWidth: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white', padding: '0 4px' }}>
+                    {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -467,7 +461,7 @@ function StudentDashboardContent() {
         </>
       ) : (
         /* --- DEDICATED INDEPENDENT FULL-WIDTH FEATURE PAGES --- */
-        <div style={{ width: '100%', minHeight: '100vh', background: 'transparent', paddingBottom: '30px' }}>
+        <div style={{ width: '100%', minHeight: '100vh', background: 'transparent', paddingBottom: '130px' }}>
           {/* Full-Width Page Content Container */}
           <div style={{ width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '16px' }}>
             {activeTab === 'attendance' && (
@@ -529,8 +523,7 @@ function StudentDashboardContent() {
         </div>
       )}
 
-      {/* Bottom Navigation - Commented out for this version */}
-      {/*
+      {/* Bottom Navigation */}
       <div className="student-bottom-nav">
         <div className={`student-nav-item ${activeTab === 'home' ? 'active' : ''}`} onClick={() => router.push('?tab=home')}>
           <i className="fa-solid fa-house student-nav-icon"></i>
@@ -557,7 +550,6 @@ function StudentDashboardContent() {
           <span className="student-nav-label">Account</span>
         </div>
       </div>
-      */}
 
     </div>
   );

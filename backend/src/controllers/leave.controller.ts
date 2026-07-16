@@ -249,7 +249,32 @@ export class LeaveController {
 
       if (result.rows.length === 0) return res.status(404).json({ error: 'Leave request not found' });
 
-      return res.json(result.rows[0]);
+      const updatedRequest = result.rows[0];
+
+      // Retrieve target userId for push notification
+      try {
+        let targetUserId = null;
+        if (updatedRequest.studentId) {
+          const sRes = await pool.query('SELECT "userId" FROM "Student" WHERE id = $1', [updatedRequest.studentId]);
+          if (sRes.rows.length > 0) targetUserId = sRes.rows[0].userId;
+        } else if (updatedRequest.teacherId) {
+          const tRes = await pool.query('SELECT "userId" FROM "Teacher" WHERE id = $1', [updatedRequest.teacherId]);
+          if (tRes.rows.length > 0) targetUserId = tRes.rows[0].userId;
+        }
+
+        if (targetUserId) {
+          PushService.sendToUsers(
+            [targetUserId],
+            `Leave Request ${status === 'APPROVED' ? 'Approved' : 'Rejected'}`,
+            `Your leave request for ${updatedRequest.totalDays} day(s) starting ${new Date(updatedRequest.fromDate).toLocaleDateString()} has been ${status.toLowerCase()}.`,
+            { type: 'LEAVE_STATUS', leaveId: updatedRequest.id, status }
+          ).catch(err => console.error('Error sending leave update push:', err));
+        }
+      } catch (err) {
+        console.error('Failed to send leave status push:', err);
+      }
+
+      return res.json(updatedRequest);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }

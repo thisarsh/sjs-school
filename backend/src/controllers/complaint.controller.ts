@@ -173,7 +173,36 @@ export const updateComplaintStatus = async (req: any, res: any) => {
       [status, id]
     );
 
-    res.json(updateRes.rows[0]);
+    if (updateRes.rows.length === 0) {
+      return res.status(404).json({ error: 'Complaint not found' });
+    }
+
+    const updatedComplaint = updateRes.rows[0];
+
+    // Send push notification to applicant
+    try {
+      let targetUserId = null;
+      if (updatedComplaint.role === 'STUDENT') {
+        const sRes = await pool.query('SELECT "userId" FROM "Student" WHERE id = $1', [updatedComplaint.applicantId]);
+        if (sRes.rows.length > 0) targetUserId = sRes.rows[0].userId;
+      } else if (updatedComplaint.role === 'TEACHER') {
+        const tRes = await pool.query('SELECT "userId" FROM "Teacher" WHERE id = $1', [updatedComplaint.applicantId]);
+        if (tRes.rows.length > 0) targetUserId = tRes.rows[0].userId;
+      }
+
+      if (targetUserId) {
+        PushService.sendToUsers(
+          [targetUserId],
+          `Grievance Update: ${status === 'RESOLVED' ? 'Resolved' : 'Reviewed'}`,
+          `Your grievance regarding "${updatedComplaint.subject}" has been marked as ${status.toLowerCase()}.`,
+          { type: 'COMPLAINT_STATUS', complaintId: updatedComplaint.id, status }
+        ).catch(err => console.error('Error sending complaint update push:', err));
+      }
+    } catch (err) {
+      console.error('Failed to send complaint status push:', err);
+    }
+
+    res.json(updatedComplaint);
   } catch (error) {
     console.error('Error updating complaint:', error);
     res.status(500).json({ error: 'Internal server error' });

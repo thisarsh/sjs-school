@@ -47,6 +47,18 @@ export class PushService {
 
       const notificationImage = data?.imageUrl || 'https://sjs-school.vercel.app/assets/logo.png';
 
+      // Map dynamic notification channels
+      let channelId = 'default';
+      if (data?.type === 'NOTICE') {
+        channelId = 'sjs_school_notices';
+      } else if (data?.type === 'LEAVE_STATUS' || data?.type === 'LEAVE_REQUEST') {
+        channelId = 'sjs_school_leaves';
+      } else if (data?.type === 'COMPLAINT_STATUS' || data?.type === 'COMPLAINT_REQUEST') {
+        channelId = 'sjs_school_complaints';
+      } else if (data?.type === 'ATTENDANCE_ABSENT') {
+        channelId = 'sjs_school_attendance';
+      }
+
       const message: MulticastMessage = {
         notification: { 
           title, 
@@ -57,9 +69,9 @@ export class PushService {
         android: {
           priority: 'high',
           notification: {
-            icon: 'ic_stat_notification', // Monochrome small notification icon
-            color: '#1a73e8',              // SJS school brand blue accent color
-            channelId: 'sjs_school_alerts', // High importance notifications channel
+            icon: 'ic_stat_notification',   // Monochrome small notification icon
+            color: '#1a73e8',                // SJS school brand blue accent color
+            channelId: channelId,            // Dedicated notification channel ID
             sound: 'default',
             imageUrl: notificationImage,      // Logo avatar / attachment image
             tag: data?.type || 'general',

@@ -34,9 +34,41 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             if (permStatus.receive !== 'granted') return;
             
             await PushNotifications.createChannel({
-              id: 'default',
-              name: 'General Notifications',
+              id: 'sjs_school_notices',
+              name: 'Announcements',
+              description: 'General notices and school announcements',
               importance: 5,
+              visibility: 1 // Public - visible on lock screen
+            });
+
+            await PushNotifications.createChannel({
+              id: 'sjs_school_attendance',
+              name: 'Attendance Updates',
+              description: 'Notifications about student attendance and absences',
+              importance: 5,
+              visibility: 0 // Private - hides body content on lock screen for security
+            });
+
+            await PushNotifications.createChannel({
+              id: 'sjs_school_leaves',
+              name: 'Leave Requests',
+              description: 'Leave request submission and status updates',
+              importance: 5,
+              visibility: 0 // Private
+            });
+
+            await PushNotifications.createChannel({
+              id: 'sjs_school_complaints',
+              name: 'Grievance Updates',
+              description: 'Updates regarding submitted feedback and complaints',
+              importance: 5,
+              visibility: 0 // Private
+            });
+
+            await PushNotifications.createChannel({
+              id: 'default',
+              name: 'General Alerts',
+              importance: 4,
               visibility: 1
             });
 
@@ -51,6 +83,36 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
               const api = (await import('@/lib/api')).default;
               api.post('/auth/push-token', { fcmToken: token.value })
                 .catch(err => console.error('Push token save error', err));
+            }
+          });
+
+          PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+            const data = notification.notification.data;
+            if (data && data.type) {
+              try {
+                const userStr = localStorage.getItem('sjs_user');
+                let role = 'student'; // Fallback default
+                if (userStr) {
+                  const user = JSON.parse(userStr);
+                  if (user.role) {
+                    const r = String(user.role).toLowerCase();
+                    if (r === 'super_admin') role = 'superadmin';
+                    else role = r;
+                  }
+                }
+                
+                if (data.type === 'NOTICE') {
+                  window.location.href = `/${role}?tab=notices`;
+                } else if (data.type === 'LEAVE_STATUS' || data.type === 'LEAVE_REQUEST') {
+                  window.location.href = `/${role}?tab=leave`;
+                } else if (data.type === 'COMPLAINT_STATUS' || data.type === 'COMPLAINT_REQUEST') {
+                  window.location.href = `/${role}?tab=complaint`;
+                } else if (data.type === 'ATTENDANCE_ABSENT') {
+                  window.location.href = `/${role}?tab=attendance`;
+                }
+              } catch (e) {
+                console.error('Push click redirection error', e);
+              }
             }
           });
         });

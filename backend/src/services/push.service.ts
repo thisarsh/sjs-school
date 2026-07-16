@@ -45,19 +45,25 @@ export class PushService {
         return;
       }
 
-      const notificationImage = data?.imageUrl || 'https://sjs-school.vercel.app/assets/logo_small.png';
 
       // Map dynamic notification channels
       let channelId = 'default';
+      let actionCategory: string | undefined = undefined;
       if (data?.type === 'NOTICE') {
         channelId = 'sjs_school_notices';
+        actionCategory = 'NOTICE_ACTIONS';
       } else if (data?.type === 'LEAVE_STATUS' || data?.type === 'LEAVE_REQUEST') {
         channelId = 'sjs_school_leaves';
+        actionCategory = 'LEAVE_ACTIONS';
       } else if (data?.type === 'COMPLAINT_STATUS' || data?.type === 'COMPLAINT_REQUEST') {
         channelId = 'sjs_school_complaints';
+        actionCategory = 'COMPLAINT_ACTIONS';
       } else if (data?.type === 'ATTENDANCE_ABSENT') {
         channelId = 'sjs_school_attendance';
+        actionCategory = 'ATTENDANCE_ACTIONS';
       }
+
+      const imageUrl = data?.imageUrl || undefined;
 
       const message: MulticastMessage = {
         notification: { 
@@ -73,8 +79,8 @@ export class PushService {
             color: '#1a73e8',                // SJS school brand blue accent color
             channelId: channelId,            // Dedicated notification channel ID
             sound: 'default',
-            imageUrl: notificationImage,      // Logo avatar / attachment image
-            tag: data?.type || 'general',
+            clickAction: actionCategory,     // Native Action buttons category
+            imageUrl: imageUrl,              // Image URL only if provided (prevents huge logo fallback)
           }
         },
         apns: {
@@ -82,16 +88,17 @@ export class PushService {
             aps: {
               sound: 'default',
               badge: 1,
-              mutableContent: true, // Enables rendering images/attachments in iOS notifications
+              category: actionCategory,      // Native Action buttons category for iOS
+              mutableContent: !!imageUrl,    // Enable media download if image exists
               alert: {
                 title,
                 body
               }
             }
           },
-          fcmOptions: {
-            imageUrl: notificationImage
-          }
+          fcmOptions: imageUrl ? {
+            imageUrl: imageUrl
+          } : undefined
         }
       };
 

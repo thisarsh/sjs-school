@@ -87,6 +87,10 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
           });
 
           PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+            if (notification.actionId === 'dismiss') {
+              return; // Do nothing if user just clicked Dismiss button
+            }
+
             const data = notification.notification.data;
             if (data && data.type) {
               try {

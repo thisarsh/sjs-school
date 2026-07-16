@@ -44,18 +44,20 @@ export class AttendanceService {
     if (absentStudentIds.length > 0) {
       try {
         const studentUsers = await pool.query(
-          'SELECT "userId" FROM "Student" WHERE id = ANY($1)',
+          'SELECT "userId", "firstName", "lastName" FROM "Student" WHERE id = ANY($1)',
           [absentStudentIds]
         );
-        const userIds = studentUsers.rows.map(row => row.userId);
 
-        if (userIds.length > 0) {
-          PushService.sendToUsers(
-            userIds,
-            'Attendance Alert: Absent',
-            `You have been marked absent for today (${istDateStr}).`,
-            { type: 'ATTENDANCE_ABSENT', date: istDateStr }
-          ).catch(err => console.error('Error sending absent student push:', err));
+        for (const s of studentUsers.rows) {
+          if (s.userId) {
+            const formattedDate = new Date(istDateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+            PushService.sendToUsers(
+              [s.userId],
+              '🚫 Absent Today',
+              `${s.firstName || ''} ${s.lastName || ''}`.trim() + ` was marked absent on ${formattedDate}. Tap to view attendance details.`,
+              { type: 'ATTENDANCE_ABSENT', date: istDateStr }
+            ).catch(err => console.error('Error sending absent student push:', err));
+          }
         }
       } catch (err) {
         console.error('Failed to send absent push notifications:', err);

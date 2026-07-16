@@ -45,7 +45,7 @@ export class PushService {
         return;
       }
 
-      const notificationImage = data?.imageUrl || 'https://sjs-school.vercel.app/assets/logo.png';
+      const notificationImage = data?.imageUrl || 'https://sjs-school.vercel.app/assets/logo_small.png';
 
       // Map dynamic notification channels
       let channelId = 'default';

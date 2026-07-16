@@ -69,6 +69,18 @@ export default function ClientContainer({ children }: { children: React.ReactNod
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const pendingRedirect = window.sessionStorage.getItem('sjs_pending_redirect');
+    if (pendingRedirect) {
+      const currentUrl = window.location.pathname + window.location.search;
+      if (currentUrl !== pendingRedirect) {
+        window.sessionStorage.removeItem('sjs_pending_redirect');
+        window.location.href = pendingRedirect;
+      }
+    }
+  }, [pathname]);
+
   const exitToast = showExitToast ? (
     <div style={{
       position: 'fixed',

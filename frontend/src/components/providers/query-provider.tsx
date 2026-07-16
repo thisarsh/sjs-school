@@ -101,14 +101,20 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
                   }
                 }
                 
+                let targetUrl = '';
                 if (data.type === 'NOTICE') {
-                  window.location.href = `/${role}?tab=notices`;
+                  targetUrl = `/${role}?tab=notices`;
                 } else if (data.type === 'LEAVE_STATUS' || data.type === 'LEAVE_REQUEST') {
-                  window.location.href = `/${role}?tab=leave`;
+                  targetUrl = `/${role}?tab=leave`;
                 } else if (data.type === 'COMPLAINT_STATUS' || data.type === 'COMPLAINT_REQUEST') {
-                  window.location.href = `/${role}?tab=complaint`;
+                  targetUrl = `/${role}?tab=complaint`;
                 } else if (data.type === 'ATTENDANCE_ABSENT') {
-                  window.location.href = `/${role}?tab=attendance`;
+                  targetUrl = `/${role}?tab=attendance`;
+                }
+
+                if (targetUrl) {
+                  window.sessionStorage.setItem('sjs_pending_redirect', targetUrl);
+                  window.location.href = targetUrl;
                 }
               } catch (e) {
                 console.error('Push click redirection error', e);

@@ -241,12 +241,15 @@ export class TeacherService {
          VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW(), $11)
          ON CONFLICT ("userId") DO UPDATE SET 
            "firstName" = EXCLUDED."firstName",
+           "lastName" = EXCLUDED."lastName",
+           phone = EXCLUDED.phone,
            address = EXCLUDED.address,
            qualification = EXCLUDED.qualification,
            experience = EXCLUDED.experience,
            subject = EXCLUDED.subject,
            classes = EXCLUDED.classes,
-           "profilePic" = EXCLUDED."profilePic"
+           "profilePic" = EXCLUDED."profilePic",
+           "updatedAt" = NOW()
          RETURNING *`,
         [userId, schoolId, app.firstName, app.lastName, app.phone, app.address, app.qualification, app.experience, app.subject, app.classes || null, app.profilePic || null]
       );

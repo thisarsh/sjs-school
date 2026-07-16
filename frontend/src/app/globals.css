@@ -54,7 +54,11 @@ html[data-theme="dark"] {
 html[data-theme="dark"],
 html[data-theme="dark"] body,
 html[data-theme="dark"] .student-dashboard-wrap,
+html[data-theme="dark"] .student-profile-wrap,
 html[data-theme="dark"] .app-wrap,
+html[data-theme="dark"] .apply-wrap,
+html[data-theme="dark"] .mobile-app-container,
+html[data-theme="dark"] .main-content,
 html[data-theme="dark"] .login-full-screen-wrapper {
   background-color: #000000 !important;
   background: #000000 !important;

@@ -70,11 +70,21 @@ function StudentDashboardContent() {
     }
   }, [router]);
 
-  // Fetch the logged-in student's profile directly
-  const handleLogout = () => {
-    localStorage.removeItem("sjs_token");
-    localStorage.removeItem("sjs_user");
-    router.push("/");
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("sjs_token");
+      if (token) {
+        await api.post("/auth/logout", {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+    } catch (err) {
+      console.error("Logout request failed:", err);
+    } finally {
+      localStorage.removeItem("sjs_token");
+      localStorage.removeItem("sjs_user");
+      router.push("/");
+    }
   };
 
   const { data: student, isLoading: isLoadingProfile } = useQuery({

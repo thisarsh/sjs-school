@@ -2356,10 +2356,21 @@ function PrincipalDashboardContent() {
           <i className="fa-solid fa-bell"></i>
           <span>Announcements</span>
         </button>
-        <button className="nav-tab" onClick={() => {
-          localStorage.removeItem('sjs_token');
-          localStorage.removeItem('sjs_user');
-          window.location.href = '/';
+        <button className="nav-tab" onClick={async () => {
+          try {
+            const token = localStorage.getItem('sjs_token');
+            if (token) {
+              await api.post('/auth/logout', {}, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+            }
+          } catch (err) {
+            console.error('Logout request failed:', err);
+          } finally {
+            localStorage.removeItem('sjs_token');
+            localStorage.removeItem('sjs_user');
+            window.location.href = '/';
+          }
         }}>
           <i className="fa-solid fa-arrow-right-from-bracket" style={{ color: 'var(--danger)' }}></i>
           <span style={{ color: 'var(--danger)' }}>Logout</span>

@@ -31,7 +31,11 @@ export class AuthController {
 
   logout = async (req: Request, res: Response) => {
     try {
-      // Logic for logout
+      const userId = (req as any).user?.userId;
+      if (userId) {
+        const pool = require('../config/prisma').default;
+        await pool.query('UPDATE "User" SET "fcmToken" = NULL WHERE id = $1', [userId]);
+      }
       res.status(200).json({ message: 'Logged out successfully' });
     } catch (error: any) {
       handleError(res, error);

@@ -335,18 +335,12 @@ function StudentDashboardContent() {
             {/* Action Grid */}
             <div className="student-grid-title">Quick Actions</div>
             <div className="student-grid">
+              {/* Row 1 */}
               <div className="student-grid-item" onClick={() => router.push(`?tab=attendance`)}>
                 <div className="student-grid-icon bg-green-light">
                   <i className="fa-solid fa-clipboard-check"></i>
                 </div>
                 <div className="student-grid-label">Attendance</div>
-              </div>
-
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Timetable')} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-purple-light">
-                  <i className="fa-solid fa-calendar-days"></i>
-                </div>
-                <div className="student-grid-label">Timetable</div>
               </div>
 
               <div className="student-grid-item" onClick={() => setComingSoonFeature('Homework')} style={{ cursor: 'pointer' }}>
@@ -368,25 +362,12 @@ function StudentDashboardContent() {
                 <div className="student-grid-label">Notices &<br />Announcements</div>
               </div>
 
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Gallery')} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-pink-light">
-                  <i className="fa-solid fa-images"></i>
+              {/* Row 2 */}
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Transport')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-orange-light">
+                  <i className="fa-solid fa-bus-simple"></i>
                 </div>
-                <div className="student-grid-label">Gallery</div>
-              </div>
-
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Marks & Results')} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-blue-light">
-                  <i className="fa-solid fa-chart-simple"></i>
-                </div>
-                <div className="student-grid-label">Marks & Results</div>
-              </div>
-
-              <div className="student-grid-item" onClick={() => router.push(`?tab=leave`)} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-pink-light">
-                  <i className="fa-solid fa-file-invoice"></i>
-                </div>
-                <div className="student-grid-label">Leave Application</div>
+                <div className="student-grid-label">Transport</div>
               </div>
 
               <div className="student-grid-item" onClick={() => setComingSoonFeature('Fees')} style={{ cursor: 'pointer' }}>
@@ -396,6 +377,14 @@ function StudentDashboardContent() {
                 <div className="student-grid-label">Fees</div>
               </div>
 
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Marks & Results')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-blue-light">
+                  <i className="fa-solid fa-chart-simple"></i>
+                </div>
+                <div className="student-grid-label">Marks & Results</div>
+              </div>
+
+              {/* Row 3 */}
               <div className="student-grid-item" onClick={() => router.push('?tab=calendar')} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-purple-light">
                   <i className="fa-solid fa-calendar-check"></i>
@@ -410,11 +399,26 @@ function StudentDashboardContent() {
                 <div className="student-grid-label">Study Material</div>
               </div>
 
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Transport')} style={{ cursor: 'pointer' }}>
-                <div className="student-grid-icon bg-orange-light">
-                  <i className="fa-solid fa-bus-simple"></i>
+              <div className="student-grid-item" onClick={() => router.push(`?tab=leave`)} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-pink-light">
+                  <i className="fa-solid fa-file-invoice"></i>
                 </div>
-                <div className="student-grid-label">Transport</div>
+                <div className="student-grid-label">Leave Application</div>
+              </div>
+
+              {/* Row 4 */}
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Timetable')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-purple-light">
+                  <i className="fa-solid fa-calendar-days"></i>
+                </div>
+                <div className="student-grid-label">Timetable</div>
+              </div>
+
+              <div className="student-grid-item" onClick={() => setComingSoonFeature('Gallery')} style={{ cursor: 'pointer' }}>
+                <div className="student-grid-icon bg-pink-light">
+                  <i className="fa-solid fa-images"></i>
+                </div>
+                <div className="student-grid-label">Gallery</div>
               </div>
 
               <div className="student-grid-item" onClick={() => router.push('?tab=complaint')} style={{ cursor: 'pointer' }}>

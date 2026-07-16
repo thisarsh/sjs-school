@@ -1,16 +1,18 @@
 "use client";
-
+ 
 import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
+import StudentAttendanceSummary from '@/components/student/StudentAttendanceSummary';
 import './student-profile.css';
 
 function StudentProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const scholarNumber = searchParams.get('id') as string;
+  const [showAttendanceModal, setShowAttendanceModal] = useState(false);
 
   const { data: studentsList, isLoading } = useQuery({
     queryKey: ['studentsDirectory'],
@@ -130,6 +132,15 @@ function StudentProfileContent() {
             .hero-stat-card > div:first-child { width: 32px !important; height: 32px !important; font-size: 14px !important; }
             .hero-stat-card > div:last-child > div:first-child { font-size: 10px !important; margin-bottom: 0px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .hero-stat-card > div:last-child > div:last-child { font-size: 14px !important; }
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
           }
         `}</style>
         {/* HERO CARD (Redesigned) */}
@@ -343,18 +354,20 @@ function StudentProfileContent() {
               <div className="academic-val">14 <span style={{ fontSize: '14px', color: '#64748b' }}>/ 42</span></div>
               <div className="academic-badge" style={{ background: '#dbeafe', color: '#1e40af' }}>Top 1/3</div>
             </div>
-            <div className="academic-col">
-              <div className="academic-icon" style={{ color: '#f59e0b' }}><i className="fa-solid fa-book-open"></i></div>
-              <div className="academic-label">Attendance</div>
-              <div className="academic-val">
-                {attendanceData ? (
-                  attendanceData.length > 0 
-                    ? `${Math.round((attendanceData.filter((r: any) => r.status === 'PRESENT').length / attendanceData.length) * 100)}%` 
-                    : 'N/A'
-                ) : '...'}
-              </div>
-              <div className="academic-badge" style={{ background: '#fef3c7', color: '#b45309' }}>This Year</div>
-            </div>
+             <div className="academic-col" onClick={() => setShowAttendanceModal(true)} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+               <div className="academic-icon" style={{ color: '#f59e0b' }}><i className="fa-solid fa-book-open"></i></div>
+               <div className="academic-label" style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center' }}>
+                 Attendance <i className="fa-solid fa-circle-info" style={{ fontSize: '10px', color: '#f59e0b' }}></i>
+               </div>
+               <div className="academic-val">
+                 {attendanceData ? (
+                   attendanceData.length > 0 
+                     ? `${Math.round((attendanceData.filter((r: any) => r.status === 'PRESENT').length / attendanceData.length) * 100)}%` 
+                     : 'N/A'
+                 ) : '...'}
+               </div>
+               <div className="academic-badge" style={{ background: '#fffbeb', color: '#d97706', border: '1px solid #fef3c7' }}>View Analysis</div>
+             </div>
             <div className="academic-col">
               <div className="academic-icon" style={{ color: '#a855f7' }}><i className="fa-solid fa-clipboard-list"></i></div>
               <div className="academic-label">Subjects</div>
@@ -409,8 +422,85 @@ function StudentProfileContent() {
 
 
       </div>
-    </div>
-  );
+ 
+       {showAttendanceModal && (
+         <div style={{
+           position: 'fixed',
+           top: 0,
+           left: 0,
+           width: '100%',
+           height: '100%',
+           backgroundColor: 'rgba(15, 23, 42, 0.65)',
+           backdropFilter: 'blur(8px)',
+           zIndex: 9999,
+           display: 'flex',
+           justifyContent: 'center',
+           alignItems: 'center',
+           padding: '16px',
+           animation: 'fadeIn 0.2s ease-out'
+         }}
+         onClick={() => setShowAttendanceModal(false)}
+         >
+           <div style={{
+             background: 'white',
+             borderRadius: '24px',
+             width: '100%',
+             maxWidth: '650px',
+             maxHeight: '90vh',
+             display: 'flex',
+             flexDirection: 'column',
+             overflow: 'hidden',
+             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+             animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+           }}
+           onClick={(e) => e.stopPropagation()}
+           >
+             {/* Modal Header */}
+             <div style={{
+               padding: '20px 24px',
+               borderBottom: '1px solid #f1f5f9',
+               display: 'flex',
+               justifyContent: 'space-between',
+               alignItems: 'center'
+             }}>
+               <div>
+                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>Attendance Detailed Analysis</h3>
+                 <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748b' }}>Detailed view for {student.firstName} {student.lastName}</p>
+               </div>
+               <button 
+                 onClick={() => setShowAttendanceModal(false)}
+                 style={{
+                   border: 'none',
+                   background: '#f1f5f9',
+                   color: '#64748b',
+                   width: '32px',
+                   height: '32px',
+                   borderRadius: '50%',
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                   cursor: 'pointer',
+                   fontSize: '16px',
+                   transition: 'all 0.2s'
+                 }}
+               >
+                 <i className="fa-solid fa-xmark"></i>
+               </button>
+             </div>
+             
+             {/* Modal Body */}
+             <div style={{
+               flex: 1,
+               overflowY: 'auto',
+               padding: '24px'
+             }}>
+               <StudentAttendanceSummary attendanceData={attendanceData || []} />
+             </div>
+           </div>
+         </div>
+       )}
+     </div>
+   );
 }
 
 export default function StudentProfile() {

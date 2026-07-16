@@ -10,7 +10,7 @@ type Role = "parent" | "student" | "staff";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [activeRole, setActiveRole] = useState<Role>("staff");
+  const [activeRole, setActiveRole] = useState<Role>("student");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);

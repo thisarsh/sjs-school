@@ -63,7 +63,7 @@ export class PushService {
         actionCategory = 'ATTENDANCE_ACTIONS';
       }
 
-      const imageUrl = data?.imageUrl || undefined;
+      const imageUrl = data?.imageUrl || 'https://sjs-school.vercel.app/assets/logo_small.png';
 
       const message: MulticastMessage = {
         notification: { 
@@ -80,7 +80,7 @@ export class PushService {
             channelId: channelId,            // Dedicated notification channel ID
             sound: 'default',
             clickAction: actionCategory,     // Native Action buttons category
-            imageUrl: imageUrl,              // Image URL only if provided (prevents huge logo fallback)
+            imageUrl: imageUrl,              // High-resolution school logo / notice banner
           }
         },
         apns: {
@@ -89,16 +89,16 @@ export class PushService {
               sound: 'default',
               badge: 1,
               category: actionCategory,      // Native Action buttons category for iOS
-              mutableContent: !!imageUrl,    // Enable media download if image exists
+              mutableContent: true,          // Always enable media download on iOS
               alert: {
                 title,
                 body
               }
             }
           },
-          fcmOptions: imageUrl ? {
+          fcmOptions: {
             imageUrl: imageUrl
-          } : undefined
+          }
         }
       };
 

@@ -292,7 +292,7 @@ function StudentProfileContent() {
                 <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700 }}>Address</div>
               </div>
               <div style={{ fontSize: '14px', color: '#475569', fontWeight: 500, lineHeight: '1.5', paddingLeft: '24px' }}>
-                {student.address || '123, Green Park Colony, UP - 201502 (Mocked)'}
+                {student.address || 'N/A'}
               </div>
             </div>
 

@@ -1823,9 +1823,14 @@ function PrincipalDashboardContent() {
                                     </div>
                                   </div>
                                   {student.parentMobile && (
-                                    <a href={`tel:${student.parentMobile}`} style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#ecfdf5', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
-                                      <i className="fa-solid fa-phone"></i>
-                                    </a>
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <a href={`tel:${student.parentMobile}`} style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#ecfdf5', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }} title="Call Parent">
+                                        <i className="fa-solid fa-phone"></i>
+                                      </a>
+                                      <a href={`https://wa.me/91${student.parentMobile.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#e8f5e9', color: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }} title="WhatsApp Parent">
+                                        <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px' }}></i>
+                                      </a>
+                                    </div>
                                   )}
                                 </div>
                               ))}

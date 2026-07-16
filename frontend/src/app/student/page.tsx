@@ -22,6 +22,7 @@ function StudentDashboardContent() {
   const activeTab = searchParams.get('tab') || 'home';
   const [user, setUser] = useState<any>(null);
   const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const getParentTab = (tab: string): string => {
     switch (tab) {
       case 'leave_new': return 'leave';
@@ -242,7 +243,8 @@ function StudentDashboardContent() {
               {getShortPageName(activeTab)}
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <UniversalRefreshButton />
             <div onClick={() => router.push('?tab=notices')} style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
               <i className={`fa-solid fa-bell${unreadNoticesCount > 0 ? ' bell-shake' : ''}`} style={{ fontSize: '20px', color: 'var(--text)' }}></i>
               {unreadNoticesCount > 0 && (
@@ -250,10 +252,6 @@ function StudentDashboardContent() {
                   {unreadNoticesCount > 9 ? '9+' : unreadNoticesCount}
                 </div>
               )}
-            </div>
-            <UniversalRefreshButton />
-            <div onClick={() => router.push('?tab=account')} style={{ cursor: 'pointer', width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '13px', fontWeight: 700, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-              {student?.firstName ? student.firstName.charAt(0).toUpperCase() : '?'}
             </div>
           </div>
         </div>
@@ -539,7 +537,7 @@ function StudentDashboardContent() {
         </div>
 
         <div className="student-nav-fab-container">
-          <div className="student-nav-fab" onClick={() => router.push(`/student/profile?id=${student?.scholarNumber}`)}>
+          <div className="student-nav-fab" onClick={() => router.push('?tab=account')}>
             <i className="fa-solid fa-qrcode"></i>
           </div>
           <span className="student-nav-fab-label">ID Card</span>
@@ -549,11 +547,45 @@ function StudentDashboardContent() {
           <i className="fa-solid fa-envelope-open-text student-nav-icon"></i>
           <span className="student-nav-label">Leave</span>
         </div>
-        <div className={`student-nav-item ${activeTab === 'account' || activeTab === 'profile' ? 'active' : ''}`} onClick={() => router.push('?tab=account')}>
-          <i className="fa-solid fa-user-gear student-nav-icon"></i>
-          <span className="student-nav-label">Account</span>
+        <div className="student-nav-item" onClick={() => setShowLogoutConfirm(true)} style={{ color: '#ef4444' }}>
+          <i className="fa-solid fa-right-from-bracket student-nav-icon"></i>
+          <span className="student-nav-label">Logout</span>
         </div>
       </div>
+
+      {/* LOGOUT CONFIRMATION MODAL */}
+      {showLogoutConfirm && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--white)', borderRadius: '24px', padding: '28px 24px', width: '90%', maxWidth: '340px', textAlign: 'center', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border)' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#fee2e2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', margin: '0 auto 16px' }}>
+              <i className="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: 700, color: 'var(--navy)' }}>
+              Log Out?
+            </h3>
+            <p style={{ margin: '0 0 24px 0', fontSize: '14px', color: 'var(--text2)', lineHeight: '1.5' }}>
+              Are you sure you want to log out of SJS School App?
+            </p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={() => setShowLogoutConfirm(false)}
+                style={{ flex: 1, background: 'var(--off)', border: '1px solid var(--border)', padding: '12px', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', color: 'var(--text)', transition: 'all 0.2s' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  handleLogout();
+                }}
+                style={{ flex: 1, background: '#ef4444', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(239,68,68,0.2)', transition: 'all 0.2s' }}
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

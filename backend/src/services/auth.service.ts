@@ -23,8 +23,8 @@ export class AuthService {
     const secret = process.env.JWT_SECRET!;
     const token = jwt.sign(
       { userId: user.id, role: user.role },
-      secret,
-      { expiresIn: '1d' }
+      secret
+      // { expiresIn: '1d' } // Commented out to keep user logged in permanently
     );
 
     return {

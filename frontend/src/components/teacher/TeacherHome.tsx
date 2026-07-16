@@ -141,6 +141,10 @@ export default function TeacherHome({
             <i className="fa-solid fa-calendar-days"></i>
             <span>Timetable</span>
           </div>
+          <div className="grid-item" onClick={() => setActiveTab('calendar')} style={{ cursor: 'pointer' }}>
+            <i className="fa-solid fa-calendar-check"></i>
+            <span>Acad. Calendar</span>
+          </div>
           <div className="grid-item" onClick={() => setActiveTab('complaint')} style={{ cursor: 'pointer' }}>
             <i className="fa-solid fa-circle-exclamation"></i>
             <span>Complaint</span>

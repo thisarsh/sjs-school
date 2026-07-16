@@ -13,6 +13,7 @@ import SchoolLoadingScreen from '@/components/shared/SchoolLoadingScreen';
 import StudentAccountView from '@/components/student/StudentAccountView';
 import { useMobileBackHandler } from '@/hooks/useMobileBackHandler';
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import AcademicCalendar from '@/components/shared/AcademicCalendar';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -47,6 +48,7 @@ function StudentDashboardContent() {
       case 'profile': return 'Profile';
       case 'account': return 'Account';
       case 'notices': return 'Notices';
+      case 'calendar': return 'Academic Calendar';
       default: return 'Portal';
     }
   };
@@ -363,7 +365,7 @@ function StudentDashboardContent() {
                 <div className="student-grid-label">Fees</div>
               </div>
 
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Academic Calendar')} style={{ cursor: 'pointer' }}>
+              <div className="student-grid-item" onClick={() => router.push('?tab=calendar')} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-purple-light">
                   <i className="fa-solid fa-calendar-check"></i>
                 </div>
@@ -483,6 +485,15 @@ function StudentDashboardContent() {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ACADEMIC CALENDAR TAB */}
+      {activeTab === 'calendar' && (
+        <div style={{ width: '100%', minHeight: '100vh', background: '#f8fafc', paddingBottom: '130px' }}>
+          <div style={{ width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '16px' }}>
+            <AcademicCalendar />
           </div>
         </div>
       )}

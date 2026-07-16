@@ -10,6 +10,7 @@ import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 import ThemeToggle from "@/components/shared/ThemeToggle";
+import AcademicCalendar from "@/components/shared/AcademicCalendar";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -228,6 +229,7 @@ function PrincipalDashboardContent() {
         return actionReqType === 'complaints' ? 'Grievances' : actionReqType === 'attendance' ? 'Attendance' : 'Leaves';
       case 'section_page':
         return selectedClassSection ? `${selectedClassSection.grade}-${selectedClassSection.sectionName}` : 'Section';
+      case 'calendar': return 'Academic Calendar';
       default: return 'Portal';
     }
   };
@@ -938,6 +940,7 @@ function PrincipalDashboardContent() {
                 <span>Attendance</span>
               </div>
               <div className="quick-item"><i className="fa-solid fa-calendar-days"></i><span>Timetable</span></div>
+              <div className="quick-item" onClick={() => { setPreviousTab("home"); setActiveTab("calendar"); }} style={{ cursor: 'pointer' }}><i className="fa-solid fa-calendar-check"></i><span>Acad. Calendar</span></div>
               <div className="quick-item"><i className="fa-solid fa-clipboard-check"></i><span>Approvals</span></div>
               <div className="quick-item" onClick={() => setActiveTab("notices")} style={{ cursor: 'pointer' }}><i className="fa-solid fa-bullhorn"></i><span>Announcements</span></div>
               <div className="quick-item"><i className="fa-solid fa-chart-pie"></i><span>Academic Reports</span></div>
@@ -2326,6 +2329,13 @@ function PrincipalDashboardContent() {
           </div>
         )}
       </div>
+
+      {/* ACADEMIC CALENDAR TAB */}
+      {activeTab === 'calendar' && (
+        <div className="app-content" style={{ padding: '16px', paddingBottom: '120px' }}>
+          <AcademicCalendar />
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <div className="bottom-nav">

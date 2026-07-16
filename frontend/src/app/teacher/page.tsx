@@ -17,6 +17,7 @@ import ComplaintForm from "@/components/shared/ComplaintForm";
 import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
+import AcademicCalendar from "@/components/shared/AcademicCalendar";
 
 function TeacherDashboardContent() {
   const searchParams = useSearchParams();
@@ -62,6 +63,7 @@ function TeacherDashboardContent() {
       case 'complaint_new': return 'New Grievance';
       case 'profile': return 'Profile';
       case 'notices': return 'Notices';
+      case 'calendar': return 'Academic Calendar';
       default: return 'Portal';
     }
   };
@@ -300,6 +302,13 @@ function TeacherDashboardContent() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ACADEMIC CALENDAR TAB */}
+        {activeTab === 'calendar' && (
+          <div className="view-panel active" style={{ padding: '16px 20px', paddingBottom: '120px' }}>
+            <AcademicCalendar />
           </div>
         )}
 

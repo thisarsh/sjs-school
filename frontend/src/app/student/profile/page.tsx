@@ -100,7 +100,7 @@ function StudentProfileContent() {
         <style>{`
           .hero-card-custom { background: #ffffff; border-radius: 32px; padding: 32px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 24px; }
           .hero-top-section { display: flex; gap: 32px; align-items: center; }
-          .hero-info-section { display: flex; flex-direction: column; gap: 10px; }
+          .hero-info-section { display: flex; flex-direction: column; gap: 6px; flex: 1; }
           .hero-info-row { display: flex; align-items: center; gap: 10px; color: #4b5563; font-size: 16px; font-weight: 500; }
           .hero-middle-section { background: #f8f9fc; border-radius: 20px; padding: 16px 24px; display: flex; align-items: center; justify-content: center; gap: 40px; }
           .hero-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -114,11 +114,10 @@ function StudentProfileContent() {
             .hero-avatar-area { width: 90px !important; height: 90px !important; }
             .hero-avatar-bg { top: -6px !important; left: -10px !important; width: 106px !important; height: 106px !important; }
             
-            .hero-info-section { gap: 6px !important; }
-            .hero-info-section > div:first-child { font-size: 20px !important; }
-            .hero-info-section > div:nth-child(2) { font-size: 11px !important; padding: 4px 8px !important; }
-            .hero-info-row { font-size: 11px !important; gap: 6px !important; }
-            .hero-info-row i { font-size: 10px !important; }
+            .hero-info-section { gap: 4px !important; }
+            .hero-info-section > div:first-child { font-size: 24px !important; }
+            .hero-info-row { font-size: 12px !important; gap: 6px !important; }
+            .hero-info-row i { font-size: 11px !important; }
             
             .hero-middle-section { padding: 12px !important; gap: 16px !important; border-radius: 12px !important; }
             .hero-middle-section > div { gap: 8px !important; }
@@ -157,16 +156,11 @@ function StudentProfileContent() {
             
             {/* Info Area */}
             <div className="hero-info-section">
-              <div style={{ fontSize: '32px', fontWeight: 800, color: '#111827', lineHeight: '1.2', letterSpacing: '-0.5px', wordWrap: 'break-word', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                <span>{student.firstName}</span>
-                <span>{student.lastName}</span>
+              <div style={{ fontSize: '38px', fontWeight: 800, color: '#111827', lineHeight: '1.2', letterSpacing: '-0.5px', wordWrap: 'break-word' }}>
+                {student.firstName} {student.lastName}
               </div>
 
-              <div className="hero-info-row" style={{ marginTop: '8px' }}>
-                <div style={{ width: '20px', display: 'flex', justifyContent: 'center' }}><i className="fa-solid fa-user-group" style={{ color: '#8b5cf6' }}></i></div>
-                Class {student.className || 'N/A'}-{student.sectionName || 'N/A'} <span style={{ color: '#9ca3af', margin: '0 4px' }}>•</span> Roll No. {student.rollNumber || 'N/A'}
-              </div>
-              <div className="hero-info-row">
+              <div className="hero-info-row" style={{ marginTop: '4px' }}>
                 <div style={{ width: '20px', display: 'flex', justifyContent: 'center' }}><i className="fa-solid fa-id-badge" style={{ color: '#a855f7' }}></i></div>
                 Admission No. {student.scholarNumber}
               </div>

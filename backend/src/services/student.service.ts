@@ -22,10 +22,10 @@ export class StudentService {
               t.type as "transportType",
               t.name as "transportName",
               t.route as "transportRoute",
-              t.driverName as "transportDriverName",
-              t.driverPhone as "transportDriverPhone",
-              t.conductorName as "transportConductorName",
-              t.conductorPhone as "transportConductorPhone",
+              t."driverName" as "transportDriverName",
+              t."driverPhone" as "transportDriverPhone",
+              t."conductorName" as "transportConductorName",
+              t."conductorPhone" as "transportConductorPhone",
               t."vehicleNumber" as "transportVehicleNumber"
        FROM "Student" s 
        JOIN "User" u ON s."userId" = u.id
@@ -51,10 +51,10 @@ export class StudentService {
               t.type as "transportType",
               t.name as "transportName",
               t.route as "transportRoute",
-              t.driverName as "transportDriverName",
-              t.driverPhone as "transportDriverPhone",
-              t.conductorName as "transportConductorName",
-              t.conductorPhone as "transportConductorPhone",
+              t."driverName" as "transportDriverName",
+              t."driverPhone" as "transportDriverPhone",
+              t."conductorName" as "transportConductorName",
+              t."conductorPhone" as "transportConductorPhone",
               t."vehicleNumber" as "transportVehicleNumber"
        FROM "Student" s 
        JOIN "User" u ON s."userId" = u.id 
@@ -79,10 +79,10 @@ export class StudentService {
               t.type as "transportType",
               t.name as "transportName",
               t.route as "transportRoute",
-              t.driverName as "transportDriverName",
-              t.driverPhone as "transportDriverPhone",
-              t.conductorName as "transportConductorName",
-              t.conductorPhone as "transportConductorPhone",
+              t."driverName" as "transportDriverName",
+              t."driverPhone" as "transportDriverPhone",
+              t."conductorName" as "transportConductorName",
+              t."conductorPhone" as "transportConductorPhone",
               t."vehicleNumber" as "transportVehicleNumber"
        FROM "Student" s 
        JOIN "User" u ON s."userId" = u.id 

@@ -56,7 +56,7 @@ export default function TransportDirectory() {
     queryKey: ['studentProfile'],
     queryFn: async () => {
       const token = localStorage.getItem('sjs_token');
-      const res = await api.get('/students/profile', {
+      const res = await api.get('/students/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
       return res.data;

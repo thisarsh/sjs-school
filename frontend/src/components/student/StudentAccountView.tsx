@@ -33,7 +33,7 @@ export default function StudentAccountView({
     queryKey: ["studentMarks", student?.id],
     queryFn: async () => {
       const token = localStorage.getItem("sjs_token");
-      const res = await api.get(`/marks/student/${student.id}`, {
+      const res = await api.get(`/marks/${student.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return res.data;

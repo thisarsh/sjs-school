@@ -2343,21 +2343,21 @@ function PrincipalDashboardContent() {
 
           </div>
         )}
+
+        {/* ACADEMIC CALENDAR TAB */}
+        {activeTab === 'calendar' && (
+          <div className="view-panel active" style={{ padding: '4px 16px', paddingBottom: '120px' }}>
+            <AcademicCalendar />
+          </div>
+        )}
+
+        {/* GALLERY TAB */}
+        {activeTab === 'gallery' && (
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+            <GalleryView />
+          </div>
+        )}
       </div>
-
-      {/* ACADEMIC CALENDAR TAB */}
-      {activeTab === 'calendar' && (
-        <div className="app-content" style={{ padding: '4px 16px', paddingBottom: '120px' }}>
-          <AcademicCalendar />
-        </div>
-      )}
-
-      {/* GALLERY TAB */}
-      {activeTab === 'gallery' && (
-        <div className="app-content" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
-          <GalleryView />
-        </div>
-      )}
 
       {/* Bottom Navigation */}
       <div className="bottom-nav">

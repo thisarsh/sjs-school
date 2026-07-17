@@ -67,6 +67,8 @@ model Teacher {
   Timetable        Timetable[]
   profilePic       String?
   leaveRequests    LeaveRequest[]
+
+  @@index([schoolId])
 }
 
 model Parent {
@@ -118,6 +120,7 @@ model Student {
 
   @@index([sectionId])
   @@index([schoolId])
+  @@index([parentId])
 }
 
 model Class {
@@ -145,6 +148,8 @@ model Section {
   classTeacher    Teacher?       @relation(fields: [classTeacherId], references: [id])
   students        Student[]
   Timetable       Timetable[]
+
+  @@index([classId])
 }
 
 model Attendance {
@@ -154,14 +159,14 @@ model Attendance {
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  student   Student  @relation(fields: [studentId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, date])
   @@index([date])
 }
 
 model Fee {
-  id            String    @id
+  id            String    @id @default(uuid())
   studentId     String
   feeType       String
   feeTypeLabel  String
@@ -173,27 +178,28 @@ model Fee {
   paidOn        DateTime?
   collectedById String?
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime
-  Student       Student   @relation(fields: [studentId], references: [id])
+  updatedAt     DateTime  @updatedAt
+  Student       Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, feeType, month, academicYear])
+  @@index([studentId])
 }
 
 model FeeStructure {
-  id           String   @id
+  id           String   @id @default(uuid())
   className    String
   feeType      String
   feeTypeLabel String
   amount       Float    @default(0)
   academicYear String   @default("2025-26")
   createdAt    DateTime @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime @updatedAt
 
   @@unique([className, feeType, academicYear])
 }
 
 model Mark {
-  id           String   @id
+  id           String   @id @default(uuid())
   studentId    String
   subjectId    String
   examType     String
@@ -201,15 +207,17 @@ model Mark {
   maxScore     Float    @default(100)
   academicYear String   @default("2025-26")
   createdAt    DateTime @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime @updatedAt
   Student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   Subject      Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, subjectId, examType, academicYear])
+  @@index([studentId])
+  @@index([subjectId])
 }
 
 model Notification {
-  id               String             @id
+  id               String             @id @default(uuid())
   title            String
   body             String
   type             String             @default("general")
@@ -224,6 +232,11 @@ model Notification {
   Section          Section?           @relation(fields: [targetSectionId], references: [id])
   Student          Student?           @relation(fields: [targetStudentId], references: [id])
   NotificationRead NotificationRead[]
+
+  @@index([createdById])
+  @@index([targetClassId])
+  @@index([targetSectionId])
+  @@index([targetStudentId])
 }
 
 model NotificationRead {
@@ -237,11 +250,11 @@ model NotificationRead {
 }
 
 model Subject {
-  id        String      @id
+  id        String      @id @default(uuid())
   name      String
   classId   String
   createdAt DateTime    @default(now())
-  updatedAt DateTime
+  updatedAt DateTime    @updatedAt
   Mark      Mark[]
   Class     Class       @relation(fields: [classId], references: [id], onDelete: Cascade)
   Timetable Timetable[]
@@ -275,7 +288,7 @@ model StudentApplication {
 }
 
 model TeacherApplication {
-  id            String   @id
+  id            String   @id @default(uuid())
   firstName     String
   lastName      String
   email         String   @unique
@@ -291,7 +304,7 @@ model TeacherApplication {
 }
 
 model Timetable {
-  id           String   @id
+  id           String   @id @default(uuid())
   sectionId    String
   day          String
   period       Int
@@ -299,12 +312,15 @@ model Timetable {
   subjectId    String?
   academicYear String   @default("2025-26")
   createdAt    DateTime @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime @updatedAt
   Section      Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   Subject      Subject? @relation(fields: [subjectId], references: [id])
   Teacher      Teacher? @relation(fields: [teacherId], references: [id])
 
   @@unique([sectionId, day, period, academicYear])
+  @@index([sectionId])
+  @@index([teacherId])
+  @@index([subjectId])
 }
 
 enum Role {
@@ -331,8 +347,8 @@ model LeaveRequest {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   
-  student        Student?  @relation(fields: [studentId], references: [id])
-  teacher        Teacher?  @relation(fields: [teacherId], references: [id])
+  student        Student?  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher        Teacher?  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
 }
 
 model Complaint {

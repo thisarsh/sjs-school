@@ -473,7 +473,7 @@ function StudentDashboardContent() {
         </>
       ) : (
         /* --- DEDICATED INDEPENDENT FULL-WIDTH FEATURE PAGES --- */
-        <div style={{ width: '100%', minHeight: '100vh', background: 'transparent', paddingBottom: '130px' }}>
+        <div style={{ width: '100%', minHeight: 'calc(100vh - 190px)', background: 'transparent', paddingBottom: '130px' }}>
           {/* Full-Width Page Content Container */}
           <div style={{ width: '100%', maxWidth: '1050px', margin: '0 auto', padding: '16px' }}>
             {activeTab === 'attendance' && (

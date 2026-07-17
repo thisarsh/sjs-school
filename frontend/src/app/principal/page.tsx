@@ -702,6 +702,8 @@ function PrincipalDashboardContent() {
           top: 0,
           left: 0,
           right: 0,
+          maxWidth: '480px',
+          margin: '0 auto',
           height: '60px',
           boxSizing: 'border-box',
           zIndex: 1000,

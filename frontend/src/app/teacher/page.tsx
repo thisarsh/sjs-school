@@ -19,6 +19,7 @@ import ThemeToggle from "@/components/shared/ThemeToggle";
 import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 import AcademicCalendar from "@/components/shared/AcademicCalendar";
 import GalleryView from "@/components/shared/GalleryView";
+import TransportDirectory from "@/components/shared/TransportDirectory";
 
 function TeacherDashboardContent() {
   const searchParams = useSearchParams();
@@ -328,6 +329,13 @@ function TeacherDashboardContent() {
         {activeTab === 'gallery' && (
           <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
             <GalleryView />
+          </div>
+        )}
+
+        {/* TRANSPORT TAB */}
+        {activeTab === 'transport' && (
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+            <TransportDirectory />
           </div>
         )}
 

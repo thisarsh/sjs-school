@@ -373,3 +373,17 @@ model GalleryImage {
   createdAt    DateTime @default(now())
 }
 
+model Transport {
+  id              String   @id @default(uuid())
+  type            String   // Bus, Van, Magic, Auto, Cruiser, Other
+  name            String?  // Vehicle Name (e.g. Bus 12)
+  route           String?  // Route / Stops (e.g. Sector 5 to Main Gate)
+  vehicleNumber   String?
+  driverName      String?
+  driverPhone     String?
+  conductorName   String?
+  conductorPhone  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+

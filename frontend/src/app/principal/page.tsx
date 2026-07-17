@@ -12,6 +12,7 @@ import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 import AcademicCalendar from "@/components/shared/AcademicCalendar";
 import GalleryView from "@/components/shared/GalleryView";
+import TransportDirectory from "@/components/shared/TransportDirectory";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -191,6 +192,17 @@ function PrincipalDashboardContent() {
       case 'notices_new': return 'notices';
       case 'action_required_detail': return 'action_required';
       case 'section_page': return 'classes_section';
+      case 'transport':
+      case 'gallery':
+      case 'students_section':
+      case 'teachers_section':
+      case 'classes_section':
+      case 'attendance_overview':
+      case 'calendar':
+      case 'leave_requests':
+      case 'complaints':
+      case 'account_management':
+        return previousTab || 'home';
       default: return 'home';
     }
   };
@@ -227,6 +239,7 @@ function PrincipalDashboardContent() {
       case 'students_section': return 'Students';
       case 'teachers_section': return 'Teachers';
       case 'classes_section': return 'Classes';
+      case 'transport': return 'Transport';
       case 'attendance_overview': return 'Attendance';
       case 'notices': return 'Notices';
       case 'notices_new': return 'New Notice';
@@ -955,6 +968,7 @@ function PrincipalDashboardContent() {
               <div className="quick-item" onClick={() => { setPreviousTab("home"); setActiveTab("calendar"); }} style={{ cursor: 'pointer' }}><i className="fa-solid fa-calendar-check"></i><span>Acad. Calendar</span></div>
               <div className="quick-item" onClick={() => setActiveTab("notices")} style={{ cursor: 'pointer' }}><i className="fa-solid fa-bullhorn"></i><span>Announcements</span></div>
               <div className="quick-item" onClick={() => { setPreviousTab("home"); setActiveTab("gallery"); }} style={{ cursor: 'pointer' }}><i className="fa-solid fa-images"></i><span>Gallery</span></div>
+              <div className="quick-item" onClick={() => { setPreviousTab("home"); setActiveTab("transport"); }} style={{ cursor: 'pointer' }}><i className="fa-solid fa-bus"></i><span>Transport</span></div>
               <div className="quick-item"><i className="fa-solid fa-chart-pie"></i><span>Academic Reports</span></div>
               <div className="quick-item"><i className="fa-solid fa-chart-line"></i><span>Analytics</span></div>
             </div>
@@ -1050,6 +1064,14 @@ function PrincipalDashboardContent() {
                 <div className="list-item-content">
                   <div className="list-item-title">School Gallery</div>
                   <div className="list-item-sub">Manage and share photos of school events</div>
+                </div>
+                <i className="fa-solid fa-chevron-right item-chevron"></i>
+              </div>
+              <div className="list-item" onClick={() => { setPreviousTab("manage"); setActiveTab("transport"); }} style={{ cursor: 'pointer' }}>
+                <i className="fa-solid fa-bus item-icon" style={{ color: '#f59e0b' }}></i>
+                <div className="list-item-content">
+                  <div className="list-item-title">School Transport</div>
+                  <div className="list-item-sub">Manage school vehicles, drivers, route stops & schedules</div>
                 </div>
                 <i className="fa-solid fa-chevron-right item-chevron"></i>
               </div>
@@ -2365,6 +2387,13 @@ function PrincipalDashboardContent() {
         {activeTab === 'gallery' && (
           <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
             <GalleryView />
+          </div>
+        )}
+
+        {/* TRANSPORT TAB */}
+        {activeTab === 'transport' && (
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+            <TransportDirectory />
           </div>
         )}
       </div>

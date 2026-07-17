@@ -153,6 +153,10 @@ export default function TeacherHome({
             <i className="fa-solid fa-images"></i>
             <span>Gallery</span>
           </div>
+          <div className="grid-item" onClick={() => setActiveTab('transport')} style={{ cursor: 'pointer' }}>
+            <i className="fa-solid fa-bus-simple"></i>
+            <span>Transport</span>
+          </div>
         </div>
 
       </div>

@@ -15,6 +15,7 @@ import { useMobileBackHandler } from '@/hooks/useMobileBackHandler';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import AcademicCalendar from '@/components/shared/AcademicCalendar';
 import GalleryView from '@/components/shared/GalleryView';
+import TransportDirectory from '@/components/shared/TransportDirectory';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -371,7 +372,7 @@ function StudentDashboardContent() {
               </div>
 
               {/* Row 2 */}
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Transport')} style={{ cursor: 'pointer' }}>
+              <div className="student-grid-item" onClick={() => router.push(`?tab=transport`)} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-orange-light">
                   <i className="fa-solid fa-bus-simple"></i>
                 </div>
@@ -533,6 +534,9 @@ function StudentDashboardContent() {
             )}
             {activeTab === 'gallery' && (
               <GalleryView />
+            )}
+            {activeTab === 'transport' && (
+              <TransportDirectory />
             )}
           </div>
         </div>

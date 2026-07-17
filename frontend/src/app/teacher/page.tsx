@@ -75,6 +75,7 @@ function TeacherDashboardContent() {
       case 'notices': return 'Notices';
       case 'calendar': return 'Academic Calendar';
       case 'gallery': return 'Gallery';
+      case 'transport': return 'Transport';
       default: return 'Portal';
     }
   };

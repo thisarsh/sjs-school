@@ -110,9 +110,13 @@ export class StudentService {
       const userId = userResult.rows[0].id;
 
       const studentResult = await client.query(
-        `INSERT INTO "Student" (id, "userId", "schoolId", "sectionId", "firstName", "lastName", "scholarNumber", dob, gender, "rollNumber", address, "aadhaarNumber", "bloodGroup", "profilePic", "createdAt", "updatedAt") 
-         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW()) RETURNING *`,
-        [userId, data.schoolId, data.sectionId || null, data.firstName, data.lastName, data.scholarNumber, data.dob || null, data.gender || null, data.rollNumber || null, data.address || null, data.aadhaarNumber || null, data.bloodGroup || null, data.profilePic || null]
+        `INSERT INTO "Student" (id, "userId", "schoolId", "sectionId", "firstName", "lastName", "scholarNumber", dob, gender, "rollNumber", address, "aadhaarNumber", "bloodGroup", "profilePic", "createdAt", "updatedAt", "useSchoolTransport", "transportId") 
+         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW(), $14, $15) RETURNING *`,
+        [
+          userId, data.schoolId, data.sectionId || null, data.firstName, data.lastName, data.scholarNumber, data.dob || null,
+          data.gender || null, data.rollNumber || null, data.address || null, data.aadhaarNumber || null, data.bloodGroup || null,
+          data.profilePic || null, data.useSchoolTransport || false, data.transportId || null
+        ]
       );
       await client.query('COMMIT');
       return studentResult.rows[0];

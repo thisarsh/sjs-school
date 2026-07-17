@@ -51,6 +51,19 @@ export default function TransportDirectory() {
     }
   });
 
+  // Fetch student profile if role is student to know their assigned transport
+  const { data: studentProfile } = useQuery({
+    queryKey: ['studentProfile'],
+    queryFn: async () => {
+      const token = localStorage.getItem('sjs_token');
+      const res = await api.get('/students/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return res.data;
+    },
+    enabled: role === 'STUDENT'
+  });
+
   // Create Transport Mutation
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
@@ -194,14 +207,50 @@ export default function TransportDirectory() {
         </div>
       ) : (
         <div className="transport-grid">
-          {transports.map((t: any) => {
+          {[...transports]
+            .sort((a, b) => {
+              // Push student's own transport to top
+              if (studentProfile?.transportId === a.id) return -1;
+              if (studentProfile?.transportId === b.id) return 1;
+              return 0;
+            })
+            .map((t: any) => {
             const iconInfo = getVehicleIcon(t.type);
+            const isStudentTransport = studentProfile?.transportId === t.id;
+            const iconClasses = iconInfo.class.split(' '); // [0] = fa-solid, [1] = fa-bus, [2] = icon-bus
+
             return (
-              <div key={t.id} className="transport-card">
+              <div 
+                key={t.id} 
+                className="transport-card" 
+                style={isStudentTransport ? {
+                  border: '2px solid #4f46e5',
+                  boxShadow: '0 8px 24px rgba(79, 70, 229, 0.15)',
+                  transform: 'translateY(-2px)'
+                } : {}}
+              >
+                {isStudentTransport && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-10px',
+                    right: '20px',
+                    background: '#4f46e5',
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    boxShadow: '0 4px 10px rgba(79, 70, 229, 0.3)'
+                  }}>
+                    <i className="fa-solid fa-star" style={{ marginRight: '4px' }}></i> Your Transport
+                  </div>
+                )}
                 <div className="transport-card-header">
                   <div className="transport-type-badge">
-                    <div className={`transport-icon-container ${iconInfo.class}`}>
-                      <i className={iconInfo.class.split(' ')[0]}></i>
+                    <div className={`transport-icon-container ${iconClasses[2] || ''}`}>
+                      <i className={`${iconClasses[0]} ${iconClasses[1]}`}></i>
                     </div>
                     <div className="transport-meta-info">
                       <span className="transport-vehicle-type">{iconInfo.label}</span>

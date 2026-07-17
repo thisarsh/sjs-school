@@ -191,15 +191,17 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
         setBlocked(false);
         triggerPushRegistration();
       } else {
-        alert(
-          "Permission Denied\n\n" +
-          "SJS School cannot request permissions again automatically because they were previously blocked.\n\n" +
-          "To enable them:\n" +
-          "1. Go to your Phone Settings.\n" +
-          "2. Tap Apps -> SJS School.\n" +
-          "3. Tap Notifications and switch 'Allow' to ON.\n" +
-          "4. Return to the app."
-        );
+        try {
+          const { registerPlugin } = await import('@capacitor/core');
+          const NotificationSettings = registerPlugin<any>('NotificationSettings');
+          await NotificationSettings.open();
+        } catch (err) {
+          console.error('Failed to open native settings plugin', err);
+          alert(
+            "Permission Denied\n\n" +
+            "Please go to Settings -> Apps -> SJS School -> Notifications, and enable them manually."
+          );
+        }
       }
     } catch (e) {
       console.error('Request permission error', e);
@@ -214,7 +216,15 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
         setBlocked(false);
         triggerPushRegistration();
       } else {
-        alert("Notifications are still disabled. Please enable them in your device settings to continue.");
+        alert("Notifications are still disabled. Redirecting to settings...");
+        try {
+          const { registerPlugin } = await import('@capacitor/core');
+          const NotificationSettings = registerPlugin<any>('NotificationSettings');
+          await NotificationSettings.open();
+        } catch (err) {
+          console.error('Failed to open native settings plugin', err);
+          alert("Please enable notifications in Settings manually.");
+        }
       }
     } catch (e) {
       console.error('Verify settings error', e);

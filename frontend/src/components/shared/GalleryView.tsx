@@ -74,7 +74,7 @@ export default function GalleryView() {
       };
 
       const compressedBlob = await imageCompression(selectedFile, options);
-      const finalFile = new File([compressedBlob], selectedFile.name, { type: selectedFile.type });
+      const finalFile = new File([compressedBlob], selectedFile.name, { type: compressedBlob.type });
 
       setIsCompressing(false);
       setIsUploading(true);

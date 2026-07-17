@@ -29,7 +29,15 @@ router.post(
   '/',
   authMiddleware,
   requireRole(['TEACHER', 'PRINCIPAL', 'SCHOOL_ADMIN', 'SUPER_ADMIN']),
-  upload.single('image'),
+  (req, res, next) => {
+    upload.single('image')(req, res, (err: any) => {
+      if (err) {
+        console.error('Multer error:', err);
+        return res.status(400).json({ error: err.message || 'Image upload error' });
+      }
+      next();
+    });
+  },
   galleryController.createImage
 );
 

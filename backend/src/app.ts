@@ -41,6 +41,7 @@ import notificationsRoutes from './routes/notifications.routes';
 import leaveRoutes from './routes/leave.routes';
 import complaintRoutes from './routes/complaint.routes';
 import noticeRoutes from './routes/notice.routes';
+import galleryRoutes from './routes/gallery.routes';
 
 // Routes
 app.use('/api/auth/login', authLimiter);
@@ -59,6 +60,7 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/leave', leaveRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/notices', noticeRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

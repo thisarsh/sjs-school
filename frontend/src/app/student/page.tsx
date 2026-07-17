@@ -14,6 +14,7 @@ import StudentAccountView from '@/components/student/StudentAccountView';
 import { useMobileBackHandler } from '@/hooks/useMobileBackHandler';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import AcademicCalendar from '@/components/shared/AcademicCalendar';
+import GalleryView from '@/components/shared/GalleryView';
 import './student-dashboard.css';
 
 function StudentDashboardContent() {
@@ -50,6 +51,7 @@ function StudentDashboardContent() {
       case 'account': return 'Account';
       case 'notices': return 'Notices';
       case 'calendar': return 'Academic Calendar';
+      case 'gallery': return 'Gallery';
       default: return 'Portal';
     }
   };
@@ -412,7 +414,7 @@ function StudentDashboardContent() {
                 <div className="student-grid-label">Timetable</div>
               </div>
 
-              <div className="student-grid-item" onClick={() => setComingSoonFeature('Gallery')} style={{ cursor: 'pointer' }}>
+              <div className="student-grid-item" onClick={() => router.push('?tab=gallery')} style={{ cursor: 'pointer' }}>
                 <div className="student-grid-icon bg-pink-light">
                   <i className="fa-solid fa-images"></i>
                 </div>
@@ -520,6 +522,9 @@ function StudentDashboardContent() {
             )}
             {activeTab === 'calendar' && (
               <AcademicCalendar />
+            )}
+            {activeTab === 'gallery' && (
+              <GalleryView />
             )}
           </div>
         </div>

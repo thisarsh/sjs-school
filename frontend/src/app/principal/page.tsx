@@ -11,6 +11,7 @@ import SchoolLoadingScreen from "@/components/shared/SchoolLoadingScreen";
 import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 import AcademicCalendar from "@/components/shared/AcademicCalendar";
+import GalleryView from "@/components/shared/GalleryView";
 import "./principal.css";
 
 const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classSection: any, students: any[], onViewClick: (view: string) => void }) => {
@@ -230,6 +231,7 @@ function PrincipalDashboardContent() {
       case 'section_page':
         return selectedClassSection ? `${selectedClassSection.grade}-${selectedClassSection.sectionName}` : 'Section';
       case 'calendar': return 'Academic Calendar';
+      case 'gallery': return 'Gallery';
       default: return 'Portal';
     }
   };
@@ -941,8 +943,8 @@ function PrincipalDashboardContent() {
               </div>
               <div className="quick-item"><i className="fa-solid fa-calendar-days"></i><span>Timetable</span></div>
               <div className="quick-item" onClick={() => { setPreviousTab("home"); setActiveTab("calendar"); }} style={{ cursor: 'pointer' }}><i className="fa-solid fa-calendar-check"></i><span>Acad. Calendar</span></div>
-              <div className="quick-item"><i className="fa-solid fa-clipboard-check"></i><span>Approvals</span></div>
               <div className="quick-item" onClick={() => setActiveTab("notices")} style={{ cursor: 'pointer' }}><i className="fa-solid fa-bullhorn"></i><span>Announcements</span></div>
+              <div className="quick-item" onClick={() => { setPreviousTab("home"); setActiveTab("gallery"); }} style={{ cursor: 'pointer' }}><i className="fa-solid fa-images"></i><span>Gallery</span></div>
               <div className="quick-item"><i className="fa-solid fa-chart-pie"></i><span>Academic Reports</span></div>
               <div className="quick-item"><i className="fa-solid fa-chart-line"></i><span>Analytics</span></div>
             </div>
@@ -1030,6 +1032,14 @@ function PrincipalDashboardContent() {
                 <div className="list-item-content">
                   <div className="list-item-title">Account Passwords & Security</div>
                   <div className="list-item-sub">Change passwords and delete accounts</div>
+                </div>
+                <i className="fa-solid fa-chevron-right item-chevron"></i>
+              </div>
+              <div className="list-item" onClick={() => { setPreviousTab("manage"); setActiveTab("gallery"); }} style={{ cursor: 'pointer' }}>
+                <i className="fa-solid fa-images item-icon" style={{ color: '#4f46e5' }}></i>
+                <div className="list-item-content">
+                  <div className="list-item-title">School Gallery</div>
+                  <div className="list-item-sub">Manage and share photos of school events</div>
                 </div>
                 <i className="fa-solid fa-chevron-right item-chevron"></i>
               </div>
@@ -2339,6 +2349,13 @@ function PrincipalDashboardContent() {
       {activeTab === 'calendar' && (
         <div className="app-content" style={{ padding: '4px 16px', paddingBottom: '120px' }}>
           <AcademicCalendar />
+        </div>
+      )}
+
+      {/* GALLERY TAB */}
+      {activeTab === 'gallery' && (
+        <div className="app-content" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+          <GalleryView />
         </div>
       )}
 

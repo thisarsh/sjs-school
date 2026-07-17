@@ -22,6 +22,7 @@ model User {
   teacher      Teacher?
   noticesCreated Notice[]
   noticeReads    NoticeRead[]
+  galleryImages  GalleryImage[]
 }
 
 model School {
@@ -360,5 +361,15 @@ model NoticeRead {
   User     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([noticeId, userId])
+}
+
+model GalleryImage {
+  id           String   @id @default(uuid())
+  url          String
+  publicId     String?
+  description  String?
+  uploadedById String
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
 }
 

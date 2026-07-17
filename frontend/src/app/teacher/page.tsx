@@ -18,6 +18,7 @@ import { useMobileBackHandler } from "@/hooks/useMobileBackHandler";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 import UniversalRefreshButton from "@/components/shared/UniversalRefreshButton";
 import AcademicCalendar from "@/components/shared/AcademicCalendar";
+import GalleryView from "@/components/shared/GalleryView";
 
 function TeacherDashboardContent() {
   const searchParams = useSearchParams();
@@ -64,6 +65,7 @@ function TeacherDashboardContent() {
       case 'profile': return 'Profile';
       case 'notices': return 'Notices';
       case 'calendar': return 'Academic Calendar';
+      case 'gallery': return 'Gallery';
       default: return 'Portal';
     }
   };
@@ -309,6 +311,13 @@ function TeacherDashboardContent() {
         {activeTab === 'calendar' && (
           <div className="view-panel active" style={{ padding: '4px 16px', paddingBottom: '120px' }}>
             <AcademicCalendar />
+          </div>
+        )}
+
+        {/* GALLERY TAB */}
+        {activeTab === 'gallery' && (
+          <div className="view-panel active" style={{ padding: '24px 20px', paddingBottom: '120px' }}>
+            <GalleryView />
           </div>
         )}
 

@@ -7,7 +7,7 @@ import ImageCropper from '@/components/ImageCropper';
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function StudentApplicationForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     firstName: '',
     lastName: '',
     scholarNumber: '',
@@ -24,7 +24,9 @@ export default function StudentApplicationForm() {
     address: '',
     aadhaarNumber: '',
     bloodGroup: '',
-    profilePic: ''
+    profilePic: '',
+    useSchoolTransport: false,
+    transportId: ''
   });
   const [status, setStatus] = useState<'IDLE' | 'SUBMITTING' | 'SUCCESS' | 'ERROR'>('IDLE');
   const [errorMsg, setErrorMsg] = useState('');
@@ -35,6 +37,22 @@ export default function StudentApplicationForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [scholarNumberError, setScholarNumberError] = useState('');
+  const [transportsList, setTransportsList] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    const fetchTransports = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/transport`);
+        if (res.ok) {
+          const json = await res.json();
+          setTransportsList(json.data || []);
+        }
+      } catch (err) {
+        console.error('Error fetching transports list', err);
+      }
+    };
+    fetchTransports();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -83,7 +101,7 @@ export default function StudentApplicationForm() {
       });
       if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
-      setFormData(prev => ({ ...prev, profilePic: data.url }));
+      setFormData((prev: any) => ({ ...prev, profilePic: data.url }));
     } catch (err) {
       console.error(err);
       setStatus('ERROR');
@@ -122,14 +140,27 @@ export default function StudentApplicationForm() {
       return;
     }
 
+    const isTransportEnabled = formData.useSchoolTransport === 'true' || formData.useSchoolTransport === true;
+    if (isTransportEnabled && !formData.transportId) {
+      setStatus('ERROR');
+      setErrorMsg('Please select a school transport route/vehicle.');
+      return;
+    }
+
     setStatus('SUBMITTING');
     setErrorMsg('');
+
+    const submitPayload = {
+      ...formData,
+      useSchoolTransport: isTransportEnabled,
+      transportId: isTransportEnabled ? formData.transportId : null
+    };
 
     try {
       const res = await fetch(`${API_BASE}/students/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitPayload)
       });
 
       const data = await res.json();
@@ -327,6 +358,53 @@ export default function StudentApplicationForm() {
             <label className="field-label">Blood Group (Optional)</label>
             <input type="text" name="bloodGroup" className="field-input" value={formData.bloodGroup} onChange={handleChange} placeholder="Your answer" />
           </div>
+
+          <div className="form-card">
+            <label className="field-label">Do you use school transport? <span className="req-star">*</span></label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px' }}>
+                <input 
+                  type="radio" 
+                  name="useSchoolTransport" 
+                  value="true" 
+                  onChange={handleChange} 
+                  checked={formData.useSchoolTransport === 'true' || formData.useSchoolTransport === true} 
+                />
+                Yes
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px' }}>
+                <input 
+                  type="radio" 
+                  name="useSchoolTransport" 
+                  value="false" 
+                  onChange={handleChange} 
+                  checked={formData.useSchoolTransport === 'false' || formData.useSchoolTransport === false} 
+                />
+                No
+              </label>
+            </div>
+          </div>
+
+          {(formData.useSchoolTransport === 'true' || formData.useSchoolTransport === true) && (
+            <div className="form-card" style={{ animation: 'fadeIn 0.2s ease-out' }}>
+              <label className="field-label">Select Available Transport Route & Vehicle <span className="req-star">*</span></label>
+              <select 
+                name="transportId" 
+                className="field-select" 
+                required 
+                value={formData.transportId} 
+                onChange={handleChange}
+                style={{ marginTop: '12px', width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }}
+              >
+                <option value="" disabled>Choose Route/Vehicle</option>
+                {transportsList.map((t: any) => (
+                  <option key={t.id} value={t.id}>
+                    [{t.type}] {t.name || 'Unlabeled'} - {t.route || 'No route specified'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '16px' }}>
             <button type="submit" className="submit-btn-gform" disabled={status === 'SUBMITTING'}>

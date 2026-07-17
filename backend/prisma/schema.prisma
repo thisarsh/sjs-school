@@ -112,6 +112,9 @@ model Student {
   user             User               @relation(fields: [userId], references: [id])
   profilePic       String?
   leaveRequests    LeaveRequest[]
+  useSchoolTransport Boolean    @default(false)
+  transportId        String?
+  transport          Transport? @relation(fields: [transportId], references: [id])
 
   @@index([sectionId])
   @@index([schoolId])
@@ -267,6 +270,8 @@ model StudentApplication {
   status        String   @default("PENDING")
   createdAt     DateTime @default(now())
   profilePic    String?
+  useSchoolTransport Boolean @default(false)
+  transportId        String?
 }
 
 model TeacherApplication {
@@ -383,7 +388,8 @@ model Transport {
   driverPhone     String?
   conductorName   String?
   conductorPhone  String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  students        Student[]
 }
 

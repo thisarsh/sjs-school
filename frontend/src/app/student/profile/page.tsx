@@ -240,6 +240,69 @@ function StudentProfileContent() {
           </div>
         </div>
 
+        {/* TRANSPORT INFORMATION */}
+        {student.useSchoolTransport && (
+          <div style={{ marginBottom: '24px' }}>
+            <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ background: '#fef3c7', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706', fontSize: '14px' }}>
+                <i className="fa-solid fa-bus"></i>
+              </div>
+              Assigned School Transport
+            </div>
+            
+            <div style={{ background: 'white', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 14px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#eff6ff', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
+                    <i className="fa-solid fa-bus-simple"></i>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Assigned Vehicle</div>
+                    <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>{student.transportName || 'School Vehicle'}</div>
+                  </div>
+                </div>
+                {student.transportVehicleNumber && (
+                  <span style={{ fontSize: '12px', fontWeight: 700, background: '#f1f5f9', color: '#475569', padding: '6px 12px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                    {student.transportVehicleNumber}
+                  </span>
+                )}
+              </div>
+
+              {student.transportRoute && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Route & Stops</span>
+                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#334155', lineHeight: '1.5' }}>{student.transportRoute}</span>
+                </div>
+              )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', borderTop: '1px solid #f1f5f9', paddingTop: '14px' }}>
+                {student.transportDriverName && (
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Driver</div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#334155' }}>{student.transportDriverName}</div>
+                    {student.transportDriverPhone && (
+                      <a href={`tel:${student.transportDriverPhone}`} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: '#4f46e5', textDecoration: 'none', marginTop: '4px' }}>
+                        <i className="fa-solid fa-phone" style={{ fontSize: '10px' }}></i> {student.transportDriverPhone}
+                      </a>
+                    )}
+                  </div>
+                )}
+                {student.transportConductorName && (
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>Conductor</div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#334155' }}>{student.transportConductorName}</div>
+                    {student.transportConductorPhone && (
+                      <a href={`tel:${student.transportConductorPhone}`} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: '#4f46e5', textDecoration: 'none', marginTop: '4px' }}>
+                        <i className="fa-solid fa-phone" style={{ fontSize: '10px' }}></i> {student.transportConductorPhone}
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* CONTACT INFORMATION */}
         <div>
           <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

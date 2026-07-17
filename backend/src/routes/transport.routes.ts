@@ -5,8 +5,8 @@ import { authMiddleware, requireRole } from '../middlewares/auth.middleware';
 const router = Router();
 const transportController = new TransportController();
 
-// GET /api/transport - All authenticated users can view transport routes
-router.get('/', authMiddleware, transportController.getTransports);
+// GET /api/transport - Anyone can view transport routes (public for admission form)
+router.get('/', transportController.getTransports);
 
 // POST /api/transport - Only Principals, School Admins, and Superadmins can create
 router.post(

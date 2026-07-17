@@ -18,7 +18,7 @@ export default function StudentAccountView({
   onLogout,
 }: StudentAccountViewProps) {
   const [expandedSection, setExpandedSection] = useState<
-    "personal" | "contact" | "documents" | null
+    "personal" | "contact" | "documents" | "transport" | null
   >(null);
   
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -58,7 +58,7 @@ export default function StudentAccountView({
     onCloseModal: () => setShowLogoutConfirm(false),
   });
 
-  const toggleSection = (section: "personal" | "contact" | "documents") => {
+  const toggleSection = (section: "personal" | "contact" | "documents" | "transport") => {
     setExpandedSection((prev) => (prev === section ? null : section));
   };
 
@@ -552,6 +552,127 @@ export default function StudentAccountView({
             </div>
           )}
         </div>
+
+        {/* 4. School Transport Details Accordion Section */}
+        {student?.useSchoolTransport && (
+          <div style={{ background: "white", borderRadius: "18px", border: "1px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.03)" }}>
+            <button
+              className="account-card-btn"
+              onClick={() => toggleSection("transport")}
+              style={{
+                width: "100%",
+                background: expandedSection === "transport" ? "#f8fafc" : "white",
+                padding: "16px 18px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: "none",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                textAlign: "left",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <div
+                  style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "12px",
+                    background: "#fffbeb",
+                    color: "#d97706",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                  }}
+                >
+                  <i className="fa-solid fa-bus"></i>
+                </div>
+                <div>
+                  <div style={{ fontSize: "15px", fontWeight: 700, color: "#0f172a" }}>
+                    Transport Details
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+                    Assigned vehicle, route & contacts
+                  </div>
+                </div>
+              </div>
+              <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: expandedSection === "transport" ? "#e2e8f0" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.25s ease" }}>
+                <i
+                  className="fa-solid fa-chevron-down"
+                  style={{
+                    color: "#64748b",
+                    fontSize: "13px",
+                    transform: expandedSection === "transport" ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 0.25s ease",
+                  }}
+                />
+              </div>
+            </button>
+
+            {expandedSection === "transport" && (
+              <div
+                style={{
+                  padding: "16px 18px",
+                  borderTop: "1px solid #f1f5f9",
+                  background: "#ffffff",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  animation: "fadeIn 0.2s ease-out",
+                }}
+              >
+                <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "14px", border: "1px solid #e2e8f0" }}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#e0e7ff", color: "#4f46e5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>
+                    <i className="fa-solid fa-bus-simple"></i>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 600 }}>Assigned Vehicle</div>
+                    <div style={{ fontSize: "15px", fontWeight: 800, color: "#0f172a", marginTop: "2px" }}>{student?.transportName || "School Transport"}</div>
+                  </div>
+                  {student?.transportVehicleNumber && (
+                    <span style={{ fontSize: "11px", fontWeight: 700, background: "#e0e7ff", color: "#4f46e5", padding: "4px 8px", borderRadius: "8px" }}>
+                      {student.transportVehicleNumber}
+                    </span>
+                  )}
+                </div>
+
+                {student?.transportRoute && (
+                  <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                    <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 600, marginBottom: "4px" }}>Route & Stops</div>
+                    <div style={{ fontSize: "13px", fontWeight: 600, color: "#334155", lineHeight: "1.4" }}>{student.transportRoute}</div>
+                  </div>
+                )}
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  {student?.transportDriverName && (
+                    <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                      <div style={{ fontSize: "10px", color: "#64748b", fontWeight: 600 }}>Driver</div>
+                      <div style={{ fontSize: "13px", fontWeight: 700, color: "#334155", marginTop: "2px" }}>{student.transportDriverName}</div>
+                      {student?.transportDriverPhone && (
+                        <a href={`tel:${student.transportDriverPhone}`} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 700, color: "#4f46e5", textDecoration: "none", marginTop: "4px" }}>
+                          <i className="fa-solid fa-phone" style={{ fontSize: "9px" }}></i> Call
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {student?.transportConductorName && (
+                    <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                      <div style={{ fontSize: "10px", color: "#64748b", fontWeight: 600 }}>Conductor</div>
+                      <div style={{ fontSize: "13px", fontWeight: 700, color: "#334155", marginTop: "2px" }}>{student.transportConductorName}</div>
+                      {student?.transportConductorPhone && (
+                        <a href={`tel:${student.transportConductorPhone}`} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 700, color: "#4f46e5", textDecoration: "none", marginTop: "4px" }}>
+                          <i className="fa-solid fa-phone" style={{ fontSize: "9px" }}></i> Call
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Red Logout Button at Bottom */}

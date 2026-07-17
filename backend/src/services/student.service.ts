@@ -18,12 +18,21 @@ export class StudentService {
               p."secondaryPhone" as "parentSecondaryMobile",
               p."firstName" as "fatherName",
               p."lastName" as "motherName",
-              p.email as "parentEmail"
+              p.email as "parentEmail",
+              t.type as "transportType",
+              t.name as "transportName",
+              t.route as "transportRoute",
+              t.driverName as "transportDriverName",
+              t.driverPhone as "transportDriverPhone",
+              t.conductorName as "transportConductorName",
+              t.conductorPhone as "transportConductorPhone",
+              t."vehicleNumber" as "transportVehicleNumber"
        FROM "Student" s 
        JOIN "User" u ON s."userId" = u.id
        LEFT JOIN "Section" sec ON s."sectionId" = sec.id
        LEFT JOIN "Class" cls ON sec."classId" = cls.id
        LEFT JOIN "Parent" p ON s."parentId" = p.id
+       LEFT JOIN "Transport" t ON s."transportId" = t.id
        WHERE u."isDeleted" = false
        LIMIT $1 OFFSET $2`,
       [limit, offset]
@@ -38,10 +47,19 @@ export class StudentService {
               p."secondaryPhone" as "parentSecondaryMobile",
               p."firstName" as "fatherName",
               p."lastName" as "motherName",
-              p.email as "parentEmail"
+              p.email as "parentEmail",
+              t.type as "transportType",
+              t.name as "transportName",
+              t.route as "transportRoute",
+              t.driverName as "transportDriverName",
+              t.driverPhone as "transportDriverPhone",
+              t.conductorName as "transportConductorName",
+              t.conductorPhone as "transportConductorPhone",
+              t."vehicleNumber" as "transportVehicleNumber"
        FROM "Student" s 
        JOIN "User" u ON s."userId" = u.id 
        LEFT JOIN "Parent" p ON s."parentId" = p.id
+       LEFT JOIN "Transport" t ON s."transportId" = t.id
        WHERE s.id = $1`,
       [id]
     );
@@ -57,12 +75,21 @@ export class StudentService {
               p."secondaryPhone" as "parentSecondaryMobile",
               p."firstName" as "fatherName",
               p."lastName" as "motherName",
-              p.email as "parentEmail"
+              p.email as "parentEmail",
+              t.type as "transportType",
+              t.name as "transportName",
+              t.route as "transportRoute",
+              t.driverName as "transportDriverName",
+              t.driverPhone as "transportDriverPhone",
+              t.conductorName as "transportConductorName",
+              t.conductorPhone as "transportConductorPhone",
+              t."vehicleNumber" as "transportVehicleNumber"
        FROM "Student" s 
        JOIN "User" u ON s."userId" = u.id 
        LEFT JOIN "Section" sec ON s."sectionId" = sec.id
        LEFT JOIN "Class" cls ON sec."classId" = cls.id
        LEFT JOIN "Parent" p ON s."parentId" = p.id
+       LEFT JOIN "Transport" t ON s."transportId" = t.id
        WHERE u.id = $1`,
       [userId]
     );
@@ -120,9 +147,17 @@ export class StudentService {
         "aadhaarNumber" = COALESCE($10, "aadhaarNumber"),
         "bloodGroup" = COALESCE($11, "bloodGroup"),
         "profilePic" = COALESCE($12, "profilePic"),
+        "useSchoolTransport" = COALESCE($13, "useSchoolTransport"),
+        "transportId" = COALESCE($14, "transportId"),
         "updatedAt" = NOW() 
        WHERE id = $1 RETURNING *`,
-      [id, data.firstName, data.lastName, data.scholarNumber, data.dob || null, data.sectionId || null, data.gender || null, data.rollNumber || null, data.address || null, data.aadhaarNumber || null, data.bloodGroup || null, data.profilePic || null]
+      [
+        id, data.firstName, data.lastName, data.scholarNumber, data.dob || null, data.sectionId || null,
+        data.gender || null, data.rollNumber || null, data.address || null, data.aadhaarNumber || null,
+        data.bloodGroup || null, data.profilePic || null,
+        data.useSchoolTransport !== undefined ? data.useSchoolTransport : null,
+        data.transportId !== undefined ? data.transportId : null
+      ]
     );
     return result.rows[0];
   }
@@ -144,14 +179,15 @@ export class StudentService {
 
       const result = await pool.query(
         `INSERT INTO "StudentApplication" (
-          id, "firstName", "lastName", "scholarNumber", "classApplying", section, "rollNumber", dob, gender, "fatherName", "motherName", "parentMobile", "parentSecondaryMobile", "parentEmail", address, "aadhaarNumber", "bloodGroup", status, "createdAt", "profilePic"
-        ) VALUES (
-          gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, 'PENDING', NOW(), $17
-        ) RETURNING *`,
+           id, "firstName", "lastName", "scholarNumber", "classApplying", section, "rollNumber", dob, gender, "fatherName", "motherName", "parentMobile", "parentSecondaryMobile", "parentEmail", address, "aadhaarNumber", "bloodGroup", status, "createdAt", "profilePic", "useSchoolTransport", "transportId"
+         ) VALUES (
+           gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, 'PENDING', NOW(), $17, $18, $19
+         ) RETURNING *`,
         [
           data.firstName, data.lastName, data.scholarNumber, data.classApplying, data.section || null, data.rollNumber || null,
           data.dob, data.gender, data.fatherName, data.motherName, data.parentMobile, data.parentSecondaryMobile || null, data.parentEmail || null, data.address,
-          data.aadhaarNumber || null, data.bloodGroup || null, data.profilePic || null
+          data.aadhaarNumber || null, data.bloodGroup || null, data.profilePic || null,
+          data.useSchoolTransport || false, data.transportId || null
         ]
       );
       return result.rows[0];
@@ -266,9 +302,13 @@ export class StudentService {
       }
 
       await client.query(
-        `INSERT INTO "Student" (id, "userId", "schoolId", "parentId", "sectionId", "firstName", "lastName", "scholarNumber", dob, gender, "rollNumber", address, "aadhaarNumber", "bloodGroup", "createdAt", "updatedAt", "profilePic")
-         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW(), $14)`,
-        [studentUserId, schoolId, parentProfileId, sectionId, app.firstName, app.lastName, app.scholarNumber, parsedDob, app.gender || null, app.rollNumber || null, app.address || null, app.aadhaarNumber || null, app.bloodGroup || null, app.profilePic]
+        `INSERT INTO "Student" (id, "userId", "schoolId", "parentId", "sectionId", "firstName", "lastName", "scholarNumber", dob, gender, "rollNumber", address, "aadhaarNumber", "bloodGroup", "createdAt", "updatedAt", "profilePic", "useSchoolTransport", "transportId")
+         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW(), $14, $15, $16)`,
+        [
+          studentUserId, schoolId, parentProfileId, sectionId, app.firstName, app.lastName, app.scholarNumber, parsedDob,
+          app.gender || null, app.rollNumber || null, app.address || null, app.aadhaarNumber || null, app.bloodGroup || null,
+          app.profilePic, app.useSchoolTransport || false, app.transportId || null
+        ]
       );
 
       await client.query(`UPDATE "StudentApplication" SET status = 'APPROVED' WHERE id = $1`, [id]);

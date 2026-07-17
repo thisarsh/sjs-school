@@ -24,6 +24,14 @@ function StudentDashboardContent() {
   const [user, setUser] = useState<any>(null);
   const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  useEffect(() => {
+    const containers = document.querySelectorAll('.mobile-app-container, .student-dashboard-wrap');
+    containers.forEach(el => {
+      el.scrollTop = 0;
+    });
+    window.scrollTo(0, 0);
+  }, [activeTab]);
   const getParentTab = (tab: string): string => {
     switch (tab) {
       case 'leave_new': return 'leave';

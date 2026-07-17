@@ -27,6 +27,14 @@ function TeacherDashboardContent() {
 
   const activeTab = searchParams.get("tab") || "home";
 
+  useEffect(() => {
+    const containers = document.querySelectorAll('.mobile-app-container, .app-wrap, .app-content');
+    containers.forEach(el => {
+      el.scrollTop = 0;
+    });
+    window.scrollTo(0, 0);
+  }, [activeTab]);
+
 
 
   const setActiveTab = (tab: string) => {

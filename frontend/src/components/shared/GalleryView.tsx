@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import imageCompression from 'browser-image-compression';
@@ -19,6 +20,12 @@ export default function GalleryView() {
   const [selectedImage, setSelectedImage] = useState<any | null>(null); // For Lightbox
   const [imageToDelete, setImageToDelete] = useState<string | null>(null); // For Delete Confirmation
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     const userData = localStorage.getItem("sjs_user");
@@ -201,7 +208,7 @@ export default function GalleryView() {
       )}
 
       {/* LIGHTBOX MODAL */}
-      {selectedImage && (
+      {selectedImage && mounted && createPortal(
         <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
           <button className="lightbox-close" onClick={() => setSelectedImage(null)}>✕</button>
           <div className="lightbox-img-container" onClick={(e) => e.stopPropagation()}>
@@ -225,11 +232,12 @@ export default function GalleryView() {
               Download Image
             </a>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* DELETE CONFIRMATION MODAL */}
-      {imageToDelete && (
+      {imageToDelete && mounted && createPortal(
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: 'white', borderRadius: '24px', padding: '28px 24px', width: '90%', maxWidth: '340px', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', border: '1px solid #e2e8f0' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#fee2e2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', margin: '0 auto 16px' }}>
@@ -258,11 +266,12 @@ export default function GalleryView() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* UPLOAD MODAL */}
-      {isUploadModalOpen && (
+      {isUploadModalOpen && mounted && createPortal(
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: 'white', borderRadius: '24px', padding: '24px', width: '90%', maxWidth: '440px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', border: '1px solid #e2e8f0' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -336,7 +345,8 @@ export default function GalleryView() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

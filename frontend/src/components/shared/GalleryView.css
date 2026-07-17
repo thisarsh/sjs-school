@@ -224,6 +224,34 @@
   line-height: 1.5;
 }
 
+.lightbox-download-btn {
+  background: white;
+  color: var(--navy, #111827);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.2s, background-color 0.2s;
+  margin-top: 12px;
+}
+
+.lightbox-download-btn:hover {
+  transform: scale(1.05);
+  background: #f1f5f9;
+}
+
+.lightbox-download-btn:active {
+  transform: scale(1);
+}
+
+
 /* Empty State */
 .gallery-empty {
   background: white;

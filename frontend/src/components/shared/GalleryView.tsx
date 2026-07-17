@@ -207,11 +207,24 @@ export default function GalleryView() {
           <div className="lightbox-img-container" onClick={(e) => e.stopPropagation()}>
             <img src={selectedImage.url} alt="Expanded view" className="lightbox-img" />
           </div>
-          {selectedImage.description && (
-            <div className="lightbox-caption" onClick={(e) => e.stopPropagation()}>
-              {selectedImage.description}
-            </div>
-          )}
+          <div 
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', zIndex: 10001 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {selectedImage.description && (
+              <div className="lightbox-caption" style={{ marginTop: '16px' }}>
+                {selectedImage.description}
+              </div>
+            )}
+            <a 
+              href={selectedImage.url.includes('/upload/') ? selectedImage.url.replace('/upload/', '/upload/fl_attachment/') : selectedImage.url} 
+              download={`sjs_gallery_${selectedImage.id.slice(0, 8)}.webp`}
+              className="lightbox-download-btn"
+            >
+              <i className="fa-solid fa-download"></i>
+              Download Image
+            </a>
+          </div>
         </div>
       )}
 

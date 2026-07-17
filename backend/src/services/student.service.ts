@@ -147,16 +147,18 @@ export class StudentService {
         "aadhaarNumber" = COALESCE($10, "aadhaarNumber"),
         "bloodGroup" = COALESCE($11, "bloodGroup"),
         "profilePic" = COALESCE($12, "profilePic"),
-        "useSchoolTransport" = COALESCE($13, "useSchoolTransport"),
-        "transportId" = COALESCE($14, "transportId"),
+        "useSchoolTransport" = CASE WHEN $13::boolean THEN $14::boolean ELSE "useSchoolTransport" END,
+        "transportId" = CASE WHEN $15::boolean THEN $16 ELSE "transportId" END,
         "updatedAt" = NOW() 
        WHERE id = $1 RETURNING *`,
       [
         id, data.firstName, data.lastName, data.scholarNumber, data.dob || null, data.sectionId || null,
         data.gender || null, data.rollNumber || null, data.address || null, data.aadhaarNumber || null,
         data.bloodGroup || null, data.profilePic || null,
-        data.useSchoolTransport !== undefined ? data.useSchoolTransport : null,
-        data.transportId !== undefined ? data.transportId : null
+        data.useSchoolTransport !== undefined, // $13: is useSchoolTransport provided?
+        data.useSchoolTransport === true || data.useSchoolTransport === 'true', // $14: useSchoolTransport value
+        data.transportId !== undefined, // $15: is transportId provided?
+        data.transportId || null // $16: transportId value
       ]
     );
     return result.rows[0];

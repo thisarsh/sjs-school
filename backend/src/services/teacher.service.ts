@@ -165,7 +165,7 @@ export class TeacherService {
       `UPDATE "Teacher" SET "firstName" = COALESCE($2, "firstName"), "lastName" = COALESCE($3, "lastName"), 
        phone = COALESCE($4, phone), "updatedAt" = NOW() 
        WHERE id = $1 RETURNING *`,
-      [id, data.firstName, data.lastName, data.phone]
+      [id, data.firstName ?? null, data.lastName ?? null, data.phone ?? null]
     );
     return result.rows[0];
   }

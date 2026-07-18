@@ -156,7 +156,7 @@ export class StudentService {
         "updatedAt" = NOW() 
        WHERE id = $1 RETURNING *`,
       [
-        id, data.firstName, data.lastName, data.scholarNumber, data.dob || null, data.sectionId || null,
+        id, data.firstName ?? null, data.lastName ?? null, data.scholarNumber ?? null, data.dob || null, data.sectionId || null,
         data.gender || null, data.rollNumber || null, data.address || null, data.aadhaarNumber || null,
         data.bloodGroup || null, data.profilePic || null,
         data.useSchoolTransport !== undefined, // $13: is useSchoolTransport provided?

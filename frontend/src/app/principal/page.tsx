@@ -74,23 +74,23 @@ const AttendanceSummaryView = ({ classSection, students, onViewClick }: { classS
   const yearPercent = calculatePercent(startOfYear, endOfYear);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginTop: '20px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginTop: '20px' }}>
       {[
         { label: "Today's Attendance", percent: todayPercent, view: 'weekly' },
         { label: 'This Week', percent: weekPercent, view: 'weekly' },
         { label: 'This Month', percent: monthPercent, view: 'monthly' },
         { label: 'This Year', percent: yearPercent, view: 'yearly' }
       ].map(stat => (
-        <div key={stat.label} style={{ background: 'white', borderRadius: '16px', padding: '24px', boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: '16px', borderTop: '4px solid #1a73e8' }}>
+        <div key={stat.label} style={{ background: 'white', borderRadius: '16px', padding: '16px', boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid #1a73e8' }}>
           <div>
-            <div style={{ fontSize: '13px', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
-            <div style={{ fontSize: '36px', fontWeight: 800, color: '#111827', marginTop: '8px' }}>
+            <div style={{ fontSize: '11px', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
+            <div style={{ fontSize: '28px', fontWeight: 800, color: '#111827', marginTop: '4px' }}>
               {isLoading ? '...' : stat.percent}
             </div>
           </div>
           <button
             onClick={() => onViewClick(stat.view)}
-            style={{ width: '100%', padding: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', color: '#1a73e8', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
+            style={{ width: '100%', padding: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#1a73e8', fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}
             onMouseEnter={(e) => { e.currentTarget.style.background = '#e8f0fe'; e.currentTarget.style.borderColor = '#1a73e8'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
           >
@@ -628,8 +628,7 @@ function PrincipalDashboardContent() {
   const filteredStudents = (studentsList || []).filter((s: any) => {
     const search = studentsSearchTerm.toLowerCase();
     return (
-      (s.firstName?.toLowerCase() || '').includes(search) ||
-      (s.lastName?.toLowerCase() || '').includes(search) ||
+      `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(search) ||
       (s.scholarNumber?.toLowerCase() || '').includes(search) ||
       (s.parentMobile?.toLowerCase() || '').includes(search)
     );
@@ -816,8 +815,7 @@ function PrincipalDashboardContent() {
                   {(globalSearchFilter === 'all' || globalSearchFilter === 'student') && studentsList && studentsList.filter((s: any) => {
                     const term = globalSearchTerm.toLowerCase();
                     return (
-                      (s.firstName?.toLowerCase() || '').includes(term) ||
-                      (s.lastName?.toLowerCase() || '').includes(term) ||
+                      `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(term) ||
                       (s.scholarNumber?.toLowerCase() || '').includes(term) ||
                       (s.parentMobile?.toLowerCase() || '').includes(term) ||
                       (s.parentSecondaryMobile?.toLowerCase() || '').includes(term)
@@ -844,8 +842,7 @@ function PrincipalDashboardContent() {
                   {(globalSearchFilter === 'all' || globalSearchFilter === 'teacher') && teachersList && teachersList.filter((t: any) => {
                     const term = globalSearchTerm.toLowerCase();
                     return (
-                      (t.firstName?.toLowerCase() || '').includes(term) ||
-                      (t.lastName?.toLowerCase() || '').includes(term) ||
+                      `${t.firstName || ''} ${t.lastName || ''}`.toLowerCase().includes(term) ||
                       (t.subject?.toLowerCase() || '').includes(term) ||
                       (t.phone?.toLowerCase() || '').includes(term)
                     );
@@ -890,8 +887,7 @@ function PrincipalDashboardContent() {
                     (!studentsList || studentsList.filter((s: any) => {
                       const term = globalSearchTerm.toLowerCase();
                       return (
-                        (s.firstName?.toLowerCase() || '').includes(term) ||
-                        (s.lastName?.toLowerCase() || '').includes(term) ||
+                        `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(term) ||
                         (s.scholarNumber?.toLowerCase() || '').includes(term) ||
                         (s.parentMobile?.toLowerCase() || '').includes(term) ||
                         (s.parentSecondaryMobile?.toLowerCase() || '').includes(term)
@@ -900,8 +896,7 @@ function PrincipalDashboardContent() {
                     (!teachersList || teachersList.filter((t: any) => {
                       const term = globalSearchTerm.toLowerCase();
                       return (
-                        (t.firstName?.toLowerCase() || '').includes(term) ||
-                        (t.lastName?.toLowerCase() || '').includes(term) ||
+                        `${t.firstName || ''} ${t.lastName || ''}`.toLowerCase().includes(term) ||
                         (t.subject?.toLowerCase() || '').includes(term) ||
                         (t.phone?.toLowerCase() || '').includes(term)
                       );
@@ -1356,8 +1351,7 @@ function PrincipalDashboardContent() {
                   teachersList.filter((t: any) => {
                     const search = accountSearchTerm.toLowerCase();
                     return (
-                      (t.firstName?.toLowerCase() || '').includes(search) ||
-                      (t.lastName?.toLowerCase() || '').includes(search) ||
+                      `${t.firstName || ''} ${t.lastName || ''}`.toLowerCase().includes(search) ||
                       (t.email?.toLowerCase() || '').includes(search) ||
                       (t.phone?.toLowerCase() || '').includes(search)
                     );
@@ -1410,8 +1404,7 @@ function PrincipalDashboardContent() {
                             const search = accountSearchTerm.toLowerCase();
                             if (!search) return true;
                             return (
-                              (s.firstName?.toLowerCase() || '').includes(search) ||
-                              (s.lastName?.toLowerCase() || '').includes(search) ||
+                              `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(search) ||
                               (s.scholarNumber?.toLowerCase() || '').includes(search) ||
                               (s.parentMobile?.toLowerCase() || '').includes(search)
                             );
@@ -1788,8 +1781,7 @@ function PrincipalDashboardContent() {
                     // Automatically expand if filtering
                     const search = e.target.value.toLowerCase();
                     const filtered = (studentsList || []).filter((s: any) =>
-                      (s.firstName?.toLowerCase() || '').includes(search) ||
-                      (s.lastName?.toLowerCase() || '').includes(search) ||
+                      `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase().includes(search) ||
                       (s.scholarNumber?.toLowerCase() || '').includes(search) ||
                       (s.parentMobile?.toLowerCase() || '').includes(search)
                     );
@@ -1945,8 +1937,7 @@ function PrincipalDashboardContent() {
                     const filtered = teachersList.filter((t: any) => {
                       const search = teachersSearchTerm.toLowerCase();
                       return (
-                        (t.firstName?.toLowerCase() || '').includes(search) ||
-                        (t.lastName?.toLowerCase() || '').includes(search) ||
+                        `${t.firstName || ''} ${t.lastName || ''}`.toLowerCase().includes(search) ||
                         (t.subject?.toLowerCase() || '').includes(search) ||
                         (t.phone?.toLowerCase() || '').includes(search) ||
                         (t.email?.toLowerCase() || '').includes(search)

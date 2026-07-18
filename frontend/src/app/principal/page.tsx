@@ -2669,6 +2669,91 @@ function PrincipalDashboardContent() {
         </div>
       )}
 
+      {passwordResetTarget && (
+        <div className="modal-overlay">
+          <div className="modal-popup">
+            <div className="modal-popup-header">
+              <h3 className="modal-popup-title">Reset Password</h3>
+              <button className="modal-close-btn" onClick={() => setPasswordResetTarget(null)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="modal-popup-body">
+              <p style={{ marginBottom: '16px', color: 'var(--text)' }}>
+                You are about to reset the password for <strong>{passwordResetTarget.name}</strong> ({passwordResetTarget.role}).
+              </p>
+              <div style={{ position: 'relative' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--muted)', marginBottom: '8px' }}>New Password (min 6 chars)</label>
+                <div style={{ display: 'flex', alignItems: 'center', background: 'var(--bg)', borderRadius: '12px', border: '1px solid var(--border)', padding: '12px 16px' }}>
+                  <input
+                    type={showPasswordText ? "text" : "password"}
+                    value={newPasswordInput}
+                    onChange={(e) => setNewPasswordInput(e.target.value)}
+                    placeholder="Enter new password"
+                    style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '14px', color: 'var(--navy)' }}
+                  />
+                  <i 
+                    className={`fa-solid ${showPasswordText ? 'fa-eye-slash' : 'fa-eye'}`} 
+                    style={{ color: 'var(--muted)', cursor: 'pointer', marginLeft: '12px' }}
+                    onClick={() => setShowPasswordText(!showPasswordText)}
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div className="modal-popup-footer">
+              <button 
+                onClick={() => setPasswordResetTarget(null)}
+                style={{ background: 'white', color: 'var(--navy)', border: '1px solid var(--border)', padding: '10px 20px', borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleResetPasswordAction}
+                disabled={isResettingPassword || newPasswordInput.trim().length < 6}
+                style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 600, cursor: 'pointer', opacity: (isResettingPassword || newPasswordInput.trim().length < 6) ? 0.7 : 1 }}
+              >
+                {isResettingPassword ? "Updating..." : "Update Password"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {accountDeleteTarget && (
+        <div className="modal-overlay">
+          <div className="modal-popup">
+            <div className="modal-popup-header" style={{ background: '#ef4444', borderBottom: 'none' }}>
+              <h3 className="modal-popup-title">Delete Account</h3>
+              <button className="modal-close-btn" onClick={() => setAccountDeleteTarget(null)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="modal-popup-body">
+              <div style={{ textAlign: 'center', color: '#ef4444', fontSize: '48px', marginBottom: '16px' }}>
+                <i className="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <p style={{ textAlign: 'center', fontSize: '16px', color: 'var(--navy)', fontWeight: 600, marginBottom: '12px' }}>
+                Are you sure you want to delete {accountDeleteTarget.name}?
+              </p>
+              <p style={{ textAlign: 'center', fontSize: '14px', color: 'var(--muted)', lineHeight: 1.5 }}>
+                This will soft-delete their account and prevent them from logging in. This action can be undone by contacting technical support.
+              </p>
+            </div>
+            <div className="modal-popup-footer">
+              <button 
+                onClick={() => setAccountDeleteTarget(null)}
+                style={{ background: 'white', color: 'var(--navy)', border: '1px solid var(--border)', padding: '10px 20px', borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDeleteAccountAction}
+                disabled={isDeletingAccount}
+                style={{ background: '#ef4444', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 600, cursor: 'pointer', opacity: isDeletingAccount ? 0.7 : 1 }}
+              >
+                {isDeletingAccount ? "Deleting..." : "Yes, Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showNoticeSuccess && (
         <div style={{
           position: 'fixed',
